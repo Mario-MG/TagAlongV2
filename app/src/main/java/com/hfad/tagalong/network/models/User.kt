@@ -2,7 +2,7 @@ package com.hfad.tagalong.network.models
 
 import com.google.gson.annotations.SerializedName
 
-internal data class User (
+data class User (
     @SerializedName("display_name") var displayName : String?,
     @SerializedName("href") var href : String,
     @SerializedName("id") var id : String,

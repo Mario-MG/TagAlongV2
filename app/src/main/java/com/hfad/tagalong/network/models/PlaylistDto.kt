@@ -2,7 +2,7 @@ package com.hfad.tagalong.network.models
 
 import com.google.gson.annotations.SerializedName
 
-internal data class PlaylistDto(
+data class PlaylistDto(
     @SerializedName("description") var description : String,
     @SerializedName("href") var href : String,
     @SerializedName("id") var id : String,
