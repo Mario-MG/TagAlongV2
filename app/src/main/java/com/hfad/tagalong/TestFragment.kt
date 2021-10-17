@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Text
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.TextStyle
@@ -26,15 +26,17 @@ class TestFragment: Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val playlist = viewModel.playlist.value
+                val playlists = viewModel.playlistList.value
 
-                playlist?.let {
-                    Text(
-                        text = playlist.name,
-                        style = TextStyle(
-                            color = Color.White
+                LazyColumn {
+                    itemsIndexed(items = playlists) { index, playlist ->
+                        Text(
+                            text = playlist.name,
+                            style = TextStyle(
+                                color = Color.White
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

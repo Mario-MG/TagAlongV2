@@ -18,17 +18,17 @@ constructor(
     private val session: Session
 ) : ViewModel() {
 
-    val playlist: MutableState<PlaylistDto?> = mutableStateOf(null) // TODO: This is for testing purposes only
+    val playlistList: MutableState<List<PlaylistDto>> = mutableStateOf(listOf()) // TODO: This is for testing purposes only
 
     init { // TODO: This is for testing purposes only
         viewModelScope.launch {
-            getPlaylist("7gYY3wjQSPucjaJlI7DMJB")
+            getListOfPlaylists()
         }
     }
 
-    suspend fun getPlaylist(id: String) { // TODO: This is for testing purposes only
-        val playlist = playlistRepository.get(token = session.token?: "Bearer fakeToken", id = id) // TODO: Handle null token
-        this.playlist.value = playlist
+    suspend fun getListOfPlaylists() { // TODO: This is for testing purposes only
+        val playlist = playlistRepository.getList(token = session.token?: "Bearer fakeToken") // TODO: Handle null token
+        this.playlistList.value = playlist.items
     }
 
 }
