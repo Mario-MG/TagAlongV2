@@ -1,6 +1,5 @@
 package com.hfad.tagalong.network
 
-import android.content.Context
 import com.hfad.tagalong.Session
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
@@ -8,6 +7,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
 
+// Source: https://www.simplifiedcoding.net/retrofit-authenticator-refresh-token/
 class TokenAuthenticator(
     private val session: Session
 ): Authenticator {

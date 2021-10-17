@@ -6,8 +6,6 @@ import com.hfad.tagalong.Session
 import com.hfad.tagalong.network.RetrofitAuthService
 import com.hfad.tagalong.network.RetrofitPlaylistService
 import com.hfad.tagalong.network.TokenAuthenticator
-import com.hfad.tagalong.repository.PlaylistRepository
-import com.hfad.tagalong.repository.PlaylistRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,6 +31,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
+    // Source: https://www.simplifiedcoding.net/retrofit-authenticator-refresh-token/
     fun provideRefrofitClient(
         authenticator: Authenticator
     ): OkHttpClient {
@@ -40,7 +39,7 @@ object NetworkModule {
                 client.authenticator(authenticator)
                 if (BuildConfig.DEBUG) {
                     val logging = HttpLoggingInterceptor()
-                    logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+                    logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
                     client.addInterceptor(logging)
                 }
             }.build()
@@ -52,7 +51,7 @@ object NetworkModule {
         retrofitClient: OkHttpClient
     ): RetrofitPlaylistService {
         return Retrofit.Builder()
-            .baseUrl("https://api.spotify.com/v1/playlists/") // TODO: Make constant
+            .baseUrl("https://api.spotify.com/v1/") // TODO: Make constant
             .client(retrofitClient)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
@@ -68,7 +67,7 @@ object NetworkModule {
             .client(OkHttpClient.Builder().also { client ->
                     if (BuildConfig.DEBUG) {
                         val logging = HttpLoggingInterceptor()
-                        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+                        logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
                         client.addInterceptor(logging)
                     }
                 }.build())
