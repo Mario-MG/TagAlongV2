@@ -1,4 +1,4 @@
-package com.hfad.tagalong
+package com.hfad.tagalong.presentation.ui.playlist_list
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,12 +12,15 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.TextStyle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.hfad.tagalong.presentation.ui.ItemCard
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class TestFragment: Fragment() {
+class PlaylistListFragment: Fragment() {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: PlaylistListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,12 +33,10 @@ class TestFragment: Fragment() {
 
                 LazyColumn {
                     itemsIndexed(items = playlists) { index, playlist ->
-                        Text(
-                            text = playlist.name,
-                            style = TextStyle(
-                                color = Color.White
-                            )
-                        )
+                        ItemCard(
+                            imageUrl = playlist.imageUrl,
+                            title = playlist.name,
+                            subtitle = "${playlist.size} songs") // TODO: Handle singular/plural
                     }
                 }
             }
