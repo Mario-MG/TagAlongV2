@@ -1,4 +1,4 @@
-package com.hfad.tagalong.network.models
+package com.hfad.tagalong.network.model
 
 import com.google.gson.annotations.SerializedName
 

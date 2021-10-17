@@ -1,4 +1,4 @@
-package com.hfad.tagalong
+package com.hfad.tagalong.presentation
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

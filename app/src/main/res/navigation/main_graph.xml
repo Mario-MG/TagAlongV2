@@ -6,6 +6,6 @@
 
     <fragment
         android:id="@+id/testFragment"
-        android:name="com.hfad.tagalong.TestFragment"
+        android:name="com.hfad.tagalong.presentation.ui.playlist_list.PlaylistListFragment"
         android:label="TestFragment" />
 </navigation>

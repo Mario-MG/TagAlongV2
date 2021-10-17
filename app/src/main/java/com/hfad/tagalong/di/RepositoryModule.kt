@@ -1,6 +1,7 @@
 package com.hfad.tagalong.di
 
 import com.hfad.tagalong.network.RetrofitPlaylistService
+import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.repository.PlaylistRepository
 import com.hfad.tagalong.repository.PlaylistRepositoryImpl
 import dagger.Module
@@ -16,10 +17,11 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun providePlaylistRepository(
-        playlistService: RetrofitPlaylistService // TODO: Should this dependency be an abstraction?
-        // TODO: Add mapper here
+        playlistService: RetrofitPlaylistService, // TODO: Should this dependency be an abstraction?
+        playlistMapper: PlaylistDtoMapper
     ): PlaylistRepository = PlaylistRepositoryImpl(
-        playlistService = playlistService
+        playlistService = playlistService,
+        playlistMapper = playlistMapper
     )
 
 }

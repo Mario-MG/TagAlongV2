@@ -1,7 +1,7 @@
 package com.hfad.tagalong.network
 
-import com.hfad.tagalong.network.models.PlaylistDto
-import com.hfad.tagalong.network.models.PlaylistListDto
+import com.hfad.tagalong.network.model.PlaylistDto
+import com.hfad.tagalong.network.model.PlaylistListDto
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path

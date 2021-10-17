@@ -1,12 +1,11 @@
 package com.hfad.tagalong.repository
 
-import com.hfad.tagalong.network.models.PlaylistDto
-import com.hfad.tagalong.network.models.PlaylistListDto
+import com.hfad.tagalong.domain.model.Playlist
 
 interface PlaylistRepository {
 
-    suspend fun getById(token: String, id: String): PlaylistDto // TODO: Change to domain model
+    suspend fun getById(token: String, id: String): Playlist
 
-    suspend fun getList(token: String, limit: Int = 20, offset: Int = 0): PlaylistListDto // TODO: Change to domain model
+    suspend fun getList(token: String, limit: Int = 20, offset: Int = 0): List<Playlist>
 
 }
