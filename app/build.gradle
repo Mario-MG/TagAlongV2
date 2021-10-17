@@ -1,6 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -17,6 +20,16 @@ android {
     }
 
     buildTypes {
+        debug {
+            // TODO: This is for testing purposes only
+            Properties properties = new Properties()
+            if (project.rootProject.file("local.properties").canRead()) {
+                properties.load(project.rootProject.file("local.properties").newDataInputStream())
+            }
+            buildConfigField "String", "CLIENT_ID", properties.getProperty("client_id")
+            buildConfigField "String", "CLIENT_SECRET", properties.getProperty("client_secret")
+            buildConfigField "String", "REFRESH_TOKEN", properties.getProperty("refresh_token")
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -28,6 +41,13 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    composeOptions {
+        def kotlin_compiler_extension_version = compose_version
+        kotlinCompilerExtensionVersion kotlin_compiler_extension_version
+    }
+    buildFeatures {
+        compose true
     }
 }
 
@@ -45,4 +65,31 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
+    def okhttp3_version = "4.9.2"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
+
+    def hilt_version = "2.38.1"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+    def hilt_lifecycle_viewmodel = "1.0.0-alpha03"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_lifecycle_viewmodel"
+    kapt "androidx.hilt:hilt-compiler:$hilt_lifecycle_viewmodel"
+
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+    implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.material:material-icons-core:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
+    def nav_version = "2.3.5"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+}
+
+kapt {
+    correctErrorTypes = true
 }

@@ -1,15 +1,25 @@
 package com.hfad.tagalong.network
 
+import com.hfad.tagalong.network.models.PlaylistDto
+import com.hfad.tagalong.network.models.PlaylistListDto
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface RetrofitPlaylistService {
 
-    @GET("{id}")
-    suspend fun get(
-        @Header("Authorization") authorization: String,
-        @Path("id") id: Int
-    )
+    @GET("playlists/{id}")
+    suspend fun getById(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ): PlaylistDto
+
+    @GET("me/playlists")
+    suspend fun getList(
+        @Header("Authorization") token: String,
+        @Query("limit") limit: Int = 20,
+        @Query("offset") offset: Int = 0
+    ): PlaylistListDto
 
 }
