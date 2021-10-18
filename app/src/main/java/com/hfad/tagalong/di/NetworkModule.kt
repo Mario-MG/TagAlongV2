@@ -6,6 +6,7 @@ import com.hfad.tagalong.Session
 import com.hfad.tagalong.network.RetrofitAuthService
 import com.hfad.tagalong.network.RetrofitPlaylistService
 import com.hfad.tagalong.network.TokenAuthenticator
+import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -56,6 +57,12 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
             .create(RetrofitPlaylistService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun providePlaylistMapper(): PlaylistDtoMapper {
+        return PlaylistDtoMapper()
     }
 
     @Singleton

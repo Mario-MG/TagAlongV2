@@ -1,8 +1,8 @@
 package com.hfad.tagalong.network
 
 import com.hfad.tagalong.BuildConfig
-import com.hfad.tagalong.network.models.GetTokenResponse
-import com.hfad.tagalong.network.models.RefreshTokenResponse
+import com.hfad.tagalong.network.model.GetTokenResponse
+import com.hfad.tagalong.network.model.RefreshTokenResponse
 import retrofit2.http.*
 
 interface RetrofitAuthService {
