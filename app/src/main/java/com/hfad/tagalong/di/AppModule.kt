@@ -1,7 +1,7 @@
 package com.hfad.tagalong.di
 
 import android.content.Context
-import com.hfad.tagalong.BaseApplication
+import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.BuildConfig
 import dagger.Module
 import dagger.Provides

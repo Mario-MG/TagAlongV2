@@ -33,11 +33,4 @@ object SessionModule {
         )
     }
 
-    @Singleton
-    @Provides
-    @Named("auth_token")
-    fun provideToken(
-        session: Session
-    ): String? = session.token
-
 }

@@ -8,8 +8,14 @@ class Session(
     private val clientId: String
 ) {
 
-    var token: String? = null
-        private set
+    private var token: String? = null
+
+    suspend fun getToken(): String {
+        if (token == null) {
+            this.refreshToken()
+        }
+        return "Bearer $token" // TODO: Handle unsuccessful refresh
+    }
 
     suspend fun refreshToken() {
         refreshToken?.let { refreshToken ->
