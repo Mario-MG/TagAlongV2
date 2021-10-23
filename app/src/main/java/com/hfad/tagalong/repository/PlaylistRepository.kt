@@ -1,6 +1,7 @@
 package com.hfad.tagalong.repository
 
 import com.hfad.tagalong.domain.model.Playlist
+import com.hfad.tagalong.domain.model.Track
 
 interface PlaylistRepository {
 

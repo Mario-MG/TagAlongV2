@@ -1,7 +1,7 @@
 package com.hfad.tagalong.network
 
 import com.hfad.tagalong.network.model.PlaylistDto
-import com.hfad.tagalong.network.model.PlaylistListDto
+import com.hfad.tagalong.network.model.PlaylistsPage
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
@@ -20,6 +20,6 @@ interface RetrofitPlaylistService {
         @Header("Authorization") token: String,
         @Query("limit") limit: Int = 20,
         @Query("offset") offset: Int = 0
-    ): PlaylistListDto
+    ): PlaylistsPage
 
 }

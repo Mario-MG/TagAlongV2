@@ -2,10 +2,18 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_graph"
-    app:startDestination="@id/testFragment">
+    app:startDestination="@id/playlistsFragment">
 
     <fragment
-        android:id="@+id/testFragment"
-        android:name="com.hfad.tagalong.presentation.ui.playlist_list.PlaylistListFragment"
-        android:label="TestFragment" />
+        android:id="@+id/playlistsFragment"
+        android:name="com.hfad.tagalong.presentation.ui.playlists.PlaylistsFragment"
+        android:label="PlaylistsFragment" >
+        <action
+            android:id="@+id/viewTracks"
+            app:destination="@id/tracksFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tracksFragment"
+        android:name="com.hfad.tagalong.presentation.ui.tracks.TracksFragment"
+        android:label="TracksFragment" />
 </navigation>
