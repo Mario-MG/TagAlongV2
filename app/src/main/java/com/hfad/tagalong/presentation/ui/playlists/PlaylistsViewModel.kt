@@ -1,4 +1,4 @@
-package com.hfad.tagalong.presentation.ui.playlist_list
+package com.hfad.tagalong.presentation.ui.playlists
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PlaylistListViewModel
+class PlaylistsViewModel
 @Inject
 constructor(
     private val playlistRepository: PlaylistRepository,
