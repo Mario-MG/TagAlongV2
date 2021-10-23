@@ -5,8 +5,10 @@ import com.hfad.tagalong.BuildConfig
 import com.hfad.tagalong.Session
 import com.hfad.tagalong.network.RetrofitAuthService
 import com.hfad.tagalong.network.RetrofitPlaylistService
+import com.hfad.tagalong.network.RetrofitTrackService
 import com.hfad.tagalong.network.TokenAuthenticator
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
+import com.hfad.tagalong.network.model.TrackDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -63,6 +65,25 @@ object NetworkModule {
     @Provides
     fun providePlaylistMapper(): PlaylistDtoMapper {
         return PlaylistDtoMapper()
+    }
+
+    @Singleton
+    @Provides
+    fun provideTrackService(
+        retrofitClient: OkHttpClient
+    ): RetrofitTrackService {
+        return Retrofit.Builder()
+            .baseUrl("https://api.spotify.com/v1/") // TODO: Make constant
+            .client(retrofitClient)
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+            .build()
+            .create(RetrofitTrackService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideTrackMapper(): TrackDtoMapper {
+        return TrackDtoMapper()
     }
 
     @Singleton

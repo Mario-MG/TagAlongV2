@@ -1,6 +1,7 @@
 package com.hfad.tagalong.presentation.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -23,7 +24,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun ItemCard(
     imageUrl: String?,
     title: String,
-    subtitle: String
+    subtitle: String,
+    onClick: () -> Unit = {}
 ) {
     val cardHeight = 80.dp
     Card(
@@ -31,7 +33,8 @@ fun ItemCard(
         modifier = Modifier
             .padding(bottom = 6.dp, top = 6.dp)
             .height(cardHeight)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         elevation = 8.dp
     ) {
         Row {
@@ -53,7 +56,7 @@ fun ItemCard(
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(top = 12.dp, bottom = 12.dp, start = 8.dp, end = 8.dp),
+                    .padding(top = 12.dp, bottom = 12.dp, start = 12.dp, end = 8.dp),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(

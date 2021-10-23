@@ -1,4 +1,4 @@
-package com.hfad.tagalong.presentation.ui.playlist_list
+package com.hfad.tagalong.presentation.ui.tracks
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.ui.ItemCard
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,9 +17,16 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class PlaylistListFragment : Fragment() {
+class TracksFragment : Fragment() {
 
-    private val viewModel: PlaylistListViewModel by viewModels()
+    private val viewModel: TracksViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.getString("playlistId")?.let { playlistId -> // TODO: Extract to constant
+            viewModel.loadTracks(playlistId)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,15 +35,15 @@ class PlaylistListFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val playlists = viewModel.playlistList.value
+                val tracks = viewModel.tracks.value
 
                 AppTheme {
                     LazyColumn {
-                        itemsIndexed(items = playlists) { index, playlist ->
+                        itemsIndexed(items = tracks) { index, track ->
                             ItemCard(
-                                imageUrl = playlist.imageUrl,
-                                title = playlist.name,
-                                subtitle = "${playlist.size} songs") // TODO: Handle singular/plural
+                                imageUrl = track.imageUrl,
+                                title = track.name,
+                                subtitle = "${track.album} | ${track.artists[0]}") // TODO: Handle multiple artists / no artists?
                         }
                     }
                 }

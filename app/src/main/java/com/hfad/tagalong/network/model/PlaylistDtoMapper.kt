@@ -18,8 +18,8 @@ class PlaylistDtoMapper: DomainMapper<PlaylistDto, Playlist> {
         TODO("Not yet implemented")
     }
 
-    fun toDomainList(initial: List<PlaylistDto>): List<Playlist>{
-        return initial.map { mapToDomainModel(it) }
+    fun toDomainList(modelList: List<PlaylistDto>): List<Playlist>{
+        return modelList.map { mapToDomainModel(it) }
     }
 
 }
