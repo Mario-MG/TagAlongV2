@@ -6,19 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Text
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.text.TextStyle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.ui.ItemCard
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class PlaylistListFragment: Fragment() {
+class PlaylistListFragment : Fragment() {
 
     private val viewModel: PlaylistListViewModel by viewModels()
 
@@ -31,12 +29,14 @@ class PlaylistListFragment: Fragment() {
             setContent {
                 val playlists = viewModel.playlistList.value
 
-                LazyColumn {
-                    itemsIndexed(items = playlists) { index, playlist ->
-                        ItemCard(
-                            imageUrl = playlist.imageUrl,
-                            title = playlist.name,
-                            subtitle = "${playlist.size} songs") // TODO: Handle singular/plural
+                AppTheme {
+                    LazyColumn {
+                        itemsIndexed(items = playlists) { index, playlist ->
+                            ItemCard(
+                                imageUrl = playlist.imageUrl,
+                                title = playlist.name,
+                                subtitle = "${playlist.size} songs") // TODO: Handle singular/plural
+                        }
                     }
                 }
             }
