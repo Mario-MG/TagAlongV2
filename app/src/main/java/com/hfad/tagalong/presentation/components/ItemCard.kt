@@ -32,8 +32,7 @@ fun ItemCard(
             .padding(bottom = 6.dp, top = 6.dp)
             .height(cardHeight)
             .fillMaxWidth(),
-        elevation = 8.dp,
-        backgroundColor = Color.Black // TODO: Remove when MaterialTheme has been customised
+        elevation = 8.dp
     ) {
         Row {
             val image = if (imageUrl != null) { // TODO: Move null check to loadPicture function?
@@ -59,18 +58,14 @@ fun ItemCard(
             ) {
                 Text(
                     text = title,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 18.sp
-                    ),
+                    style = MaterialTheme.typography.h5,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = subtitle,
-                    style = TextStyle(
-                        color = Color.LightGray,
-                        fontSize = 16.sp
+                    style = MaterialTheme.typography.h6.copy(
+                        color = MaterialTheme.colors.onSurface.copy(0.5f)
                     ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
