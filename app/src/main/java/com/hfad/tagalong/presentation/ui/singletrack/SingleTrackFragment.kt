@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -55,6 +56,7 @@ class SingleTrackFragment : Fragment() {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
+                                Spacer(modifier = Modifier.height(20.dp))
                                 val image = loadPicture(
                                     url = track.imageUrl,
                                     defaultImage = DEFAULT_ALBUM_IMAGE
@@ -71,17 +73,18 @@ class SingleTrackFragment : Fragment() {
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(20.dp))
-                                // TODO: Centre both texts
                                 Text(
                                     text = track.name,
-                                    style = MaterialTheme.typography.h2
+                                    style = MaterialTheme.typography.h2,
+                                    textAlign = TextAlign.Center
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = "${track.album} | ${track.artists[0]}",
                                     style = MaterialTheme.typography.h5.copy(
                                         color = MaterialTheme.colors.onSurface.copy(0.5f)
-                                    )
+                                    ),
+                                    textAlign = TextAlign.Center
                                 )
                                 Spacer(modifier = Modifier.height(24.dp))
                                 val testTags = listOf("rock", "pop", "80s", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag")
