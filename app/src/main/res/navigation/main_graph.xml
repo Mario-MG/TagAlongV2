@@ -15,5 +15,13 @@
     <fragment
         android:id="@+id/tracksFragment"
         android:name="com.hfad.tagalong.presentation.ui.tracks.TracksFragment"
-        android:label="TracksFragment" />
+        android:label="TracksFragment" >
+        <action
+            android:id="@+id/viewTrack"
+            app:destination="@id/singleTrackFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/singleTrackFragment"
+        android:name="com.hfad.tagalong.presentation.ui.singletrack.SingleTrackFragment"
+        android:label="SingleTrackFragment" />
 </navigation>

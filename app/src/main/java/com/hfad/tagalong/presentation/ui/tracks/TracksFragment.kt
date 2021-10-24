@@ -9,9 +9,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewModelScope
+import androidx.navigation.findNavController
+import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.theme.AppTheme
-import com.hfad.tagalong.presentation.ui.ItemCard
+import com.hfad.tagalong.presentation.components.TrackItemCard
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -40,10 +41,13 @@ class TracksFragment : Fragment() {
                 AppTheme {
                     LazyColumn {
                         itemsIndexed(items = tracks) { index, track ->
-                            ItemCard(
-                                imageUrl = track.imageUrl,
-                                title = track.name,
-                                subtitle = "${track.album} | ${track.artists[0]}") // TODO: Handle multiple artists / no artists?
+                            TrackItemCard(
+                                track = track,
+                                onClick = {
+                                    val bundle = Bundle().also { it.putString("trackId", track.id) }
+                                    findNavController().navigate(R.id.viewTrack, bundle)
+                                }
+                            )
                         }
                     }
                 }

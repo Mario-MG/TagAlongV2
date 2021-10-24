@@ -17,7 +17,9 @@ const val DEFAULT_ALBUM_IMAGE = R.drawable.ic_music_cd
 
 @ExperimentalCoroutinesApi
 @Composable
-fun loadPicture(url: String, @DrawableRes defaultImage: Int): MutableState<Bitmap?> {
+fun loadPicture(url: String?, @DrawableRes defaultImage: Int): MutableState<Bitmap?> {
+
+    if (url == null) return loadPicture(drawable = defaultImage)
 
     val bitmapState: MutableState<Bitmap?> = mutableStateOf(null)
 

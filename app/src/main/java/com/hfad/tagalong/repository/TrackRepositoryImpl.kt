@@ -13,4 +13,8 @@ class TrackRepositoryImpl(
         return trackMapper.toDomainList(trackService.getItemsInPlaylist(token = token, playlistId = playlistId, limit = limit, offset = offset).items.map { it.track })
     }
 
+    override suspend fun getTrack(token: String, trackId: String): Track {
+        return trackMapper.mapToDomainModel(trackService.getTrack(token = token, trackId = trackId))
+    }
+
 }

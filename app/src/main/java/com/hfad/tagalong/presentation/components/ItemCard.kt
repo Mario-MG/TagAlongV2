@@ -1,4 +1,4 @@
-package com.hfad.tagalong.presentation.ui
+package com.hfad.tagalong.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -8,13 +8,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.hfad.tagalong.util.DEFAULT_ALBUM_IMAGE
 import com.hfad.tagalong.util.loadPicture
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,11 +35,7 @@ fun ItemCard(
         elevation = 8.dp
     ) {
         Row {
-            val image = if (imageUrl != null) { // TODO: Move null check to loadPicture function?
-                loadPicture(url = imageUrl, defaultImage = DEFAULT_ALBUM_IMAGE).value
-            } else {
-                loadPicture(drawable = DEFAULT_ALBUM_IMAGE).value
-            }
+            val image = loadPicture(url = imageUrl, defaultImage = DEFAULT_ALBUM_IMAGE).value
             image?.let { img ->
                 Image(
                     bitmap = img.asImageBitmap(),
