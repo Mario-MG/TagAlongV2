@@ -35,11 +35,7 @@ fun ItemCard(
         elevation = 8.dp
     ) {
         Row {
-            val image = if (imageUrl != null) { // TODO: Move null check to loadPicture function?
-                loadPicture(url = imageUrl, defaultImage = DEFAULT_ALBUM_IMAGE).value
-            } else {
-                loadPicture(drawable = DEFAULT_ALBUM_IMAGE).value
-            }
+            val image = loadPicture(url = imageUrl, defaultImage = DEFAULT_ALBUM_IMAGE).value
             image?.let { img ->
                 Image(
                     bitmap = img.asImageBitmap(),
