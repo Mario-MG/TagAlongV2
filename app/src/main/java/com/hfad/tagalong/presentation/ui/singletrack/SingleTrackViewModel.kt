@@ -1,6 +1,7 @@
 package com.hfad.tagalong.presentation.ui.singletrack
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,6 +21,7 @@ constructor(
 ) : ViewModel() {
 
     val track: MutableState<Track?> = mutableStateOf(null)
+    val testTags = mutableStateListOf("rock", "pop", "80s", "testTag1", "testTag2", "testTag3", "testTag4", "testTag5", "testTag6", "testTag7", "testTag8", "testTag9", "testTag0") // TODO: This is for testing purposes only
 
     fun loadTrack(trackId: String) {
         viewModelScope.launch {

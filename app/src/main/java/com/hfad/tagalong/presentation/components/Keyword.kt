@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Tag(
-    tagName: String,
-    onClickDeleteIcon: (() -> Unit)? = null
+fun <T> Keyword(
+    keywordObject: T,
+    onClickDeleteIcon: ((T) -> Unit)? = null
 ) {
     Surface(
         color = MaterialTheme.colors.primary,
@@ -26,7 +26,7 @@ fun Tag(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = tagName,
+                text = keywordObject.toString(),
                 modifier = Modifier
                     .padding(
                         vertical = 2.dp,
@@ -35,7 +35,9 @@ fun Tag(
             )
             onClickDeleteIcon?.let {
                 IconButton(
-                    onClick = onClickDeleteIcon,
+                    onClick = {
+                          onClickDeleteIcon(keywordObject)
+                    },
                     modifier = Modifier
                         .padding(2.dp)
                         .then(Modifier.size(24.dp))
