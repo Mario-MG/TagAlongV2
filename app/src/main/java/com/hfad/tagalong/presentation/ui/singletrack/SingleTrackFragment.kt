@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.hfad.tagalong.presentation.components.TagManager
+import com.hfad.tagalong.presentation.components.FlowKeywordList
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.util.DEFAULT_ALBUM_IMAGE
 import com.hfad.tagalong.util.loadPicture
@@ -49,6 +49,7 @@ class SingleTrackFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val track = viewModel.track.value
+                val tags = viewModel.testTags // TODO: This is for testing purposes only
 
                 AppTheme {
                     track?.let {
@@ -87,8 +88,10 @@ class SingleTrackFragment : Fragment() {
                                     textAlign = TextAlign.Center
                                 )
                                 Spacer(modifier = Modifier.height(24.dp))
-                                val testTags = listOf("rock", "pop", "80s", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag")
-                                TagManager(tags = testTags)
+                                FlowKeywordList(
+                                    keywordObjects = tags,
+                                    onClickDeleteIcon = tags::remove
+                                )
                             }
                         }
                     }

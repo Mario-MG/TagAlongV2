@@ -11,8 +11,9 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 
 @Composable
-fun TagManager(
-    tags: List<String>
+fun <T> FlowKeywordList(
+    keywordObjects: List<T>,
+    onClickDeleteIcon: ((T) -> Unit)? = null
 ) {
     Surface(
         color = Color.Black,
@@ -27,10 +28,10 @@ fun TagManager(
             modifier = Modifier
                 .padding(8.dp)
         ) {
-            tags.forEach { tag ->
-                Tag(
-                    tag,
-                    onClickDeleteIcon = {}
+            for (keywordObject in keywordObjects) {
+                Keyword(
+                    keywordObject = keywordObject,
+                    onClickDeleteIcon = onClickDeleteIcon
                 )
             }
         }
