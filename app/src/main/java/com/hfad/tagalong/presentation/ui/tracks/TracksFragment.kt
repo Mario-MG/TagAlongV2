@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
+import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.components.TrackItemCard
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +41,13 @@ class TracksFragment : Fragment() {
                 AppTheme {
                     LazyColumn {
                         itemsIndexed(items = tracks) { index, track ->
-                            TrackItemCard(track = track)
+                            TrackItemCard(
+                                track = track,
+                                onClick = {
+                                    val bundle = Bundle().also { it.putString("trackId", track.id) }
+                                    findNavController().navigate(R.id.viewTrack, bundle)
+                                }
+                            )
                         }
                     }
                 }

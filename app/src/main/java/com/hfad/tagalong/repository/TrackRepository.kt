@@ -6,4 +6,6 @@ interface TrackRepository {
 
     suspend fun getItemsInPlaylist(token: String, playlistId: String, limit: Int = 20, offset: Int = 0): List<Track>
 
+    suspend fun getTrack(token: String, trackId: String): Track
+
 }
