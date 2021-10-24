@@ -12,7 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.theme.AppTheme
-import com.hfad.tagalong.presentation.ui.ItemCard
+import com.hfad.tagalong.presentation.components.PlaylistItemCard
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -34,10 +34,8 @@ class PlaylistsFragment : Fragment() {
                 AppTheme {
                     LazyColumn {
                         itemsIndexed(items = playlists) { index, playlist ->
-                            ItemCard(
-                                imageUrl = playlist.imageUrl,
-                                title = playlist.name,
-                                subtitle = "${playlist.size} songs", // TODO: Handle singular/plural
+                            PlaylistItemCard(
+                                playlist = playlist,
                                 onClick = {
                                     val bundle = Bundle().also { it.putString("playlistId", playlist.id) }
                                     findNavController().navigate(R.id.viewTracks, bundle)
