@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.hfad.tagalong.presentation.components.TagManager
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.util.DEFAULT_ALBUM_IMAGE
 import com.hfad.tagalong.util.loadPicture
@@ -70,6 +71,7 @@ class SingleTrackFragment : Fragment() {
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(20.dp))
+                                // TODO: Centre both texts
                                 Text(
                                     text = track.name,
                                     style = MaterialTheme.typography.h2
@@ -81,6 +83,9 @@ class SingleTrackFragment : Fragment() {
                                         color = MaterialTheme.colors.onSurface.copy(0.5f)
                                     )
                                 )
+                                Spacer(modifier = Modifier.height(24.dp))
+                                val testTags = listOf("rock", "pop", "80s", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag", "testTag")
+                                TagManager(tags = testTags)
                             }
                         }
                     }
