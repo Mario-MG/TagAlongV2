@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -55,7 +54,8 @@ class SingleTrackFragment : Fragment() {
                     track?.let {
                         Surface {
                             Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.verticalScroll(rememberScrollState()) // FIXME: Not working! ALSO: Explore nested scrolling
                             ) {
                                 Spacer(modifier = Modifier.height(20.dp))
                                 val image = loadPicture(
@@ -90,7 +90,8 @@ class SingleTrackFragment : Fragment() {
                                 Spacer(modifier = Modifier.height(24.dp))
                                 FlowKeywordList(
                                     keywordObjects = tags,
-                                    onClickDeleteIcon = tags::remove
+                                    onClickDeleteIcon = tags::remove,
+                                    onAddNewKeyword = tags::add
                                 )
                             }
                         }
