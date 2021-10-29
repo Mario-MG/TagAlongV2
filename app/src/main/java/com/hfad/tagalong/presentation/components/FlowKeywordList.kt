@@ -6,24 +6,39 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Tag
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.RelocationRequester
+import androidx.compose.ui.layout.relocationRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@ExperimentalComposeUiApi
 @Composable
-fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable?
+fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (appearance-wise)?
     keywordObjects: List<T>,
     onClickDeleteIcon: ((T) -> Unit)? = null,
+    textFieldLabel: @Composable () -> Unit = { Text("Add a keyword here...") },
+    textFieldLeadingIcon: @Composable (() -> Unit)? = null,
     onAddNewKeyword: ((String) -> Unit)? = null
 ) {
-    val newKeyword = mutableStateOf("")
+    val newKeyword = remember { mutableStateOf("") }
+
+    // Source: https://issuetracker.google.com/issues/192043120#comment17 (see comment #19 too)
+    val relocationRequester = remember { RelocationRequester() }
+    val scope = rememberCoroutineScope()
+
     Surface(
         color = Color.Black,
         modifier = Modifier
@@ -34,9 +49,10 @@ fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable?
         shape = MaterialTheme.shapes.medium
     ) {
         Column {
-            FlowRow( // TODO: Make scrollable? ALSO: Explore nested scrolling
+            FlowRow(
                 modifier = Modifier
                     .padding(8.dp)
+//                    .verticalScroll(rememberScrollState()) // FIXME: Crashes the app
             ) {
                 for (keywordObject in keywordObjects) {
                     Keyword(
@@ -48,8 +64,11 @@ fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable?
             onAddNewKeyword?.let {
                 TextField(
                     value = newKeyword.value,
-                    onValueChange = { newKeyword.value = it },
-                    label = { Text("Add a tag here...") }, // TODO: Make text customizable
+                    onValueChange = {
+                        newKeyword.value = it
+                        relocationRequester.bringIntoView()
+                    },
+                    label = textFieldLabel,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done,
@@ -58,12 +77,28 @@ fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable?
                         onDone = {
                             onAddNewKeyword(newKeyword.value)
                             newKeyword.value = ""
+                            refocus(relocationRequester = relocationRequester, scope = scope)
                         },
                     ),
-                    leadingIcon = { Icon(Icons.Filled.Tag, contentDescription = "Add tag") }, // TODO: Make text customizable?
-                    modifier = Modifier.fillMaxWidth()
+                    leadingIcon = textFieldLeadingIcon,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .relocationRequester(relocationRequester)
+                        .onFocusChanged {
+                            if ("$it" == "Active") {
+                                refocus(relocationRequester = relocationRequester, scope = scope)
+                            }
+                        }
                 )
             }
         }
+    }
+}
+
+@ExperimentalComposeUiApi
+private fun refocus(relocationRequester: RelocationRequester, scope: CoroutineScope) {
+    scope.launch {
+        delay(500)
+        relocationRequester.bringIntoView()
     }
 }

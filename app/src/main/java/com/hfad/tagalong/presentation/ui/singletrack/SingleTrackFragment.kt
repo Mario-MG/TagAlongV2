@@ -8,10 +8,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Tag
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -40,6 +44,7 @@ class SingleTrackFragment : Fragment() {
         }
     }
 
+    @ExperimentalComposeUiApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,10 +57,11 @@ class SingleTrackFragment : Fragment() {
 
                 AppTheme {
                     track?.let {
-                        Surface {
+                        Surface(
+                            modifier = Modifier.verticalScroll(rememberScrollState())
+                        ) {
                             Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.verticalScroll(rememberScrollState()) // FIXME: Not working! ALSO: Explore nested scrolling
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Spacer(modifier = Modifier.height(20.dp))
                                 val image = loadPicture(
@@ -91,7 +97,13 @@ class SingleTrackFragment : Fragment() {
                                 FlowKeywordList(
                                     keywordObjects = tags,
                                     onClickDeleteIcon = tags::remove,
-                                    onAddNewKeyword = tags::add
+                                    onAddNewKeyword = tags::add,
+                                    textFieldLeadingIcon = {
+                                        Icon(Icons.Filled.Tag, contentDescription = "Tag icon")
+                                    },
+                                    textFieldLabel = {
+                                        Text("Add a tag here...")
+                                    }
                                 )
                             }
                         }
