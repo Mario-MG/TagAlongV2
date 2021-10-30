@@ -21,7 +21,8 @@ constructor(
 ) : ViewModel() {
 
     val track: MutableState<Track?> = mutableStateOf(null)
-    val testTags = mutableStateListOf("rock", "pop", "80s", "testTag1", "testTag2", "testTag3", "testTag4", "testTag5", "testTag6", "testTag7", "testTag8", "testTag9", "testTag0") // TODO: This is for testing purposes only
+    val testTags = mutableStateListOf("rock", "pop", "80s", "testTag1", "testTag2", "testTag3",
+        "testTag4", "testTag5", "testTag6", "testTag7", "testTag8", "testTag9", "testTag0") // TODO: This is for testing purposes only
 
     fun loadTrack(trackId: String) {
         viewModelScope.launch {
