@@ -53,7 +53,7 @@ class SingleTrackFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val track = viewModel.track.value
-                val tags = viewModel.testTags // TODO: This is for testing purposes only
+                val tags = viewModel.tags
 
                 AppTheme {
                     track?.let {
@@ -96,8 +96,8 @@ class SingleTrackFragment : Fragment() {
                                 Spacer(modifier = Modifier.height(24.dp))
                                 FlowKeywordList(
                                     keywordObjects = tags,
-                                    onClickDeleteIcon = tags::remove,
-                                    onAddNewKeyword = tags::add,
+//                                    onClickDeleteIcon = tags::remove,
+                                    onAddNewKeyword = { tag -> viewModel.addTag(tag) },
                                     textFieldLeadingIcon = {
                                         Icon(Icons.Filled.Tag, contentDescription = "Tag icon")
                                     },

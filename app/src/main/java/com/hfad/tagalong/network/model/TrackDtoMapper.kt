@@ -19,8 +19,4 @@ class TrackDtoMapper: DomainMapper<TrackDto, Track> {
         TODO("Not yet implemented")
     }
 
-    fun toDomainList(modelList: List<TrackDto>): List<Track>{
-        return modelList.map { mapToDomainModel(it) }
-    }
-
 }

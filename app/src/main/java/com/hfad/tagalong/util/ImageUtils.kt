@@ -13,6 +13,8 @@ import com.bumptech.glide.request.transition.Transition
 import com.hfad.tagalong.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+// Source: https://github.com/mitchtabian/MVVMRecipeApp/blob/master/app/src/main/java/com/codingwithmitch/mvvmrecipeapp/util/ImageUtils.kt
+
 const val DEFAULT_ALBUM_IMAGE = R.drawable.ic_music_cd
 
 @ExperimentalCoroutinesApi
