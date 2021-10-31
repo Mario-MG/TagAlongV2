@@ -1,13 +1,15 @@
 package com.hfad.tagalong.di
 
+import com.hfad.tagalong.cache.dao.TagDao
+import com.hfad.tagalong.cache.dao.TrackDao
+import com.hfad.tagalong.cache.dao.TrackTagCrossRefDao
+import com.hfad.tagalong.cache.model.TagEntityMapper
+import com.hfad.tagalong.cache.model.TrackEntityMapper
 import com.hfad.tagalong.network.RetrofitPlaylistService
 import com.hfad.tagalong.network.RetrofitTrackService
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TrackDtoMapper
-import com.hfad.tagalong.repository.PlaylistRepository
-import com.hfad.tagalong.repository.PlaylistRepositoryImpl
-import com.hfad.tagalong.repository.TrackRepository
-import com.hfad.tagalong.repository.TrackRepositoryImpl
+import com.hfad.tagalong.repository.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,6 +38,32 @@ object RepositoryModule {
     ): TrackRepository = TrackRepositoryImpl(
         trackService = trackService,
         trackMapper = trackMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideTagRepository(
+        tagDao: TagDao,
+        tagEntityMapper: TagEntityMapper
+    ): TagRepository = TagRepositoryImpl(
+        tagDao = tagDao,
+        tagEntityMapper = tagEntityMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideTrackTagRepository(
+        trackDao: TrackDao,
+        tagDao: TagDao,
+        trackTagCrossRefDao: TrackTagCrossRefDao,
+        trackEntityMapper: TrackEntityMapper,
+        tagEntityMapper: TagEntityMapper
+    ): TrackTagRepository = TrackTagRepositoryImpl(
+        trackDao = trackDao,
+        tagDao = tagDao,
+        trackTagCrossRefDao = trackTagCrossRefDao,
+        trackEntityMapper = trackEntityMapper,
+        tagEntityMapper = tagEntityMapper
     )
 
 }
