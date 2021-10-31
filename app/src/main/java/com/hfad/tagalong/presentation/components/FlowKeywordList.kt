@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (appearance-wise)?
     keywordObjects: List<T>,
     onClickDeleteIcon: ((T) -> Unit)? = null,
-    textFieldLabel: @Composable () -> Unit = { Text("Add a keyword here...") },
+    textFieldLabel: @Composable (() -> Unit)? = { Text("Add a keyword here...") },
     textFieldLeadingIcon: @Composable (() -> Unit)? = null,
     onAddNewKeyword: ((String) -> Unit)? = null
 ) {

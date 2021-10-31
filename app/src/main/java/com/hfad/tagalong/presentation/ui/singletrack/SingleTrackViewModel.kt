@@ -1,6 +1,5 @@
 package com.hfad.tagalong.presentation.ui.singletrack
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
@@ -26,20 +25,28 @@ constructor(
     private val tagRepository: TagRepository
 ) : ViewModel() {
 
-    val track: MutableState<Track?> = mutableStateOf(null)
-    val tags = mutableStateListOf<Tag>()
+    val track = mutableStateOf<Track?>(null)
+    val tagsForTrack = mutableStateListOf<Tag>()
+    val allTags = mutableStateListOf<Tag>() // TODO: These will be later used for autocompletion
 
     fun loadTrack(trackId: String) {
         viewModelScope.launch {
             getTrack(trackId)
-            getTrackTags(track.value!!) // TODO: Handle null?
+            refreshTags()
         }
     }
 
-    fun addTag(tagName: String) {
+    fun addNewTag(tagName: String) {
         viewModelScope.launch {
-            addNewTag(Tag(name = tagName))
-            getTrackTags(track.value!!) // TODO: Handle null?
+            addTag(tagName)
+            refreshTags()
+        }
+    }
+
+    fun deleteTag(tag: Tag) {
+        viewModelScope.launch {
+            privateDeleteTag(tag)
+            refreshTags()
         }
     }
 
@@ -48,21 +55,41 @@ constructor(
             token = session.getToken(),
             trackId = trackId
         )
-        this.track.value = track
+        this.track.value = track // TODO: Handle null
     }
 
-    private suspend fun getTrackTags(track: Track) {
-        val tags = tagRepository.getAllForTrack(track).toMutableStateList()
-        this.tags.clear()
-        this.tags.addAll(tags)
-    }
-
-    private suspend fun addNewTag(tag: Tag) {
-        if (this.tags.none { it.name == tag.name }) {
-            trackTagRepository.addTagToTrack(tag, track.value!!) // TODO: Handle null?
+    private suspend fun addTag(tagName: String) {
+        if (this.tagsForTrack.none { it.name == tagName }) {
+            val existingTag = this.allTags.find { tag -> tag.name == tagName }
+            if (existingTag != null) {
+                trackTagRepository.addTagToTrack(tag = existingTag, track = track.value!!)
+            } else {
+                trackTagRepository.addTagToTrack(tag = Tag(name = tagName), track = track.value!!)
+            }
         } else {
             // TODO: Show snack
         }
+    }
+
+    private suspend fun privateDeleteTag(tag: Tag) { // TODO: Improve naming
+        trackTagRepository.deleteTagFromTrack(tag = tag, track = track.value!!)
+    }
+
+    private suspend fun refreshTags() {
+        getTagsForTrack(track.value!!)
+        getAllTags()
+    }
+
+    private suspend fun getTagsForTrack(track: Track) {
+        val tags = tagRepository.getAllForTrack(track).toMutableStateList()
+        this.tagsForTrack.clear()
+        this.tagsForTrack.addAll(tags)
+    }
+
+    private suspend fun getAllTags() {
+        val allTags = tagRepository.getAll()
+        this.allTags.clear()
+        this.allTags.addAll(allTags)
     }
 
 }

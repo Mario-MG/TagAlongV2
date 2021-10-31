@@ -30,7 +30,7 @@ fun <T> Keyword(
                 modifier = Modifier
                     .padding(
                         vertical = 2.dp,
-                        horizontal = 4.dp
+                        horizontal = 6.dp
                     )
             )
             onClickDeleteIcon?.let {
