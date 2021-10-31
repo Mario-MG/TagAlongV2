@@ -7,7 +7,7 @@ class TrackDtoMapper: DomainMapper<TrackDto, Track> {
 
     override fun mapToDomainModel(model: TrackDto): Track {
         return Track(
-            id = model.id,
+            id = model.id ?: model.uri.substringAfter("spotify:"), // TODO: Come up with a better way to handle local files?
             name = model.name,
             album = model.album.name,
             artists = model.artists.map{ it.name },
