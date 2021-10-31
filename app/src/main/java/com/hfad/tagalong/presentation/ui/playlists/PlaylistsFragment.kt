@@ -29,7 +29,7 @@ class PlaylistsFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val playlists = viewModel.playlistList.value
+                val playlists = viewModel.playlistList
 
                 AppTheme {
                     LazyColumn {

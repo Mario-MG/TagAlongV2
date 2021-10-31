@@ -1,7 +1,6 @@
 package com.hfad.tagalong.presentation.ui.playlists
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.Session
@@ -19,7 +18,7 @@ constructor(
     private val session: Session
 ) : ViewModel() {
 
-    val playlistList: MutableState<List<Playlist>> = mutableStateOf(listOf())
+    val playlistList = mutableStateListOf<Playlist>()
 
     init {
         viewModelScope.launch {
@@ -29,7 +28,8 @@ constructor(
 
     private suspend fun getListOfPlaylists() {
         val playlists = playlistRepository.getList(token = session.getToken())
-        this.playlistList.value = playlists
+        this.playlistList.clear()
+        this.playlistList.addAll(playlists)
     }
 
 }
