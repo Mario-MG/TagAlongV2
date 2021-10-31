@@ -5,6 +5,7 @@ import com.hfad.tagalong.cache.model.*
 
 @Dao
 interface TagDao {
+
     @Query("SELECT * FROM $TAG_TABLE")
     suspend fun getAll(): List<TagEntity>
 
@@ -26,6 +27,4 @@ interface TagDao {
     @Delete
     suspend fun delete(vararg tag: TagEntity): Int
 
-//    @Delete(entity = TagEntity::class)
-//    suspend fun deleteByName(vararg tagName: TagEntity.Name): Int
 }

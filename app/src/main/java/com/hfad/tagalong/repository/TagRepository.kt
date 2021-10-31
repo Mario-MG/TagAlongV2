@@ -9,8 +9,4 @@ interface TagRepository {
 
     suspend fun getAllForTrack(track: Track): List<Tag>
 
-//    suspend fun insert(vararg tags: Tag)
-//
-//    suspend fun delete(vararg tags: Tag)
-
 }

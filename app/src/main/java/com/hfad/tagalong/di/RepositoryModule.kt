@@ -42,6 +42,16 @@ object RepositoryModule {
 
     @Singleton
     @Provides
+    fun provideTagRepository(
+        tagDao: TagDao,
+        tagEntityMapper: TagEntityMapper
+    ): TagRepository = TagRepositoryImpl(
+        tagDao = tagDao,
+        tagEntityMapper = tagEntityMapper
+    )
+
+    @Singleton
+    @Provides
     fun provideTrackTagRepository(
         trackDao: TrackDao,
         tagDao: TagDao,
@@ -53,16 +63,6 @@ object RepositoryModule {
         tagDao = tagDao,
         trackTagCrossRefDao = trackTagCrossRefDao,
         trackEntityMapper = trackEntityMapper,
-        tagEntityMapper = tagEntityMapper
-    )
-
-    @Singleton
-    @Provides
-    fun provideTagRepository(
-        tagDao: TagDao,
-        tagEntityMapper: TagEntityMapper
-    ): TagRepository = TagRepositoryImpl(
-        tagDao = tagDao,
         tagEntityMapper = tagEntityMapper
     )
 

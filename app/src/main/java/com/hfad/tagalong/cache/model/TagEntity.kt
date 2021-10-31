@@ -15,6 +15,4 @@ data class TagEntity (
     @ColumnInfo(name = TAG_NAME)
     val name: String
 
-) {
-//    data class Name (val name: String)
-}
+)

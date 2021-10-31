@@ -9,10 +9,10 @@ import com.hfad.tagalong.cache.model.TrackTagCrossRef
 
 @Dao
 interface TrackTagCrossRefDao {
-    @Query("SELECT * FROM $TRACK_TAG_CROSS_REF_TABLE")
-    fun getAll(): List<TrackTagCrossRef>
 
-    // TODO: How to find out if there's a conflict when inserting (explore ABORT + @Transaction)
+    @Query("SELECT * FROM $TRACK_TAG_CROSS_REF_TABLE")
+    suspend fun getAll(): List<TrackTagCrossRef>
+
     @Insert
     suspend fun insert(trackTagCrossRef: TrackTagCrossRef)
 
@@ -21,4 +21,5 @@ interface TrackTagCrossRefDao {
 
     @Delete
     suspend fun delete(trackTagCrossRef: TrackTagCrossRef)
+
 }

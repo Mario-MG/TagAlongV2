@@ -36,16 +36,16 @@ constructor(
         }
     }
 
-    fun addNewTag(tagName: String) {
+    fun addTag(tagName: String) {
         viewModelScope.launch {
-            addTag(tagName)
+            addTagToTrack(tagName)
             refreshTags()
         }
     }
 
     fun deleteTag(tag: Tag) {
         viewModelScope.launch {
-            privateDeleteTag(tag)
+            deleteTagForTrack(tag)
             refreshTags()
         }
     }
@@ -58,7 +58,7 @@ constructor(
         this.track.value = track // TODO: Handle null
     }
 
-    private suspend fun addTag(tagName: String) {
+    private suspend fun addTagToTrack(tagName: String) {
         if (this.tagsForTrack.none { it.name == tagName }) {
             val existingTag = this.allTags.find { tag -> tag.name == tagName }
             if (existingTag != null) {
@@ -71,7 +71,7 @@ constructor(
         }
     }
 
-    private suspend fun privateDeleteTag(tag: Tag) { // TODO: Improve naming
+    private suspend fun deleteTagForTrack(tag: Tag) { // TODO: Improve naming
         trackTagRepository.deleteTagFromTrack(tag = tag, track = track.value!!)
     }
 
