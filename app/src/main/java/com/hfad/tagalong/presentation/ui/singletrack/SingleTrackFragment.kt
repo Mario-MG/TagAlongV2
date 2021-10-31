@@ -100,7 +100,7 @@ class SingleTrackFragment : Fragment() {
                                         viewModel.deleteTag(tag)
                                     },
                                     onAddNewKeyword = { tagName ->
-                                        viewModel.addNewTag(tagName)
+                                        viewModel.addTag(tagName)
                                     },
                                     textFieldLeadingIcon = {
                                         Icon(Icons.Filled.Tag, contentDescription = "Tag icon")

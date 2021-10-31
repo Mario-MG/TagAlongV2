@@ -5,6 +5,7 @@ import com.hfad.tagalong.cache.model.*
 
 @Dao
 interface TrackDao {
+
     @Query("SELECT * FROM $TRACK_TABLE")
     suspend fun getAll(): List<TrackEntity>
 
@@ -34,4 +35,5 @@ interface TrackDao {
 
     @Delete(entity = TrackEntity::class)
     suspend fun deleteById(vararg trackIds: TrackEntity.Id): Int
+
 }

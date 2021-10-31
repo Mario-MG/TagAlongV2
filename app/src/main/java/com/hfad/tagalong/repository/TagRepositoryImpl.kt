@@ -18,12 +18,4 @@ class TagRepositoryImpl(
         return tagEntityMapper.toDomainList(tagDao.getTagsForTrackById(track.id))
     }
 
-//    override suspend fun insert(vararg tags: Tag) {
-//        tagDao.insertAll(*tagEntityMapper.fromDomainList(tags.toList()).toTypedArray())
-//    }
-//
-//    override suspend fun delete(vararg tags: Tag) {
-//        tagDao.delete(*tagEntityMapper.fromDomainList(tags.toList()).toTypedArray())
-//    }
-
 }
