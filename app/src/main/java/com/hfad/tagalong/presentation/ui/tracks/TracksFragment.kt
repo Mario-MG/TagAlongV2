@@ -69,7 +69,7 @@ class TracksFragment : Fragment() {
     }
 
     private fun navigateToTrackDetail(track: Track) {
-        val bundle = Bundle().also { it.putString(BUNDLE_KEY_TRACK_ID, track.id) }
+        val bundle = Bundle().also { it.putString(BUNDLE_KEY_TRACK_ID, track.id) } // TODO: Use bundleOf(), send whole Track object, remove TrackRepository getTrack() method? (is it necessary to declare the argument in main_graph?)
         findNavController().navigate(R.id.viewTrack, bundle)
     }
 }

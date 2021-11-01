@@ -3,6 +3,7 @@ package com.hfad.tagalong.di
 import android.content.Context
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.BuildConfig
+import com.hfad.tagalong.R
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,7 +24,16 @@ object AppModule {
 
     @Singleton
     @Provides
-    @Named("client_id")
+    @Named(APP_CLIENT_ID)
     fun provideClientId(): String = BuildConfig.CLIENT_ID // TODO: This is for testing purposes only
+
+    @Singleton
+    @Provides
+    @Named("redirect_uri") // TODO: Extract to constants
+    fun provideRedirectUri(app: BaseApplication) : String {
+        val appSchema = app.resources.getString(R.string.app_deep_link_schema)
+        val appUrl = app.resources.getString(R.string.app_deep_link_url)
+        return appSchema + appUrl
+    }
 
 }
