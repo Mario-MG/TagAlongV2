@@ -9,7 +9,7 @@ data class TrackDto (
     @SerializedName("duration_ms") var durationMs : Int,
     @SerializedName("explicit") var explicit : Boolean,
     @SerializedName("href") var href : String,
-    @SerializedName("id") var id : String,
+    @SerializedName("id") var id : String?,
     @SerializedName("name") var name : String,
     @SerializedName("popularity") var popularity : Int,
     @SerializedName("preview_url") var previewUrl : String?,

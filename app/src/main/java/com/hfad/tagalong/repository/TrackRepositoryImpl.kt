@@ -10,7 +10,14 @@ class TrackRepositoryImpl(
 ): TrackRepository {
 
     override suspend fun getItemsInPlaylist(token: String, playlistId: String, limit: Int, offset: Int): List<Track> {
-        return trackMapper.toDomainList(trackService.getItemsInPlaylist(token = token, playlistId = playlistId, limit = limit, offset = offset).items.map { it.track })
+        val playlistItemsPage = trackService.getItemsInPlaylist(
+            token = token,
+            playlistId = playlistId,
+            limit = limit,
+            offset = offset
+        )
+        val tracksNetworkModelList = playlistItemsPage.items.map { it.track }
+        return trackMapper.toDomainList(tracksNetworkModelList)
     }
 
     override suspend fun getTrack(token: String, trackId: String): Track {
