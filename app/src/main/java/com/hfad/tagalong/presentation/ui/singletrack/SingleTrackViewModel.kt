@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.Session
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
+import com.hfad.tagalong.presentation.ui.singletrack.SingleTrackEvent.*
 import com.hfad.tagalong.repository.TagRepository
 import com.hfad.tagalong.repository.TrackRepository
 import com.hfad.tagalong.repository.TrackTagRepository
@@ -26,39 +27,41 @@ constructor(
 ) : ViewModel() {
 
     val track = mutableStateOf<Track?>(null)
+
     val tagsForTrack = mutableStateListOf<Tag>()
+
     val allTags = mutableStateListOf<Tag>() // TODO: These will be later used for autocompletion
 
-    fun loadTrack(trackId: String) {
+    val loading = mutableStateOf(false)
+
+    fun onTriggerEvent(event: SingleTrackEvent) {
         viewModelScope.launch {
-            getTrack(trackId)
+            when (event) {
+                is LoadTrackDetailsEvent -> {
+                    loadTrack(event.trackId)
+                }
+                is AddTagEvent -> {
+                    addTag(event.tagName)
+                }
+                is DeleteTagEvent -> {
+                    deleteTag(event.tag)
+                }
+            }
             refreshTags()
         }
     }
 
-    fun addTag(tagName: String) {
-        viewModelScope.launch {
-            addTagToTrack(tagName)
-            refreshTags()
-        }
-    }
-
-    fun deleteTag(tag: Tag) {
-        viewModelScope.launch {
-            deleteTagForTrack(tag)
-            refreshTags()
-        }
-    }
-
-    private suspend fun getTrack(trackId: String) {
+    private suspend fun loadTrack(trackId: String) {
+        loading.value = true
         val track = trackRepository.getTrack(
             token = session.getToken(),
             trackId = trackId
         )
         this.track.value = track // TODO: Handle null
+        loading.value = false
     }
 
-    private suspend fun addTagToTrack(tagName: String) {
+    private suspend fun addTag(tagName: String) {
         if (this.tagsForTrack.none { it.name == tagName }) {
             val existingTag = this.allTags.find { tag -> tag.name == tagName }
             if (existingTag != null) {
@@ -71,7 +74,7 @@ constructor(
         }
     }
 
-    private suspend fun deleteTagForTrack(tag: Tag) { // TODO: Improve naming
+    private suspend fun deleteTag(tag: Tag) {
         trackTagRepository.deleteTagFromTrack(tag = tag, track = track.value!!)
     }
 
