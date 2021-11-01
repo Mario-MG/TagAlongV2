@@ -9,10 +9,13 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
+import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.components.TrackItemCard
+import com.hfad.tagalong.presentation.ui.tracks.TracksEvent.FirstPageEvent
+import com.hfad.tagalong.presentation.ui.tracks.TracksEvent.NextPageEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -22,10 +25,13 @@ class TracksFragment : Fragment() {
 
     private val viewModel: TracksViewModel by viewModels()
 
+    private lateinit var playlistId: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.getString("playlistId")?.let { playlistId -> // TODO: Extract to constant
-            viewModel.loadTracks(playlistId)
+            this.playlistId = playlistId
+            viewModel.onTriggerEvent(FirstPageEvent(playlistId))
         }
     }
 
@@ -36,16 +42,19 @@ class TracksFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val tracks = viewModel.tracks.value
+                val tracks = viewModel.tracks
+                val loading = viewModel.loading.value
 
                 AppTheme {
                     LazyColumn {
                         itemsIndexed(items = tracks) { index, track ->
+                            if (index + 1 >= tracks.size && !loading) {
+                                viewModel.onTriggerEvent(NextPageEvent(playlistId))
+                            }
                             TrackItemCard(
                                 track = track,
                                 onClick = {
-                                    val bundle = Bundle().also { it.putString("trackId", track.id) }
-                                    findNavController().navigate(R.id.viewTrack, bundle)
+                                    navigateToSingleTrack(track)
                                 }
                             )
                         }
@@ -53,5 +62,10 @@ class TracksFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun navigateToSingleTrack(track: Track) {
+        val bundle = Bundle().also { it.putString("trackId", track.id) }
+        findNavController().navigate(R.id.viewTrack, bundle)
     }
 }

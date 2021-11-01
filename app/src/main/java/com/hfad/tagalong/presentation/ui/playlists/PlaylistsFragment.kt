@@ -31,7 +31,7 @@ class PlaylistsFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val playlists = viewModel.playlistList
+                val playlists = viewModel.playlists
                 val loading = viewModel.loading.value
 
                 AppTheme {
@@ -43,7 +43,7 @@ class PlaylistsFragment : Fragment() {
                             PlaylistItemCard(
                                 playlist = playlist,
                                 onClick = {
-                                    goToTrackList(playlist)
+                                    navigateToTrackList(playlist)
                                 }
                             )
                         }
@@ -53,7 +53,7 @@ class PlaylistsFragment : Fragment() {
         }
     }
 
-    private fun goToTrackList(playlist: Playlist) {
+    private fun navigateToTrackList(playlist: Playlist) {
         val bundle = Bundle().also { it.putString("playlistId", playlist.id) }
         findNavController().navigate(R.id.viewTracks, bundle)
     }
