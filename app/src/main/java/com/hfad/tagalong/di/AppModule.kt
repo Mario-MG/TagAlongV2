@@ -33,7 +33,7 @@ object AppModule {
     fun provideRedirectUri(app: BaseApplication) : String {
         val appSchema = app.resources.getString(R.string.app_deep_link_schema)
         val appUrl = app.resources.getString(R.string.app_deep_link_url)
-        return appSchema + appUrl
+        return "$appSchema://$appUrl"
     }
 
 }
