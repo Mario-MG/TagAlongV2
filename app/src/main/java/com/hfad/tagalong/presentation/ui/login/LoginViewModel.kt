@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.Session
 import com.hfad.tagalong.di.APP_CLIENT_ID
-import com.hfad.tagalong.di.NETWORK_SPOTIFY_AUTH_API_BASE_URL
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.ReceiveLoginCodeEvent
 import com.hfad.tagalong.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,7 +42,7 @@ constructor(
     val isLoggedIn = mutableStateOf(session.isLoggedIn())
 
     init {
-        codeVerifier = generateCodeVerifier()
+        codeVerifier = generateCodeVerifier() // FIXME: Fragment is destroyed and recreated, so codeVerifier does not persist
         codeChallenge = generateCodeChallenge()
     }
 
@@ -83,7 +82,8 @@ constructor(
     fun buildAuthUri(): Uri {
         return Uri.Builder()
             .scheme("https")
-            .authority(NETWORK_SPOTIFY_AUTH_API_BASE_URL)
+            .authority("accounts.spotify.com")
+            .appendPath("en")
             .appendPath("authorize")
             .appendQueryParameter("client_id", clientId)
             .appendQueryParameter("response_type", "code")
@@ -96,14 +96,16 @@ constructor(
 
     private suspend fun login(uri: Uri) {
         val code = uri.getQueryParameter("code")
-        val token = authRepository.getNewToken(
-            clientId = clientId,
-            code = code!!,
-            codeVerifier = codeVerifier,
-            redirectUri = redirectUri
-        )
-        session.loginWithToken(token)
-        isLoggedIn.value = session.isLoggedIn()
+        code?.let {
+            val token = authRepository.getNewToken(
+                clientId = clientId,
+                code = code,
+                codeVerifier = codeVerifier,
+                redirectUri = redirectUri
+            )
+            session.loginWithToken(token)
+            isLoggedIn.value = session.isLoggedIn()
+        }
     }
 
 }
