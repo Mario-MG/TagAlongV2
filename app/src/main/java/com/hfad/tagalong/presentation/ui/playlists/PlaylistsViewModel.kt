@@ -4,12 +4,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hfad.tagalong.BuildConfig
 import com.hfad.tagalong.Session
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.FirstPageEvent
 import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.NextPageEvent
 import com.hfad.tagalong.repository.PlaylistRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -60,6 +62,7 @@ constructor(
                 token = session.getToken(),
                 offset = currentListSize
             )
+            if (BuildConfig.DEBUG) delay(1000) // TODO: Remove
             if (newPlaylists.isEmpty()) {
                 allPlaylistsLoaded = true
             } else {

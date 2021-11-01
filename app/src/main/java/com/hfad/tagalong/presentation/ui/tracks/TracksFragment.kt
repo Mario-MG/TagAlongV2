@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -46,7 +47,10 @@ class TracksFragment : Fragment() {
                 val tracks = viewModel.tracks
                 val loading = viewModel.loading.value
 
-                AppTheme {
+                AppTheme(
+                    displayProgressBar = loading,
+                    progressBarAlignment = if (tracks.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
+                ) {
                     TrackItemList(
                         tracks = tracks,
                         loading = loading,

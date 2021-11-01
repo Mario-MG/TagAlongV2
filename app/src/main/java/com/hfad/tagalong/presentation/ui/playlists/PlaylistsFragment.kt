@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -32,7 +33,10 @@ class PlaylistsFragment : Fragment() {
                 val playlists = viewModel.playlists
                 val loading = viewModel.loading.value
 
-                AppTheme {
+                AppTheme(
+                    displayProgressBar = loading,
+                    progressBarAlignment = if (playlists.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
+                ) {
                     PlaylistItemList(
                         playlists = playlists,
                         loading = loading,

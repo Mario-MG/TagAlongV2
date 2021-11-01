@@ -4,12 +4,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hfad.tagalong.BuildConfig
 import com.hfad.tagalong.Session
 import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.presentation.ui.tracks.TracksEvent.FirstPageEvent
 import com.hfad.tagalong.presentation.ui.tracks.TracksEvent.NextPageEvent
 import com.hfad.tagalong.repository.TrackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -60,6 +62,7 @@ constructor(
                 playlistId = playlistId,
                 offset = currentListSize
             )
+            if (BuildConfig.DEBUG) delay(1000) // TODO: Remove
             if (newTracks.isEmpty()) {
                 allTracksLoaded = true
             } else {
