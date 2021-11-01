@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Playlist
+import com.hfad.tagalong.presentation.BUNDLE_KEY_PLAYLIST_ID
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.components.PlaylistItemList
 import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.NextPageEvent
@@ -53,7 +54,7 @@ class PlaylistsFragment : Fragment() {
     }
 
     private fun navigateToTrackList(playlist: Playlist) {
-        val bundle = Bundle().also { it.putString("playlistId", playlist.id) }
+        val bundle = Bundle().also { it.putString(BUNDLE_KEY_PLAYLIST_ID, playlist.id) }
         findNavController().navigate(R.id.viewTracks, bundle)
     }
 }

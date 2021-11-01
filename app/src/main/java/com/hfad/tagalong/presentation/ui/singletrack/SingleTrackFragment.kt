@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.hfad.tagalong.presentation.BUNDLE_KEY_TRACK_ID
 import com.hfad.tagalong.presentation.components.FlowKeywordList
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.util.DEFAULT_ALBUM_IMAGE
@@ -39,7 +40,7 @@ class SingleTrackFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.getString("trackId")?.let { trackId -> // TODO: Extract to constant
+        arguments?.getString(BUNDLE_KEY_TRACK_ID)?.let { trackId ->
             viewModel.loadTrack(trackId)
         }
     }
