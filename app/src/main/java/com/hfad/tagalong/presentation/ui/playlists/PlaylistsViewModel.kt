@@ -21,7 +21,7 @@ constructor(
     private val session: Session
 ) : ViewModel() {
 
-    val playlistList = mutableStateListOf<Playlist>()
+    val playlists = mutableStateListOf<Playlist>()
 
     val loading = mutableStateOf(false)
 
@@ -47,15 +47,15 @@ constructor(
     private suspend fun loadFirstPage() {
         loading.value = true
         val playlists = playlistRepository.getList(token = session.getToken())
-        this.playlistList.clear()
-        this.playlistList.addAll(playlists)
+        this.playlists.clear()
+        this.playlists.addAll(playlists)
         loading.value = false
     }
 
     private suspend fun loadNextPage() {
         if (!allPlaylistsLoaded) {
             loading.value = true
-            val currentListSize = this.playlistList.size
+            val currentListSize = this.playlists.size
             val newPlaylists = playlistRepository.getList(
                 token = session.getToken(),
                 offset = currentListSize
@@ -63,7 +63,7 @@ constructor(
             if (newPlaylists.isEmpty()) {
                 allPlaylistsLoaded = true
             } else {
-                this.playlistList.addAll(newPlaylists)
+                this.playlists.addAll(newPlaylists)
             }
             loading.value = false
         }
