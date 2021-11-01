@@ -27,6 +27,7 @@ import androidx.fragment.app.viewModels
 import com.hfad.tagalong.presentation.BUNDLE_KEY_TRACK_ID
 import com.hfad.tagalong.presentation.components.FlowKeywordList
 import com.hfad.tagalong.presentation.theme.AppTheme
+import com.hfad.tagalong.presentation.ui.singletrack.SingleTrackEvent.*
 import com.hfad.tagalong.util.DEFAULT_ALBUM_IMAGE
 import com.hfad.tagalong.util.loadPicture
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,7 +42,7 @@ class SingleTrackFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.getString(BUNDLE_KEY_TRACK_ID)?.let { trackId ->
-            viewModel.loadTrack(trackId)
+            viewModel.onTriggerEvent(LoadTrackDetailsEvent(trackId))
         }
     }
 
@@ -55,8 +56,11 @@ class SingleTrackFragment : Fragment() {
             setContent {
                 val track = viewModel.track.value
                 val tags = viewModel.tagsForTrack
+                val loading = viewModel.loading.value
 
-                AppTheme {
+                AppTheme(
+                    displayProgressBar = loading
+                ) {
                     track?.let {
                         Surface(
                             modifier = Modifier.verticalScroll(rememberScrollState())
@@ -97,11 +101,11 @@ class SingleTrackFragment : Fragment() {
                                 Spacer(modifier = Modifier.height(24.dp))
                                 FlowKeywordList(
                                     keywordObjects = tags,
-                                    onClickDeleteIcon = { tag ->
-                                        viewModel.deleteTag(tag)
-                                    },
                                     onAddNewKeyword = { tagName ->
-                                        viewModel.addTag(tagName)
+                                        viewModel.onTriggerEvent(AddTagEvent(tagName))
+                                    },
+                                    onClickDeleteIcon = { tag ->
+                                        viewModel.onTriggerEvent(DeleteTagEvent(tag))
                                     },
                                     textFieldLeadingIcon = {
                                         Icon(Icons.Filled.Tag, contentDescription = "Tag icon")
