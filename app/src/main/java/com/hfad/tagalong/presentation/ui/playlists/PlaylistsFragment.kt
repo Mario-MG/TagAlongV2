@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.presentation.theme.AppTheme
-import com.hfad.tagalong.presentation.components.PlaylistItemCard
+import com.hfad.tagalong.presentation.components.PlaylistItemList
 import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.NextPageEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,19 +33,16 @@ class PlaylistsFragment : Fragment() {
                 val loading = viewModel.loading.value
 
                 AppTheme {
-                    LazyColumn {
-                        itemsIndexed(items = playlists) { index, playlist ->
-                            if (index + 1 >= playlists.size && !loading) {
-                                viewModel.onTriggerEvent(NextPageEvent)
-                            }
-                            PlaylistItemCard(
-                                playlist = playlist,
-                                onClick = {
-                                    navigateToTrackList(playlist)
-                                }
-                            )
+                    PlaylistItemList(
+                        playlists = playlists,
+                        loading = loading,
+                        onTriggerNextPage =  {
+                            viewModel.onTriggerEvent(NextPageEvent)
+                        },
+                        onNavigateToTrackList = { playlist ->
+                            navigateToTrackList(playlist)
                         }
-                    }
+                    )
                 }
             }
         }

@@ -14,6 +14,7 @@ import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.components.TrackItemCard
+import com.hfad.tagalong.presentation.components.TrackItemList
 import com.hfad.tagalong.presentation.ui.tracks.TracksEvent.FirstPageEvent
 import com.hfad.tagalong.presentation.ui.tracks.TracksEvent.NextPageEvent
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,25 +47,22 @@ class TracksFragment : Fragment() {
                 val loading = viewModel.loading.value
 
                 AppTheme {
-                    LazyColumn {
-                        itemsIndexed(items = tracks) { index, track ->
-                            if (index + 1 >= tracks.size && !loading) {
-                                viewModel.onTriggerEvent(NextPageEvent(playlistId))
-                            }
-                            TrackItemCard(
-                                track = track,
-                                onClick = {
-                                    navigateToSingleTrack(track)
-                                }
-                            )
+                    TrackItemList(
+                        tracks = tracks,
+                        loading = loading,
+                        onTriggerNextPage = {
+                            viewModel.onTriggerEvent(NextPageEvent(playlistId))
+                        },
+                        onNavigateToTrackDetail = { track ->
+                            navigateToTrackDetail(track)
                         }
-                    }
+                    )
                 }
             }
         }
     }
 
-    private fun navigateToSingleTrack(track: Track) {
+    private fun navigateToTrackDetail(track: Track) {
         val bundle = Bundle().also { it.putString("trackId", track.id) }
         findNavController().navigate(R.id.viewTrack, bundle)
     }
