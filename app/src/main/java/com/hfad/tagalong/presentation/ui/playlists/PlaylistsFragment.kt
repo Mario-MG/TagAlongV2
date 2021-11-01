@@ -54,7 +54,7 @@ class PlaylistsFragment : Fragment() {
     }
 
     private fun navigateToTrackList(playlist: Playlist) {
-        val bundle = Bundle().also { it.putString(BUNDLE_KEY_PLAYLIST_ID, playlist.id) }
+        val bundle = Bundle().also { it.putString(BUNDLE_KEY_PLAYLIST_ID, playlist.id) } // TODO: Use bundleOf() (is it necessary to declare the argument in main_graph?)
         findNavController().navigate(R.id.viewTracks, bundle)
     }
 }

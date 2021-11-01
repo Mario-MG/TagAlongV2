@@ -1,6 +1,7 @@
 package com.hfad.tagalong.di
 
 import com.hfad.tagalong.network.RetrofitAuthService
+import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.repository.AuthRepository
 import com.hfad.tagalong.repository.AuthRepositoryImpl
 import dagger.Module
@@ -16,10 +17,11 @@ object AuthModule {
     @Singleton
     @Provides
     fun provideAuthRepository(
-        authService: RetrofitAuthService // TODO: Should this dependency be an abstraction?
-        // TODO: Add mapper here?
+        authService: RetrofitAuthService, // TODO: Should this dependency be an abstraction?
+        tokenMapper: TokenDtoMapper
     ): AuthRepository = AuthRepositoryImpl(
-        authService = authService
+        authService = authService,
+        tokenMapper = tokenMapper
     )
 
 }
