@@ -54,7 +54,7 @@ object NetworkModule {
         retrofitClient: OkHttpClient
     ): RetrofitPlaylistService {
         return Retrofit.Builder()
-            .baseUrl("https://api.spotify.com/v1/") // TODO: Make constant
+            .baseUrl(NETWORK_SPOTIFY_API_BASE_URL)
             .client(retrofitClient)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
@@ -73,7 +73,7 @@ object NetworkModule {
         retrofitClient: OkHttpClient
     ): RetrofitTrackService {
         return Retrofit.Builder()
-            .baseUrl("https://api.spotify.com/v1/") // TODO: Make constant
+            .baseUrl(NETWORK_SPOTIFY_API_BASE_URL)
             .client(retrofitClient)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
@@ -90,7 +90,7 @@ object NetworkModule {
     @Provides
     fun provideAuthService(): RetrofitAuthService {
         return Retrofit.Builder()
-            .baseUrl("https://accounts.spotify.com/api/") // TODO: Make constant
+            .baseUrl(NETWORK_SPOTIFY_AUTH_API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .client(OkHttpClient.Builder().also { client ->
                     if (BuildConfig.DEBUG) {
