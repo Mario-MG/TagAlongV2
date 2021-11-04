@@ -42,7 +42,7 @@ constructor(
     val isLoggedIn = mutableStateOf(session.isLoggedIn())
 
     init {
-        codeVerifier = generateCodeVerifier() // FIXME: Fragment is destroyed and recreated, so codeVerifier does not persist
+        codeVerifier = generateCodeVerifier()
         codeChallenge = generateCodeChallenge()
     }
 

@@ -28,7 +28,6 @@ android {
             }
             buildConfigField "String", "CLIENT_ID", properties.getProperty("client_id")
             buildConfigField "String", "CLIENT_SECRET", properties.getProperty("client_secret")
-            buildConfigField "String", "REFRESH_TOKEN", properties.getProperty("refresh_token")
         }
         release {
             minifyEnabled false
