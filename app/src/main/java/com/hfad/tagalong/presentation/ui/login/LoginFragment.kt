@@ -2,6 +2,7 @@ package com.hfad.tagalong.presentation.ui.login
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,11 +33,6 @@ class LoginFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val intent = requireActivity().intent
-        val action = intent?.action
-        if (action == Intent.ACTION_VIEW) {
-            viewModel.onTriggerEvent(ReceiveLoginCodeEvent(uri = intent.data!!))
-        }
         return ComposeView(requireContext()).apply {
             setContent {
                 val isLoggedIn = viewModel.isLoggedIn.value
@@ -69,4 +65,10 @@ class LoginFragment : Fragment() {
         customTabsIntent.launchUrl(requireActivity() as Context, authUri)
     }
 
+    override fun onResume() {
+        super.onResume()
+        this.arguments?.get("uri")?.let {
+            viewModel.onTriggerEvent(ReceiveLoginCodeEvent(uri = it as Uri))
+        }
+    }
 }
