@@ -1,6 +1,5 @@
 package com.hfad.tagalong.presentation.ui.login
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -19,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
+import com.hfad.tagalong.presentation.BUNDLE_KEY_URI
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.ReceiveLoginCodeEvent
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,14 +61,15 @@ class LoginFragment : Fragment() {
     private fun launchAuthUrl() {
         val authUri = viewModel.buildAuthUri()
         val customTabsIntent = CustomTabsIntent.Builder().build()
-        customTabsIntent.intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        customTabsIntent.launchUrl(requireActivity() as Context, authUri)
+        customTabsIntent.intent.flags =
+            Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_CLEAR_TOP // TODO: Is this necessary?
+        customTabsIntent.launchUrl(requireActivity(), authUri)
     }
 
     override fun onResume() {
         super.onResume()
-        this.arguments?.get("uri")?.let {
-            viewModel.onTriggerEvent(ReceiveLoginCodeEvent(uri = it as Uri))
+        this.arguments?.get(BUNDLE_KEY_URI)?.let { uri ->
+            viewModel.onTriggerEvent(ReceiveLoginCodeEvent(uri = uri as Uri))
         }
     }
 }
