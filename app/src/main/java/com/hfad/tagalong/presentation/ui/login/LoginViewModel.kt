@@ -39,6 +39,8 @@ constructor(
         "user-library-read"
     )
 
+    private val encodingFlags = Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING
+
     val isLoggedIn = mutableStateOf(session.isLoggedIn())
 
     init {
@@ -51,10 +53,7 @@ constructor(
         val sr = SecureRandom()
         val code = ByteArray(32)
         sr.nextBytes(code)
-        return Base64.encodeToString(
-            code,
-            Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING
-        )
+        return Base64.encodeToString(code, encodingFlags)
     }
 
     // Source: https://auth0.com/docs/flows/call-your-api-using-the-authorization-code-flow-with-pkce
@@ -63,10 +62,7 @@ constructor(
         val md = MessageDigest.getInstance("SHA-256")
         md.update(bytes, 0, bytes.size)
         val digest = md.digest()
-        return Base64.encodeToString(
-            digest,
-            Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING
-        )
+        return Base64.encodeToString(digest, encodingFlags)
     }
 
     fun onTriggerEvent(event: LoginEvent) {
