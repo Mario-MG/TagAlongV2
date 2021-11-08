@@ -8,6 +8,7 @@ import com.hfad.tagalong.network.RetrofitPlaylistService
 import com.hfad.tagalong.network.RetrofitTrackService
 import com.hfad.tagalong.network.TokenAuthenticator
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
+import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.TrackDtoMapper
 import dagger.Module
 import dagger.Provides
@@ -101,6 +102,12 @@ object NetworkModule {
                 }.build())
             .build()
             .create(RetrofitAuthService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideTokenMapper(): TokenDtoMapper {
+        return TokenDtoMapper()
     }
 
 }

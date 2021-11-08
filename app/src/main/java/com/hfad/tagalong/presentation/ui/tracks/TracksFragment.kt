@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -69,7 +70,7 @@ class TracksFragment : Fragment() {
     }
 
     private fun navigateToTrackDetail(track: Track) {
-        val bundle = Bundle().also { it.putString(BUNDLE_KEY_TRACK_ID, track.id) }
+        val bundle = bundleOf(BUNDLE_KEY_TRACK_ID to track.id)
         findNavController().navigate(R.id.viewTrack, bundle)
     }
 }

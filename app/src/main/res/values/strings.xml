@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TagAlong</string>
+    <string name="app_deep_link_schema">appscheme</string>
+    <string name="app_deep_link_url">tagalong-app.com</string>
 </resources>
