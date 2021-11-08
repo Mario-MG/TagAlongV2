@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -54,7 +55,7 @@ class PlaylistsFragment : Fragment() {
     }
 
     private fun navigateToTrackList(playlist: Playlist) {
-        val bundle = Bundle().also { it.putString(BUNDLE_KEY_PLAYLIST_ID, playlist.id) } // TODO: Use bundleOf() (is it necessary to declare the argument in main_graph?)
+        val bundle = bundleOf(BUNDLE_KEY_PLAYLIST_ID to playlist.id)
         findNavController().navigate(R.id.viewTracks, bundle)
     }
 }
