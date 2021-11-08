@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.Session
 import com.hfad.tagalong.di.APP_CLIENT_ID
+import com.hfad.tagalong.di.APP_REDIRECT_URI
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.ReceiveLoginCodeEvent
 import com.hfad.tagalong.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,7 @@ constructor(
     private val authRepository: AuthRepository,
     private val session: Session,
     @Named(APP_CLIENT_ID) private val clientId: String,
-    @Named("redirect_uri") private val redirectUri: String
+    @Named(APP_REDIRECT_URI) private val redirectUri: String
 ) : ViewModel() {
 
     private val codeVerifier: String

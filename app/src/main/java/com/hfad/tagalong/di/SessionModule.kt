@@ -14,21 +14,14 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object SessionModule {
 
-//    @Singleton
-//    @Provides
-//    @Named("refresh_token")
-//    fun provideRefreshToken(): String = BuildConfig.REFRESH_TOKEN // TODO: This is for testing purposes only
-
     @Singleton
     @Provides
     fun provideSession(
         authRepository: AuthRepository,
-//        @Named("refresh_token") refreshToken: String,
         @Named(APP_CLIENT_ID) clientId: String
     ): Session {
         return Session(
             authRepository = authRepository,
-//            refreshToken = refreshToken,
             clientId = clientId
         )
     }
