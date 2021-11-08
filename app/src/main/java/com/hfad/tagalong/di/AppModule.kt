@@ -29,7 +29,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    @Named("redirect_uri") // TODO: Extract to constants
+    @Named(APP_REDIRECT_URI)
     fun provideRedirectUri(app: BaseApplication) : String {
         val appSchema = app.resources.getString(R.string.app_deep_link_schema)
         val appUrl = app.resources.getString(R.string.app_deep_link_url)
