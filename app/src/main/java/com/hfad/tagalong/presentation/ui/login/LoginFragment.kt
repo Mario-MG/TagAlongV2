@@ -46,38 +46,44 @@ class LoginFragment : Fragment() {
                 AppTheme {
                     if (isLoggedIn) {
                         findNavController().navigate(R.id.login)
-                    }
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Button(
-                            onClick = ::launchAuthUrl,
-                            modifier = Modifier
-                                .align(Alignment.Center),
-                            shape = RoundedCornerShape(48.dp)
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxSize()
                         ) {
-                            Row(
+                            Button(
+                                onClick = ::launchAuthUrl,
                                 modifier = Modifier
-                                    .padding(vertical = 16.dp, horizontal = 8.dp)
+                                    .align(Alignment.Center),
+                                shape = RoundedCornerShape(48.dp)
                             ) {
-                                val spotifyIcon = loadPicture(
-                                    drawable = R.drawable.ic_spotify_icon_green
-                                ).value
-                                spotifyIcon?.let {
-                                    Icon(
-                                        bitmap = spotifyIcon.asImageBitmap(),
-                                        contentDescription = "Spotify Icon",
-                                        modifier = Modifier.size(36.dp)
-                                            .align(Alignment.CenterVertically),
-                                        tint = MaterialTheme.colors.onPrimary
+                                Row(
+                                    modifier = Modifier
+                                        .padding(
+                                            vertical = 16.dp,
+                                            horizontal = 8.dp
+                                        )
+                                ) {
+                                    val spotifyIcon = loadPicture(
+                                        drawable = R.drawable.ic_spotify_icon_green
+                                    ).value
+                                    spotifyIcon?.let {
+                                        Icon(
+                                            bitmap = spotifyIcon.asImageBitmap(),
+                                            contentDescription = "Spotify Icon",
+                                            modifier = Modifier
+                                                .size(36.dp)
+                                                .align(Alignment.CenterVertically),
+                                            tint = MaterialTheme.colors.onPrimary
+                                        )
+                                        Spacer(modifier = Modifier.size(20.dp))
+                                    }
+                                    Text(
+                                        text = "LOG IN WITH SPOTIFY",
+                                        style = MaterialTheme.typography.h3,
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
                                     )
-                                    Spacer(modifier = Modifier.size(20.dp))
                                 }
-                                Text(
-                                    text = "LOG IN WITH SPOTIFY",
-                                    style = MaterialTheme.typography.h3,
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
                             }
                         }
                     }
