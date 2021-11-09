@@ -4,7 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.QueueMusic
+import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material3.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -37,18 +50,41 @@ class PlaylistsFragment : Fragment() {
 
                 AppTheme(
                     displayProgressBar = loading,
-                    progressBarAlignment = if (playlists.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
+                    progressBarAlignment = if (playlists.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter // FIXME: how to show it above bottomBar?
                 ) {
-                    PlaylistItemList(
-                        playlists = playlists,
-                        loading = loading,
-                        onTriggerNextPage =  {
-                            viewModel.onTriggerEvent(NextPageEvent)
-                        },
-                        onNavigateToTrackList = { playlist ->
-                            navigateToTrackList(playlist)
+                    Scaffold(
+                        bottomBar = {
+                            NavigationBar(
+                                containerColor = MaterialTheme.colors.primary,
+                                contentColor = MaterialTheme.colors.onPrimary
+                            ) {
+                                NavigationBarItem(
+                                    icon = { Icon(Icons.Filled.QueueMusic, contentDescription = "Playlists icon") },
+                                    label = { Text("Playlists") },
+                                    selected = true,
+                                    onClick = {},
+                                    colors = NavigationBarItemDefaults.colors(indicatorColor = MaterialTheme.colors.primaryVariant)
+                                )
+                                NavigationBarItem(
+                                    icon = { Icon(Icons.Filled.Tag, contentDescription = "Tags icon") },
+                                    label = { Text("Tags") },
+                                    selected = false,
+                                    onClick = { findNavController().navigate(R.id.playlists_to_tags) }
+                                )
+                            }
                         }
-                    )
+                    ) {
+                        PlaylistItemList(
+                            playlists = playlists,
+                            loading = loading,
+                            onTriggerNextPage =  {
+                                viewModel.onTriggerEvent(NextPageEvent)
+                            },
+                            onNavigateToTrackList = { playlist ->
+                                navigateToTrackList(playlist)
+                            }
+                        )
+                    }
                 }
             }
         }
