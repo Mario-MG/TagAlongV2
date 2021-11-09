@@ -1,23 +1,21 @@
 package com.hfad.tagalong.presentation.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.RelocationRequester
-import androidx.compose.ui.layout.relocationRequester
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -26,7 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
 @Composable
 fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (appearance-wise)?
     keywordObjects: List<T>,
@@ -38,7 +36,7 @@ fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (a
     val newKeyword = remember { mutableStateOf("") }
 
     // Source: https://issuetracker.google.com/issues/192043120#comment17 (see comment #19 too)
-    val relocationRequester = remember { RelocationRequester() }
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
 
     Surface(
@@ -68,7 +66,7 @@ fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (a
                     value = newKeyword.value,
                     onValueChange = {
                         newKeyword.value = it
-                        relocationRequester.bringIntoView()
+                        refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
                     },
                     label = textFieldLabel,
                     keyboardOptions = KeyboardOptions(
@@ -79,16 +77,16 @@ fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (a
                         onDone = {
                             onAddNewKeyword(newKeyword.value)
                             newKeyword.value = ""
-                            refocus(relocationRequester = relocationRequester, scope = scope)
+                            refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
                         },
                     ),
                     leadingIcon = textFieldLeadingIcon,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .relocationRequester(relocationRequester)
+                        .bringIntoViewRequester(bringIntoViewRequester)
                         .onFocusChanged {
                             if ("$it" == "Active") {
-                                refocus(relocationRequester = relocationRequester, scope = scope)
+                                refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
                             }
                         }
                 )
@@ -97,10 +95,10 @@ fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (a
     }
 }
 
-@ExperimentalComposeUiApi
-private fun refocus(relocationRequester: RelocationRequester, scope: CoroutineScope) {
+@ExperimentalFoundationApi
+private fun refocus(bringIntoViewRequester: BringIntoViewRequester, scope: CoroutineScope) {
     scope.launch {
         delay(500)
-        relocationRequester.bringIntoView()
+        bringIntoViewRequester.bringIntoView()
     }
 }

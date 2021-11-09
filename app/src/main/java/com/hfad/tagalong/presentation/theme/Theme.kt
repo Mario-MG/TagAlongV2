@@ -23,7 +23,8 @@ fun AppTheme(
             content()
             if (displayProgressBar) {
                 CircularProgressIndicator(
-                    modifier = Modifier.align(progressBarAlignment)
+                    modifier = Modifier.align(progressBarAlignment),
+                    color = Color.Red // TODO: For testing purposes only, TO BE REMOVED
                 )
             }
         }
@@ -32,7 +33,7 @@ fun AppTheme(
 
 val DarkThemeColours = darkColors(
     primary = SpotifyGreen500,
-    primaryVariant = Color.White,
+    primaryVariant = SpotifyGreen300,
     onPrimary = Color.White,
     secondary = SpotifyAnalogousGreen500,
     onSecondary = Color.White,
