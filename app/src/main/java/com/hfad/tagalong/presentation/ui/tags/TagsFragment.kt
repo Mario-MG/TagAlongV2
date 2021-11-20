@@ -20,11 +20,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
-import com.hfad.tagalong.presentation.components.IconItemCard
+import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.presentation.components.TagItemList
 import com.hfad.tagalong.presentation.theme.AppTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class TagsFragment : Fragment() {
 
     private val viewModel: TagsViewModel by viewModels()
@@ -66,14 +69,19 @@ class TagsFragment : Fragment() {
                             }
                         }
                     ) {
-                        IconItemCard( // TODO: For testing purposes only
-                            imageVector = Icons.Filled.Tag,
-                            title = "test_tag",
-                            subtitle = "123 songs"
+                        TagItemList(
+                            tags = tags,
+                            onNavigateToTrackList = { tag ->
+                                navigateToTrackList(tag)
+                            }
                         )
                     }
                 }
             }
         }
+    }
+
+    private fun navigateToTrackList(Tag: Tag) {
+
     }
 }
