@@ -34,12 +34,12 @@ object RepositoryModule {
     @Provides
     fun provideTrackRepository(
         trackService: RetrofitTrackService, // TODO: Should this dependency be an abstraction?
-        trackMapper: TrackDtoMapper,
+        trackDtoMapper: TrackDtoMapper,
         trackDao: TrackDao,
         trackEntityMapper: TrackEntityMapper
     ): TrackRepository = TrackRepositoryImpl(
         trackService = trackService,
-        trackDtoMapper = trackMapper,
+        trackDtoMapper = trackDtoMapper,
         trackDao = trackDao,
         trackEntityMapper = trackEntityMapper
     )
