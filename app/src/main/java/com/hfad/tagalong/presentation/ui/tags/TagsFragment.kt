@@ -16,13 +16,16 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.presentation.BUNDLE_KEY_TAG_ID
 import com.hfad.tagalong.presentation.components.TagItemList
 import com.hfad.tagalong.presentation.theme.AppTheme
+import com.hfad.tagalong.presentation.ui.tags.TagsEvent.LoadTagsEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -81,7 +84,13 @@ class TagsFragment : Fragment() {
         }
     }
 
-    private fun navigateToTrackList(Tag: Tag) {
+    override fun onResume() {
+        super.onResume()
+        viewModel.onTriggerEvent(LoadTagsEvent)
+    }
 
+    private fun navigateToTrackList(tag: Tag) {
+        val bundle = bundleOf(BUNDLE_KEY_TAG_ID to tag.id)
+        findNavController().navigate(R.id.viewTagTracks, bundle)
     }
 }

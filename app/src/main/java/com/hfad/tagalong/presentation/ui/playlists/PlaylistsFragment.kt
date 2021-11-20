@@ -86,6 +86,6 @@ class PlaylistsFragment : Fragment() {
 
     private fun navigateToTrackList(playlist: Playlist) {
         val bundle = bundleOf(BUNDLE_KEY_PLAYLIST_ID to playlist.id)
-        findNavController().navigate(R.id.viewTracks, bundle)
+        findNavController().navigate(R.id.viewPlaylistTracks, bundle)
     }
 }
