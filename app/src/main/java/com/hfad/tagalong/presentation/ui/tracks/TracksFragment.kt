@@ -12,8 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.presentation.BUNDLE_KEY_TRACK_ID
-import com.hfad.tagalong.presentation.theme.AppTheme
+import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.TrackItemList
+import com.hfad.tagalong.presentation.theme.AppTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -37,16 +38,20 @@ abstract class TracksFragment(
                     displayProgressBar = loading,
                     progressBarAlignment = if (tracks.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
                 ) {
-                    TrackItemList(
-                        tracks = tracks,
-                        loading = loading,
-                        onTriggerNextPage = {
-                            onTriggerNextPage()
-                        },
-                        onNavigateToTrackDetail = { track ->
-                            navigateToTrackDetail(track)
-                        }
-                    )
+                    if (tracks.isNotEmpty()) {
+                        TrackItemList(
+                            tracks = tracks,
+                            loading = loading,
+                            onTriggerNextPage = {
+                                onTriggerNextPage()
+                            },
+                            onNavigateToTrackDetail = { track ->
+                                navigateToTrackDetail(track)
+                            }
+                        )
+                    } else if (!loading) {
+                        EmptyListPlaceholderText(text = "There are no tracks to show")
+                    }
                 }
             }
         }
