@@ -6,11 +6,11 @@ import com.hfad.tagalong.domain.util.DomainMapper
 class TagEntityMapper : DomainMapper<TagEntity, Tag> {
 
     override fun mapToDomainModel(model: TagEntity): Tag {
-        return Tag(id = model.id, name = model.name)
+        return Tag(id = model.id, name = model.name, size = model.size)
     }
 
     override fun mapFromDomainModel(domainModel: Tag): TagEntity {
-        return TagEntity(id = domainModel.id, name = domainModel.name)
+        return TagEntity(id = domainModel.id, name = domainModel.name, size = domainModel.size)
     }
 
 }

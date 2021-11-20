@@ -6,7 +6,11 @@ import com.hfad.tagalong.cache.model.*
 @Dao
 interface TagDao {
 
-    @Query("SELECT * FROM $TAG_TABLE")
+    @Query("""
+        SELECT t.$TAG_ID, t.$TAG_NAME, COUNT(cr.$TAG_ID) as $TAG_SIZE FROM $TAG_TABLE t
+        JOIN $TRACK_TAG_CROSS_REF_TABLE cr ON t.$TAG_ID = cr.$TAG_ID
+        GROUP BY t.$TAG_ID, t.$TAG_NAME
+    """)
     suspend fun getAll(): List<TagEntity>
 
     @Query("""

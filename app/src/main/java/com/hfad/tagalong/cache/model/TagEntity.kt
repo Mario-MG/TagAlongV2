@@ -13,6 +13,9 @@ data class TagEntity (
     val id: Long,
 
     @ColumnInfo(name = TAG_NAME)
-    val name: String
+    val name: String,
+
+    @ColumnInfo(name = TAG_SIZE)
+    val size: Int
 
 )
