@@ -8,4 +8,6 @@ interface TrackRepository {
 
     suspend fun getTrack(token: String, trackId: String): Track
 
+    suspend fun getTracksForTag(tagId: Long): List<Track>
+
 }
