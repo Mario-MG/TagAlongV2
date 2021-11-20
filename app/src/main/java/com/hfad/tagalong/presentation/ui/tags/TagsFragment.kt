@@ -23,6 +23,7 @@ import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.presentation.BUNDLE_KEY_TAG_ID
+import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.TagItemList
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.ui.tags.TagsEvent.LoadTagsEvent
@@ -72,12 +73,16 @@ class TagsFragment : Fragment() {
                             }
                         }
                     ) {
-                        TagItemList(
-                            tags = tags,
-                            onNavigateToTrackList = { tag ->
-                                navigateToTrackList(tag)
-                            }
-                        )
+                        if (tags.isNotEmpty()) {
+                            TagItemList(
+                                tags = tags,
+                                onNavigateToTrackList = { tag ->
+                                    navigateToTrackList(tag)
+                                }
+                            )
+                        } else if (!loading) {
+                            EmptyListPlaceholderText(text = "There are no tags to show")
+                        }
                     }
                 }
             }

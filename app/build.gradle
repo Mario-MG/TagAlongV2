@@ -109,6 +109,9 @@ dependencies {
 
     def annotations_version = "28.0.0"
     implementation "com.android.support:support-annotations:$annotations_version"
+
+    def compose_constraint = "1.0.0-rc01"
+    implementation "androidx.constraintlayout:constraintlayout-compose:$compose_constraint"
 }
 
 kapt {
