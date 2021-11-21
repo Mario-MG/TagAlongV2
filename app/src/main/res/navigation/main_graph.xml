@@ -1,38 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
     app:startDestination="@id/loginFragment">
 
     <!-- TODO: Add animations -->
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.hfad.tagalong.presentation.ui.login.LoginFragment"
         android:label="LoginFragment" >
+
         <action
             android:id="@+id/login"
             app:destination="@id/playlistsFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
     </fragment>
+
     <fragment
         android:id="@+id/playlistsFragment"
         android:name="com.hfad.tagalong.presentation.ui.playlists.PlaylistsFragment"
         android:label="PlaylistsFragment" >
+
         <action
-            android:id="@+id/viewTracks"
-            app:destination="@id/tracksFragment" />
+            android:id="@+id/viewPlaylistTracks"
+            app:destination="@id/playlistTracksFragment" />
+
+        <action
+            android:id="@+id/playlists_to_tags"
+            app:destination="@id/tagsFragment" />
     </fragment>
+
     <fragment
-        android:id="@+id/tracksFragment"
-        android:name="com.hfad.tagalong.presentation.ui.tracks.TracksFragment"
-        android:label="TracksFragment" >
+        android:id="@+id/playlistTracksFragment"
+        android:name="com.hfad.tagalong.presentation.ui.tracks.PlaylistTracksFragment"
+        android:label="PlaylistTracksFragment">
+
         <action
-            android:id="@+id/viewTrack"
+            android:id="@+id/viewTrackFromPlaylist"
             app:destination="@id/singleTrackFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/singleTrackFragment"
         android:name="com.hfad.tagalong.presentation.ui.singletrack.SingleTrackFragment"
         android:label="SingleTrackFragment" />
+
+    <fragment
+        android:id="@+id/tagsFragment"
+        android:name="com.hfad.tagalong.presentation.ui.tags.TagsFragment"
+        android:label="TagsFragment" >
+
+        <action
+            android:id="@+id/tags_to_playlists"
+            app:destination="@id/playlistsFragment" />
+        <action
+            android:id="@+id/viewTagTracks"
+            app:destination="@id/tagTracksFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/tagTracksFragment"
+        android:name="com.hfad.tagalong.presentation.ui.tracks.TagTracksFragment"
+        android:label="TagTracksFragment" >
+        <action
+            android:id="@+id/viewTrackFromTag"
+            app:destination="@id/singleTrackFragment" />
+    </fragment>
+
 </navigation>

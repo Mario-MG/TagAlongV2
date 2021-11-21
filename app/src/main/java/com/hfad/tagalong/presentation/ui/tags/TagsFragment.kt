@@ -1,4 +1,4 @@
-package com.hfad.tagalong.presentation.ui.playlists
+package com.hfad.tagalong.presentation.ui.tags
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.QueueMusic
 import androidx.compose.material.icons.filled.Tag
-import androidx.compose.material3.*
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
@@ -18,20 +21,20 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
-import com.hfad.tagalong.domain.model.Playlist
-import com.hfad.tagalong.presentation.BUNDLE_KEY_PLAYLIST_ID
+import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.presentation.BUNDLE_KEY_TAG_ID
 import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
+import com.hfad.tagalong.presentation.components.TagItemList
 import com.hfad.tagalong.presentation.theme.AppTheme
-import com.hfad.tagalong.presentation.components.PlaylistItemList
-import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.NextPageEvent
+import com.hfad.tagalong.presentation.ui.tags.TagsEvent.LoadTagsEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class PlaylistsFragment : Fragment() {
+class TagsFragment : Fragment() {
 
-    private val viewModel: PlaylistsViewModel by viewModels()
+    private val viewModel: TagsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,12 +43,12 @@ class PlaylistsFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val playlists = viewModel.playlists
+                val tags = viewModel.tags
                 val loading = viewModel.loading.value
 
                 AppTheme(
                     displayProgressBar = loading,
-                    progressBarAlignment = if (playlists.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
+                    progressBarAlignment = if (tags.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
                 ) {
                     Scaffold(
                         bottomBar = {
@@ -56,32 +59,29 @@ class PlaylistsFragment : Fragment() {
                                 NavigationBarItem(
                                     icon = { Icon(Icons.Filled.QueueMusic, contentDescription = "Playlists icon") },
                                     label = { Text("Playlists") },
-                                    selected = true,
-                                    onClick = {},
+                                    selected = false,
+                                    onClick = { findNavController().navigate(R.id.tags_to_playlists) },
                                     colors = NavigationBarItemDefaults.colors(indicatorColor = MaterialTheme.colors.primaryVariant)
                                 )
                                 NavigationBarItem(
                                     icon = { Icon(Icons.Filled.Tag, contentDescription = "Tags icon") },
                                     label = { Text("Tags") },
-                                    selected = false,
-                                    onClick = { findNavController().navigate(R.id.playlists_to_tags) }
+                                    selected = true,
+                                    onClick = {},
+                                    colors = NavigationBarItemDefaults.colors(indicatorColor = MaterialTheme.colors.primaryVariant)
                                 )
                             }
                         }
                     ) {
-                        if (playlists.isNotEmpty()) {
-                            PlaylistItemList(
-                                playlists = playlists,
-                                loading = loading,
-                                onTriggerNextPage = {
-                                    viewModel.onTriggerEvent(NextPageEvent)
-                                },
-                                onNavigateToTrackList = { playlist ->
-                                    navigateToTrackList(playlist)
+                        if (tags.isNotEmpty()) {
+                            TagItemList(
+                                tags = tags,
+                                onNavigateToTrackList = { tag ->
+                                    navigateToTrackList(tag)
                                 }
                             )
                         } else if (!loading) {
-                            EmptyListPlaceholderText(text = "There are no playlists to show")
+                            EmptyListPlaceholderText(text = "There are no tags to show")
                         }
                     }
                 }
@@ -89,8 +89,13 @@ class PlaylistsFragment : Fragment() {
         }
     }
 
-    private fun navigateToTrackList(playlist: Playlist) {
-        val bundle = bundleOf(BUNDLE_KEY_PLAYLIST_ID to playlist.id)
-        findNavController().navigate(R.id.viewPlaylistTracks, bundle)
+    override fun onResume() {
+        super.onResume()
+        viewModel.onTriggerEvent(LoadTagsEvent)
+    }
+
+    private fun navigateToTrackList(tag: Tag) {
+        val bundle = bundleOf(BUNDLE_KEY_TAG_ID to tag.id)
+        findNavController().navigate(R.id.viewTagTracks, bundle)
     }
 }

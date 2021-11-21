@@ -9,7 +9,9 @@ import androidx.navigation.fragment.NavHostFragment
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.ui.login.LoginFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

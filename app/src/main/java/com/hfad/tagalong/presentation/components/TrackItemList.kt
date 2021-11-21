@@ -11,7 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun TrackItemList(
     tracks: List<Track>,
     loading: Boolean,
-    onTriggerNextPage: () -> Unit,
+    onTriggerNextPage: () -> Unit = {},
     onNavigateToTrackDetail: (Track) -> Unit
 ) {
     LazyColumn {
