@@ -25,6 +25,7 @@ class PlaylistTracksFragment : TracksFragment(viewTrackAction = R.id.viewTrackFr
     }
 
     override fun onTriggerNextPage() {
+        super.onTriggerNextPage()
         viewModel.onTriggerEvent(PlaylistTracksEvent.NextPageEvent(playlistId))
     }
 }
