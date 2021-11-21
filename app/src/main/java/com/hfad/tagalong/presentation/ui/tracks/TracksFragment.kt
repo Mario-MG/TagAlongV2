@@ -4,41 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.annotation.IdRes
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Track
-import com.hfad.tagalong.presentation.BUNDLE_KEY_PLAYLIST_ID
 import com.hfad.tagalong.presentation.BUNDLE_KEY_TRACK_ID
-import com.hfad.tagalong.presentation.theme.AppTheme
-import com.hfad.tagalong.presentation.components.TrackItemCard
+import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.TrackItemList
-import com.hfad.tagalong.presentation.ui.tracks.TracksEvent.FirstPageEvent
-import com.hfad.tagalong.presentation.ui.tracks.TracksEvent.NextPageEvent
-import dagger.hilt.android.AndroidEntryPoint
+import com.hfad.tagalong.presentation.theme.AppTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-@AndroidEntryPoint
-class TracksFragment : Fragment() {
+abstract class TracksFragment(
+    @IdRes val viewTrackAction: Int
+) : Fragment() {
 
-    private val viewModel: TracksViewModel by viewModels()
-
-    private lateinit var playlistId: String
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.getString(BUNDLE_KEY_PLAYLIST_ID)?.let { playlistId ->
-            this.playlistId = playlistId
-            viewModel.onTriggerEvent(FirstPageEvent(playlistId))
-        }
-    }
+    protected abstract val viewModel: TracksViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,23 +38,29 @@ class TracksFragment : Fragment() {
                     displayProgressBar = loading,
                     progressBarAlignment = if (tracks.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
                 ) {
-                    TrackItemList(
-                        tracks = tracks,
-                        loading = loading,
-                        onTriggerNextPage = {
-                            viewModel.onTriggerEvent(NextPageEvent(playlistId))
-                        },
-                        onNavigateToTrackDetail = { track ->
-                            navigateToTrackDetail(track)
-                        }
-                    )
+                    if (tracks.isNotEmpty()) {
+                        TrackItemList(
+                            tracks = tracks,
+                            loading = loading,
+                            onTriggerNextPage = {
+                                onTriggerNextPage()
+                            },
+                            onNavigateToTrackDetail = { track ->
+                                navigateToTrackDetail(track)
+                            }
+                        )
+                    } else if (!loading) {
+                        EmptyListPlaceholderText(text = "There are no tracks to show")
+                    }
                 }
             }
         }
     }
 
+    protected open fun onTriggerNextPage() {}
+
     private fun navigateToTrackDetail(track: Track) {
         val bundle = bundleOf(BUNDLE_KEY_TRACK_ID to track.id)
-        findNavController().navigate(R.id.viewTrack, bundle)
+        findNavController().navigate(viewTrackAction, bundle)
     }
 }

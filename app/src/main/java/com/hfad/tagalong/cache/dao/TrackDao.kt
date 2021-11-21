@@ -12,20 +12,18 @@ interface TrackDao {
     @Query("""
         SELECT DISTINCT tr.* FROM $TRACK_TABLE tr
         JOIN $TRACK_TAG_CROSS_REF_TABLE cr ON tr.$TRACK_ID = cr.$TRACK_ID
-        JOIN $TAG_TABLE t ON cr.$TAG_ID = t.$TAG_ID
-        WHERE t.$TAG_NAME IN (:tagNames)
+        WHERE cr.$TAG_ID IN (:tagIds)
     """)
-    suspend fun getTracksWithAnyOfTheTagsByName(vararg tagNames: String): List<TrackEntity>
+    suspend fun getTracksWithAnyOfTheTagsById(vararg tagIds: Long): List<TrackEntity>
 
     @Query("""
         SELECT tr.* FROM $TRACK_TABLE tr
         JOIN $TRACK_TAG_CROSS_REF_TABLE cr ON tr.$TRACK_ID = cr.$TRACK_ID
-        JOIN $TAG_TABLE t ON cr.$TAG_ID = t.$TAG_ID
-        WHERE t.$TAG_NAME IN (:tagNames)
+        WHERE cr.$TAG_ID IN (:tagIds)
         GROUP BY tr.$TRACK_ID
-        HAVING COUNT(*) = JSON_ARRAY_LENGTH(JSON_ARRAY(:tagNames))
+        HAVING COUNT(*) = JSON_ARRAY_LENGTH(JSON_ARRAY(:tagIds))
     """)
-    suspend fun getTracksWithAllOfTheTagsByName(vararg tagNames: String): List<TrackEntity>
+    suspend fun getTracksWithAllOfTheTagsById(vararg tagIds: Long): List<TrackEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(track: TrackEntity)
