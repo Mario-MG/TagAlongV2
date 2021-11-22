@@ -7,14 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
+import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -22,9 +19,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.BUNDLE_KEY_URI
+import com.hfad.tagalong.presentation.components.LoginButton
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.ReceiveLoginCodeEvent
-import com.hfad.tagalong.util.loadPicture
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -47,43 +44,27 @@ class LoginFragment : Fragment() {
                     if (isLoggedIn) {
                         findNavController().navigate(R.id.login)
                     } else {
-                        Box(
-                            modifier = Modifier.fillMaxSize()
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Button(
-                                onClick = ::launchAuthUrl,
-                                modifier = Modifier
-                                    .align(Alignment.Center),
-                                shape = RoundedCornerShape(48.dp)
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .padding(
-                                            vertical = 16.dp,
-                                            horizontal = 8.dp
-                                        )
-                                ) {
-                                    val spotifyIcon = loadPicture(
-                                        drawable = R.drawable.ic_spotify_icon_green
-                                    ).value
-                                    spotifyIcon?.let {
-                                        Icon(
-                                            bitmap = spotifyIcon.asImageBitmap(),
-                                            contentDescription = "Spotify Icon",
-                                            modifier = Modifier
-                                                .size(36.dp)
-                                                .align(Alignment.CenterVertically),
-                                            tint = MaterialTheme.colors.onPrimary
-                                        )
-                                        Spacer(modifier = Modifier.size(20.dp))
-                                    }
-                                    Text(
-                                        text = "LOG IN WITH SPOTIFY",
-                                        style = MaterialTheme.typography.h3,
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically)
-                                    )
-                                }
+                            LoginButton(
+                                iconDrawable = R.drawable.ic_spotify_icon_green,
+                                text = "LOG IN WITH SPOTIFY",
+                                onClick = ::launchAuthUrl
+                            )
+                            Spacer(modifier = Modifier.height(36.dp))
+                            Row {
+                                Checkbox(
+                                    checked = true,
+                                    onCheckedChange = {}
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "Stay logged in",
+                                    color = MaterialTheme.colors.onBackground
+                                )
                             }
                         }
                     }
