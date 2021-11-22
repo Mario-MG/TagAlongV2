@@ -2,6 +2,7 @@ package com.hfad.tagalong
 
 import com.hfad.tagalong.domain.model.Token
 import com.hfad.tagalong.repository.AuthRepository
+import kotlin.properties.Delegates
 
 class Session(
     private val authRepository: AuthRepository,
@@ -9,17 +10,25 @@ class Session(
 ) {
 
     private var refreshToken: String? = null
+        set(value) {
+            isLoggedIn = value != null
+            field = value
+        }
 
     private var token: String? = null
+
+    private val loginStatusObservers = mutableListOf<(Boolean) -> Unit>()
+
+    private var isLoggedIn: Boolean by Delegates.observable(false) { _, _, newValue ->
+        loginStatusObservers.forEach { it(newValue) }
+    }
 
     fun loginWithToken(token: Token) {
         this.refreshToken = token.refreshToken
         this.token = token.accessToken
     }
 
-    fun isLoggedIn(): Boolean = refreshToken != null
-
-    suspend fun getToken(): String {
+    suspend fun getAuthorization(): String {
         if (token == null) {
             this.refreshToken()
         }
@@ -37,6 +46,10 @@ class Session(
                 this.refreshToken = newRefreshToken
             }
         }
+    }
+
+    fun addLoginStatusObserver(observer: (Boolean) -> Unit) {
+        loginStatusObservers.add(observer)
     }
 
 }

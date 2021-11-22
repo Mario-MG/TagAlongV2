@@ -48,7 +48,7 @@ constructor(
 
     private suspend fun loadFirstPage() {
         loading.value = true
-        val playlists = playlistRepository.getList(token = session.getToken())
+        val playlists = playlistRepository.getList(token = session.getAuthorization())
         this.playlists.clear()
         this.playlists.addAll(playlists)
         loading.value = false
@@ -59,7 +59,7 @@ constructor(
             loading.value = true
             val currentListSize = this.playlists.size
             val newPlaylists = playlistRepository.getList(
-                token = session.getToken(),
+                token = session.getAuthorization(),
                 offset = currentListSize
             )
             if (BuildConfig.DEBUG) delay(1000) // TODO: Remove

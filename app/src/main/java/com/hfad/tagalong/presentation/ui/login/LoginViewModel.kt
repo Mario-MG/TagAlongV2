@@ -42,11 +42,12 @@ constructor(
 
     private val encodingFlags = Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING
 
-    val isLoggedIn = mutableStateOf(session.isLoggedIn())
+    val isLoggedIn = mutableStateOf(false)
 
     init {
         codeVerifier = generateCodeVerifier()
         codeChallenge = generateCodeChallenge()
+        session.addLoginStatusObserver { isLoggedIn.value = it }
     }
 
     // Source: https://auth0.com/docs/flows/call-your-api-using-the-authorization-code-flow-with-pkce
@@ -101,7 +102,6 @@ constructor(
                 redirectUri = redirectUri
             )
             session.loginWithToken(token)
-            isLoggedIn.value = session.isLoggedIn()
         }
     }
 

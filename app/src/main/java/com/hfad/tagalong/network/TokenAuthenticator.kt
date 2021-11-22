@@ -16,7 +16,7 @@ class TokenAuthenticator(
         return runBlocking {
             session.refreshToken()
             response.request.newBuilder()
-                .header("Authorization", session.getToken())
+                .header("Authorization", session.getAuthorization())
                 .build()
         }
     }
