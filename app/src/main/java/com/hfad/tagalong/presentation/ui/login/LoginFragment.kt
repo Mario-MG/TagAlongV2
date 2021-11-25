@@ -23,6 +23,7 @@ import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.BUNDLE_KEY_URI
 import com.hfad.tagalong.presentation.theme.AppTheme
+import com.hfad.tagalong.presentation.ui.login.LoginEvent.ClickLoginButtonEvent
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.ReceiveLoginCodeEvent
 import com.hfad.tagalong.util.loadPicture
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,7 +52,9 @@ class LoginFragment : Fragment() {
                             modifier = Modifier.fillMaxSize()
                         ) {
                             Button(
-                                onClick = ::launchAuthUrl,
+                                onClick = {
+                                    viewModel.onTriggerEvent(ClickLoginButtonEvent(requireActivity()))
+                                },
                                 modifier = Modifier
                                     .align(Alignment.Center),
                                 shape = RoundedCornerShape(48.dp)
@@ -90,11 +93,6 @@ class LoginFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun launchAuthUrl() {
-        val authUri = viewModel.buildAuthUri()
-        CustomTabsIntent.Builder().build().launchUrl(requireActivity(), authUri)
     }
 
     override fun onResume() {

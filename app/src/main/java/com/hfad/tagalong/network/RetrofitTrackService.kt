@@ -11,7 +11,7 @@ interface RetrofitTrackService {
 
     @GET("playlists/{id}/tracks")
     suspend fun getItemsInPlaylist(
-        @Header("Authorization") token: String,
+        @Header("Authorization") auth: String,
         @Path("id") playlistId: String,
         @Query("limit") limit: Int = 20,
         @Query("offset") offset: Int = 0
@@ -19,7 +19,7 @@ interface RetrofitTrackService {
 
     @GET("tracks/{id}")
     suspend fun getTrack(
-        @Header("Authorization") token: String,
+        @Header("Authorization") auth: String,
         @Path("id") trackId: String,
     ): TrackDto
 

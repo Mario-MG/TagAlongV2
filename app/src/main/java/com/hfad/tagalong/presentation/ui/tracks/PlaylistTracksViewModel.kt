@@ -37,7 +37,7 @@ constructor(
     private suspend fun loadFirstPage(playlistId: String) {
         loading.value = true
         val tracks = trackRepository.getItemsInPlaylist(
-            token = session.getAuthorization(),
+            auth = session.getAuthorizationHeader(),
             playlistId = playlistId
         )
         this.tracks.clear()
@@ -50,7 +50,7 @@ constructor(
             loading.value = true
             val currentListSize = this.tracks.size
             val newTracks = trackRepository.getItemsInPlaylist(
-                token = session.getAuthorization(),
+                auth = session.getAuthorizationHeader(),
                 playlistId = playlistId,
                 offset = currentListSize
             )
