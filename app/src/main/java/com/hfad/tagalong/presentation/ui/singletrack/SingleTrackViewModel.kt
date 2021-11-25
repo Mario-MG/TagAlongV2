@@ -54,7 +54,7 @@ constructor(
     private suspend fun loadTrack(trackId: String) {
         loading.value = true
         val track = trackRepository.getTrack(
-            token = session.getAuthorization(),
+            auth = session.getAuthorizationHeader(),
             trackId = trackId
         )
         this.track.value = track // TODO: Handle null

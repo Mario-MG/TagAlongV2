@@ -11,13 +11,13 @@ interface RetrofitPlaylistService {
 
     @GET("playlists/{id}")
     suspend fun getById(
-        @Header("Authorization") token: String,
+        @Header("Authorization") auth: String,
         @Path("id") id: String
     ): PlaylistDto
 
     @GET("me/playlists")
     suspend fun getList(
-        @Header("Authorization") token: String,
+        @Header("Authorization") auth: String,
         @Query("limit") limit: Int = 20,
         @Query("offset") offset: Int = 0
     ): PlaylistsPage

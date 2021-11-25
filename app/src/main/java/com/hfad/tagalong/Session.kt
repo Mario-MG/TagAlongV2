@@ -1,6 +1,5 @@
 package com.hfad.tagalong
 
-import com.hfad.tagalong.domain.model.Token
 import com.hfad.tagalong.repository.AuthRepository
 import kotlin.properties.Delegates
 
@@ -11,24 +10,42 @@ class Session(
 
     private var refreshToken: String? = null
         set(value) {
-            isLoggedIn = value != null
             field = value
+            isLoggedIn = value != null
         }
 
     private var token: String? = null
 
     private val loginStatusObservers = mutableListOf<(Boolean) -> Unit>()
 
-    private var isLoggedIn: Boolean by Delegates.observable(false) { _, _, newValue ->
+    var isLoggedIn: Boolean by Delegates.observable(false) { _, _, newValue ->
         loginStatusObservers.forEach { it(newValue) }
     }
+        private set
 
-    fun loginWithToken(token: Token) {
-        this.refreshToken = token.refreshToken
-        this.token = token.accessToken
+    suspend fun init() {
+        authRepository.loadRefreshToken()?.let {
+            this.refreshToken = it
+        }
     }
 
-    suspend fun getAuthorization(): String {
+    suspend fun login(
+        code: String,
+        codeVerifier: String,
+        redirectUri: String
+    ) {
+        val tokenObj = authRepository.getNewToken(
+            clientId = clientId,
+            code = code,
+            codeVerifier = codeVerifier,
+            redirectUri = redirectUri
+        )
+        this.refreshToken = tokenObj.refreshToken
+        this.token = tokenObj.accessToken
+        authRepository.saveRefreshToken(refreshToken!!)
+    }
+
+    suspend fun getAuthorizationHeader(): String {
         if (token == null) {
             this.refreshToken()
         }
@@ -44,6 +61,7 @@ class Session(
             token = tokenObj.accessToken
             tokenObj.refreshToken?.let { newRefreshToken ->
                 this.refreshToken = newRefreshToken
+                authRepository.saveRefreshToken(newRefreshToken)
             }
         }
     }

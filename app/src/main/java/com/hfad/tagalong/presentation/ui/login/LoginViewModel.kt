@@ -1,15 +1,16 @@
 package com.hfad.tagalong.presentation.ui.login
 
+import android.content.Context
 import android.net.Uri
 import android.util.Base64
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.Session
 import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.di.APP_REDIRECT_URI
-import com.hfad.tagalong.presentation.ui.login.LoginEvent.ReceiveLoginCodeEvent
-import com.hfad.tagalong.repository.AuthRepository
+import com.hfad.tagalong.presentation.ui.login.LoginEvent.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.nio.charset.Charset
@@ -22,32 +23,19 @@ import javax.inject.Named
 class LoginViewModel
 @Inject
 constructor(
-    private val authRepository: AuthRepository,
     private val session: Session,
     @Named(APP_CLIENT_ID) private val clientId: String,
     @Named(APP_REDIRECT_URI) private val redirectUri: String
 ) : ViewModel() {
 
-    private val codeVerifier: String
+    private lateinit var codeVerifier: String
 
-    private val codeChallenge: String
+    private lateinit var codeChallenge: String
 
-    private val scopes = arrayOf(
-        "playlist-read-private",
-        "playlist-read-collaborative",
-        "playlist-modify-public",
-        "playlist-modify-private",
-        "user-library-read"
-    )
-
-    private val encodingFlags = Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING
-
-    val isLoggedIn = mutableStateOf(false)
+    val isLoggedIn = mutableStateOf(session.isLoggedIn)
 
     init {
-        codeVerifier = generateCodeVerifier()
-        codeChallenge = generateCodeChallenge()
-        session.addLoginStatusObserver { isLoggedIn.value = it }
+        onTriggerEvent(InitLoginScreenEvent)
     }
 
     // Source: https://auth0.com/docs/flows/call-your-api-using-the-authorization-code-flow-with-pkce
@@ -55,7 +43,7 @@ constructor(
         val sr = SecureRandom()
         val code = ByteArray(32)
         sr.nextBytes(code)
-        return Base64.encodeToString(code, encodingFlags)
+        return Base64.encodeToString(code, ENCODING_FLAGS)
     }
 
     // Source: https://auth0.com/docs/flows/call-your-api-using-the-authorization-code-flow-with-pkce
@@ -64,12 +52,18 @@ constructor(
         val md = MessageDigest.getInstance("SHA-256")
         md.update(bytes, 0, bytes.size)
         val digest = md.digest()
-        return Base64.encodeToString(digest, encodingFlags)
+        return Base64.encodeToString(digest, ENCODING_FLAGS)
     }
 
     fun onTriggerEvent(event: LoginEvent) {
         viewModelScope.launch {
             when (event) {
+                is InitLoginScreenEvent -> {
+                    initSession()
+                }
+                is ClickLoginButtonEvent -> {
+                    onClickLoginButton(event.context)
+                }
                 is ReceiveLoginCodeEvent -> {
                     login(event.uri)
                 }
@@ -77,7 +71,21 @@ constructor(
         }
     }
 
-    fun buildAuthUri(): Uri {
+    private suspend fun initSession() {
+        session.addLoginStatusObserver {
+            isLoggedIn.value = it
+        }
+        session.init()
+    }
+
+    private fun onClickLoginButton(context: Context) {
+        codeVerifier = generateCodeVerifier()
+        codeChallenge = generateCodeChallenge()
+        val authUri = buildAuthUri()
+        CustomTabsIntent.Builder().build().launchUrl(context, authUri)
+    }
+
+    private fun buildAuthUri(): Uri {
         return Uri.Builder()
             .scheme("https")
             .authority("accounts.spotify.com")
@@ -88,21 +96,33 @@ constructor(
             .appendQueryParameter("redirect_uri", redirectUri)
             .appendQueryParameter("code_challenge_method", "S256")
             .appendQueryParameter("code_challenge", codeChallenge)
-            .appendQueryParameter("scope", scopes.joinToString(","))
+            .appendQueryParameter("scope", SCOPES.joinToString(","))
             .build()
     }
 
     private suspend fun login(uri: Uri) {
         val code = uri.getQueryParameter("code")
         code?.let {
-            val token = authRepository.getNewToken(
-                clientId = clientId,
+            session.login(
                 code = code,
                 codeVerifier = codeVerifier,
                 redirectUri = redirectUri
             )
-            session.loginWithToken(token)
         }
+    }
+
+    companion object {
+
+        private val SCOPES = arrayOf(
+            "playlist-read-private",
+            "playlist-read-collaborative",
+            "playlist-modify-public",
+            "playlist-modify-private",
+            "user-library-read"
+        )
+
+        private const val ENCODING_FLAGS = Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING
+
     }
 
 }
