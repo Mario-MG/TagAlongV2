@@ -20,4 +20,6 @@ interface AuthRepository {
 
     suspend fun loadRefreshToken(): String?
 
+    suspend fun deleteRefreshToken()
+
 }

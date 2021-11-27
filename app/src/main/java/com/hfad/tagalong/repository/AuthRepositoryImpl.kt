@@ -46,6 +46,12 @@ class AuthRepositoryImpl(
         return sharedPreferences.getString(SHARED_PREFS_REFRESH_TOKEN, null)
     }
 
+    override suspend fun deleteRefreshToken() {
+        sharedPreferences.edit()
+            .remove(SHARED_PREFS_REFRESH_TOKEN)
+            .apply()
+    }
+
     companion object {
 
         const val SHARED_PREFS_REFRESH_TOKEN = "refreshToken"
