@@ -32,12 +32,6 @@ constructor(
 
     private lateinit var codeChallenge: String
 
-    val isLoggedIn = mutableStateOf(session.isLoggedIn)
-
-    init {
-        onTriggerEvent(InitLoginScreenEvent)
-    }
-
     // Source: https://auth0.com/docs/flows/call-your-api-using-the-authorization-code-flow-with-pkce
     private fun generateCodeVerifier(): String {
         val sr = SecureRandom()
@@ -58,9 +52,6 @@ constructor(
     fun onTriggerEvent(event: LoginEvent) {
         viewModelScope.launch {
             when (event) {
-                is InitLoginScreenEvent -> {
-                    initSession()
-                }
                 is ClickLoginButtonEvent -> {
                     onClickLoginButton(event.context)
                 }
@@ -69,13 +60,6 @@ constructor(
                 }
             }
         }
-    }
-
-    private suspend fun initSession() {
-        session.addLoginStatusObserver {
-            isLoggedIn.value = it
-        }
-        session.init()
     }
 
     private fun onClickLoginButton(context: Context) {

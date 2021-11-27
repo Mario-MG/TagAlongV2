@@ -29,10 +29,6 @@ constructor(
 
     private var allPlaylistsLoaded = false // TODO: Find out a way to improve this
 
-    init {
-        onTriggerEvent(FirstPageEvent)
-    }
-
     fun onTriggerEvent(event: PlaylistsEvent) {
         viewModelScope.launch {
             when (event) {
