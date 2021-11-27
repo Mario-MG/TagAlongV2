@@ -70,4 +70,10 @@ class Session(
         loginStatusObservers.add(observer)
     }
 
+    suspend fun logOut() {
+        refreshToken = null
+        token = null
+        authRepository.deleteRefreshToken()
+    }
+
 }

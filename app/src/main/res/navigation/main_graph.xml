@@ -92,6 +92,13 @@
         <action
             android:id="@+id/settings_to_tags"
             app:destination="@id/tagsFragment" />
+
+        <!-- FIXME: there's still a PlaylistsFragment in the stack!! -->
+        <action
+            android:id="@+id/logOut"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
 </navigation>
