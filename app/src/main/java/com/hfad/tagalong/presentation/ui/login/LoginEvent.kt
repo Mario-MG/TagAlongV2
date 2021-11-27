@@ -5,8 +5,6 @@ import android.net.Uri
 
 sealed class LoginEvent {
 
-    object InitLoginScreenEvent : LoginEvent()
-
     data class ClickLoginButtonEvent(val context: Context) : LoginEvent()
 
     data class ReceiveLoginCodeEvent(val uri: Uri) : LoginEvent()

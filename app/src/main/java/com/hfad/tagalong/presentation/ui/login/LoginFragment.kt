@@ -17,13 +17,16 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.BUNDLE_KEY_URI
+import com.hfad.tagalong.presentation.LOGIN_SUCCESSFUL
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.ClickLoginButtonEvent
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.ReceiveLoginCodeEvent
+import com.hfad.tagalong.presentation.ui.main.MainViewModel
 import com.hfad.tagalong.util.loadPicture
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,6 +34,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
+
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     private val viewModel: LoginViewModel by viewModels()
 
@@ -41,7 +46,7 @@ class LoginFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val isLoggedIn = viewModel.isLoggedIn.value
+                val isLoggedIn = mainViewModel.isLoggedIn.value
 
                 AppTheme {
                     if (isLoggedIn) {
@@ -91,6 +96,19 @@ class LoginFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val navController = findNavController()
+        val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
+            ?: throw IllegalStateException("LoginFragment must not be a start destination")
+        savedStateHandle.set(LOGIN_SUCCESSFUL, false)
+        mainViewModel.addLoginSuccessListener {
+            savedStateHandle.set(LOGIN_SUCCESSFUL, true)
+            navController.popBackStack()
         }
     }
 
