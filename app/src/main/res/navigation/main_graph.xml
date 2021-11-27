@@ -31,6 +31,10 @@
         <action
             android:id="@+id/playlists_to_tags"
             app:destination="@id/tagsFragment" />
+
+        <action
+            android:id="@+id/playlists_to_settings"
+            app:destination="@id/settingsFragment" />
     </fragment>
 
     <fragment
@@ -54,20 +58,40 @@
         android:label="TagsFragment" >
 
         <action
-            android:id="@+id/tags_to_playlists"
-            app:destination="@id/playlistsFragment" />
-        <action
             android:id="@+id/viewTagTracks"
             app:destination="@id/tagTracksFragment" />
+
+        <action
+            android:id="@+id/tags_to_playlists"
+            app:destination="@id/playlistsFragment" />
+
+        <action
+            android:id="@+id/tags_to_settings"
+            app:destination="@id/settingsFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/tagTracksFragment"
         android:name="com.hfad.tagalong.presentation.ui.tracks.TagTracksFragment"
         android:label="TagTracksFragment" >
+
         <action
             android:id="@+id/viewTrackFromTag"
             app:destination="@id/singleTrackFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.hfad.tagalong.presentation.ui.settings.SettingsFragment"
+        android:label="SettingsFragment" >
+
+        <action
+            android:id="@+id/settings_to_playlists"
+            app:destination="@id/playlistsFragment" />
+
+        <action
+            android:id="@+id/settings_to_tags"
+            app:destination="@id/tagsFragment" />
     </fragment>
 
 </navigation>
