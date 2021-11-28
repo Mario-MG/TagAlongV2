@@ -102,6 +102,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Source: https://youtu.be/09qjn706ITA?t=284
         val navController = findNavController()
         val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
             ?: throw IllegalStateException("LoginFragment must not be a start destination")
