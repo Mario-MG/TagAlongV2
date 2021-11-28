@@ -15,7 +15,7 @@ fun TrackItemCard(
         imageUrl = track.imageUrl,
         defaultImage = DEFAULT_ALBUM_IMAGE,
         title = track.name,
-        subtitle = "${track.album} | ${track.artists[0]}", // TODO: Handle multiple artists / no artists?
+        subtitle = "${track.artists[0]} | ${track.album}", // TODO: Handle multiple artists / no artists?
         onClick = onClick
     )
 }

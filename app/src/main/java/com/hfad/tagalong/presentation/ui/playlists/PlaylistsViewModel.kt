@@ -29,10 +29,6 @@ constructor(
 
     private var allPlaylistsLoaded = false // TODO: Find out a way to improve this
 
-    init {
-        onTriggerEvent(FirstPageEvent)
-    }
-
     fun onTriggerEvent(event: PlaylistsEvent) {
         viewModelScope.launch {
             when (event) {
@@ -48,7 +44,7 @@ constructor(
 
     private suspend fun loadFirstPage() {
         loading.value = true
-        val playlists = playlistRepository.getList(token = session.getToken())
+        val playlists = playlistRepository.getList(auth = session.getAuthorizationHeader())
         this.playlists.clear()
         this.playlists.addAll(playlists)
         loading.value = false
@@ -59,7 +55,7 @@ constructor(
             loading.value = true
             val currentListSize = this.playlists.size
             val newPlaylists = playlistRepository.getList(
-                token = session.getToken(),
+                auth = session.getAuthorizationHeader(),
                 offset = currentListSize
             )
             if (BuildConfig.DEBUG) delay(1000) // TODO: Remove

@@ -17,9 +17,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun ItemCard(
     picture: @Composable () -> Unit = {},
     title: String,
-    subtitle: String,
-    onClick: () -> Unit = {},
-    cardHeight: Dp = 80.dp
+    subtitle: String? = null,
+    cardHeight: Dp = 80.dp,
+    onClick: () -> Unit = {}
 ) {
     Card(
         shape = MaterialTheme.shapes.small,
@@ -44,14 +44,16 @@ fun ItemCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.h6.copy(
-                        color = MaterialTheme.colors.onSurface.copy(0.5f)
-                    ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                subtitle?.let {
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.h6.copy(
+                            color = MaterialTheme.colors.onSurface.copy(0.5f)
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }
