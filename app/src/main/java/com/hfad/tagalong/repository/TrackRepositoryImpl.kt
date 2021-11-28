@@ -13,9 +13,9 @@ class TrackRepositoryImpl(
     private val trackEntityMapper: TrackEntityMapper
 ): TrackRepository {
 
-    override suspend fun getItemsInPlaylist(token: String, playlistId: String, limit: Int, offset: Int): List<Track> {
+    override suspend fun getItemsInPlaylist(auth: String, playlistId: String, limit: Int, offset: Int): List<Track> {
         val playlistItemsPage = trackService.getItemsInPlaylist(
-            token = token,
+            auth = auth,
             playlistId = playlistId,
             limit = limit,
             offset = offset
@@ -24,8 +24,8 @@ class TrackRepositoryImpl(
         return trackDtoMapper.toDomainList(tracksNetworkModelList)
     }
 
-    override suspend fun getTrack(token: String, trackId: String): Track {
-        return trackDtoMapper.mapToDomainModel(trackService.getTrack(token = token, trackId = trackId))
+    override suspend fun getTrack(auth: String, trackId: String): Track {
+        return trackDtoMapper.mapToDomainModel(trackService.getTrack(auth = auth, trackId = trackId))
     }
 
     override suspend fun getTracksForTag(tagId: Long): List<Track> {

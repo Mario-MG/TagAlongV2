@@ -14,7 +14,7 @@
         android:theme="@style/Theme.TagAlong">
 
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".presentation.ui.main.MainActivity"
             android:exported="true"
             android:launchMode="singleTop" >
 

@@ -1,6 +1,5 @@
 package com.hfad.tagalong.di
 
-import com.hfad.tagalong.BuildConfig
 import com.hfad.tagalong.Session
 import com.hfad.tagalong.repository.AuthRepository
 import dagger.Module
