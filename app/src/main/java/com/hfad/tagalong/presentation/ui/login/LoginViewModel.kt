@@ -11,6 +11,7 @@ import com.hfad.tagalong.Session
 import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.di.APP_REDIRECT_URI
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.*
+import com.hfad.tagalong.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.nio.charset.Charset
@@ -25,7 +26,8 @@ class LoginViewModel
 constructor(
     private val session: Session,
     @Named(APP_CLIENT_ID) private val clientId: String,
-    @Named(APP_REDIRECT_URI) private val redirectUri: String
+    @Named(APP_REDIRECT_URI) private val redirectUri: String,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     val stayLoggedIn = mutableStateOf(true)
@@ -33,6 +35,12 @@ constructor(
     private lateinit var codeVerifier: String
 
     private lateinit var codeChallenge: String
+
+    init {
+        viewModelScope.launch {
+            stayLoggedIn.value = settingsRepository.loadStayLoggedIn()
+        }
+    }
 
     // Source: https://auth0.com/docs/flows/call-your-api-using-the-authorization-code-flow-with-pkce
     private fun generateCodeVerifier(): String {
@@ -55,7 +63,7 @@ constructor(
         viewModelScope.launch {
             when (event) {
                 is ChangeStayLoggedInOptionEvent -> {
-                    stayLoggedIn.value = !stayLoggedIn.value
+                    changeStayLoggedInOption()
                 }
                 is ClickLoginButtonEvent -> {
                     onClickLoginButton(event.context)
@@ -65,6 +73,11 @@ constructor(
                 }
             }
         }
+    }
+
+    private suspend fun changeStayLoggedInOption() {
+        stayLoggedIn.value = !stayLoggedIn.value
+        settingsRepository.saveStayLoggedIn(stayLoggedIn.value)
     }
 
     private fun onClickLoginButton(context: Context) {
