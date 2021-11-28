@@ -92,6 +92,7 @@ class PlaylistsFragment : Fragment() {
             viewModel.onTriggerEvent(FirstPageEvent)
         }
 
+        // Source: https://youtu.be/09qjn706ITA?t=284
         val navController = findNavController()
         val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
             ?: throw IllegalStateException()
