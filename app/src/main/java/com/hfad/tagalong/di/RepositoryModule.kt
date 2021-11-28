@@ -9,6 +9,7 @@ import com.hfad.tagalong.network.RetrofitPlaylistService
 import com.hfad.tagalong.network.RetrofitTrackService
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TrackDtoMapper
+import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.repository.*
 import dagger.Module
 import dagger.Provides
@@ -68,6 +69,14 @@ object RepositoryModule {
         trackTagCrossRefDao = trackTagCrossRefDao,
         trackEntityMapper = trackEntityMapper,
         tagEntityMapper = tagEntityMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideSettingsRepository(
+        app: BaseApplication
+    ): SettingsRepository = SettingsRepositoryImpl(
+        app.applicationContext
     )
 
 }
