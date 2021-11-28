@@ -28,6 +28,8 @@ constructor(
     @Named(APP_REDIRECT_URI) private val redirectUri: String
 ) : ViewModel() {
 
+    val stayLoggedIn = mutableStateOf(true)
+
     private lateinit var codeVerifier: String
 
     private lateinit var codeChallenge: String
@@ -52,6 +54,9 @@ constructor(
     fun onTriggerEvent(event: LoginEvent) {
         viewModelScope.launch {
             when (event) {
+                is ChangeStayLoggedInOptionEvent -> {
+                    stayLoggedIn.value = !stayLoggedIn.value
+                }
                 is ClickLoginButtonEvent -> {
                     onClickLoginButton(event.context)
                 }
@@ -90,7 +95,8 @@ constructor(
             session.login(
                 code = code,
                 codeVerifier = codeVerifier,
-                redirectUri = redirectUri
+                redirectUri = redirectUri,
+                stayLoggedIn = stayLoggedIn.value
             )
         }
     }

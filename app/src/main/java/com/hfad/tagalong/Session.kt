@@ -32,7 +32,8 @@ class Session(
     suspend fun login(
         code: String,
         codeVerifier: String,
-        redirectUri: String
+        redirectUri: String,
+        stayLoggedIn: Boolean
     ) {
         val tokenObj = authRepository.getNewToken(
             clientId = clientId,
@@ -42,7 +43,9 @@ class Session(
         )
         this.refreshToken = tokenObj.refreshToken
         this.token = tokenObj.accessToken
-        authRepository.saveRefreshToken(refreshToken!!)
+        if (stayLoggedIn) {
+            authRepository.saveRefreshToken(refreshToken!!)
+        }
     }
 
     suspend fun getAuthorizationHeader(): String {
