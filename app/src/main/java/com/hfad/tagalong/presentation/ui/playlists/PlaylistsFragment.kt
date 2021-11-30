@@ -66,7 +66,7 @@ class PlaylistsFragment : Fragment() {
                                     onTriggerNextPage = {
                                         viewModel.onTriggerEvent(NextPageEvent)
                                     },
-                                    onNavigateToTrackList = { playlist ->
+                                    onClickPlaylistItem = { playlist ->
                                         navigateToTrackList(playlist)
                                     }
                                 )
