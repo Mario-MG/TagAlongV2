@@ -5,8 +5,16 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = TAG_TABLE, indices = [Index(value = [TAG_NAME], unique = true)])
-data class TagEntity (
+@Entity(
+    tableName = TAG_TABLE,
+    indices = [
+        Index(
+            value = [TAG_NAME],
+            unique = true
+        )
+    ]
+)
+data class TagEntity(
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = TAG_ID)

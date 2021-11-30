@@ -1,8 +1,7 @@
 package com.hfad.tagalong.di
 
-import com.hfad.tagalong.cache.dao.TagDao
-import com.hfad.tagalong.cache.dao.TrackDao
-import com.hfad.tagalong.cache.dao.TrackTagCrossRefDao
+import com.hfad.tagalong.cache.dao.*
+import com.hfad.tagalong.cache.model.RuleEntityMapper
 import com.hfad.tagalong.cache.model.TagEntityMapper
 import com.hfad.tagalong.cache.model.TrackEntityMapper
 import com.hfad.tagalong.network.RetrofitPlaylistService
@@ -24,7 +23,7 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun providePlaylistRepository(
-        playlistService: RetrofitPlaylistService, // TODO: Should this dependency be an abstraction?
+        playlistService: RetrofitPlaylistService,
         playlistMapper: PlaylistDtoMapper
     ): PlaylistRepository = PlaylistRepositoryImpl(
         playlistService = playlistService,
@@ -34,7 +33,7 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideTrackRepository(
-        trackService: RetrofitTrackService, // TODO: Should this dependency be an abstraction?
+        trackService: RetrofitTrackService,
         trackDtoMapper: TrackDtoMapper,
         trackDao: TrackDao,
         trackEntityMapper: TrackEntityMapper
@@ -69,6 +68,18 @@ object RepositoryModule {
         trackTagCrossRefDao = trackTagCrossRefDao,
         trackEntityMapper = trackEntityMapper,
         tagEntityMapper = tagEntityMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideRuleRepository(
+        ruleDao: RuleDao,
+        ruleEntityMapper: RuleEntityMapper,
+        ruleTagCrossRefDao: RuleTagCrossRefDao
+    ): RuleRepository = RuleRepositoryImpl(
+        ruleDao = ruleDao,
+        ruleEntityMapper = ruleEntityMapper,
+        ruleTagCrossRefDao = ruleTagCrossRefDao
     )
 
     @Singleton

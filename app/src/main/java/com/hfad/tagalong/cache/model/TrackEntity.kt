@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = TRACK_TABLE)
-data class TrackEntity (
+data class TrackEntity(
 
     @PrimaryKey
     @ColumnInfo(name = TRACK_ID)
@@ -21,7 +21,7 @@ data class TrackEntity (
     val imageUrl: String?
 
 ) {
-    data class Id (
+    data class Id(
         @ColumnInfo(name = TRACK_ID)
         val id: String
     )

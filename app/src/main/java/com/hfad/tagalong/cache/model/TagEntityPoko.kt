@@ -3,7 +3,7 @@ package com.hfad.tagalong.cache.model
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 
-data class TagEntityPoko (
+data class TagEntityPoko(
 
     @Embedded
     val tagEntity: TagEntity,

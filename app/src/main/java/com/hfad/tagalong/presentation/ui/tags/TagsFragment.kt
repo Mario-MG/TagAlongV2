@@ -52,7 +52,7 @@ class TagsFragment : Fragment() {
                         if (tags.isNotEmpty()) {
                             TagItemList(
                                 tags = tags,
-                                onNavigateToTrackList = { tag ->
+                                onClickTagItem = { tag ->
                                     navigateToTrackList(tag)
                                 }
                             )

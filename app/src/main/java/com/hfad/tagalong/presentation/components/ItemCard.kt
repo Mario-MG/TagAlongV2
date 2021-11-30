@@ -24,7 +24,10 @@ fun ItemCard(
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
-            .padding(bottom = 6.dp, top = 6.dp)
+            .padding(
+                bottom = 6.dp,
+                top = 6.dp
+            )
             .height(cardHeight)
             .fillMaxWidth()
             .clickable(onClick = onClick),
@@ -35,7 +38,12 @@ fun ItemCard(
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(top = 12.dp, bottom = 12.dp, start = 12.dp, end = 8.dp),
+                    .padding(
+                        top = 12.dp,
+                        bottom = 12.dp,
+                        start = 12.dp,
+                        end = 8.dp
+                    ),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(
