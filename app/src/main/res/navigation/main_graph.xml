@@ -108,7 +108,16 @@
         <action
             android:id="@+id/rules_to_settings"
             app:destination="@id/settingsFragment" />
+
+        <action
+            android:id="@+id/createRule"
+            app:destination="@id/ruleCreationFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/ruleCreationFragment"
+        android:name="com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationFragment"
+        android:label="RuleCreationFragment" />
 
     <fragment
         android:id="@+id/settingsFragment"

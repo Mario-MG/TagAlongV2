@@ -1,5 +1,6 @@
 package com.hfad.tagalong.presentation.ui.rules
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,7 +24,7 @@ constructor(
 
     val loading = mutableStateOf(false)
 
-    val rules = mutableListOf<Rule>()
+    val rules = mutableStateListOf<Rule>()
 
     private lateinit var allTags: List<Tag>
 

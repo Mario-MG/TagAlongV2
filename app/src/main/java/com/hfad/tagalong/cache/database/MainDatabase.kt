@@ -24,8 +24,6 @@ abstract class MainDatabase : RoomDatabase() {
 
     abstract fun ruleDao(): RuleDao
 
-    abstract fun ruleTagCrossRefDao(): RuleTagCrossRefDao
-
     companion object {
         val DATABASE_NAME: String = "main_db"
     }
