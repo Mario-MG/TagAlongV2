@@ -76,10 +76,4 @@ object CacheModule {
         return RuleEntityMapper(tagEntityMapper = tagEntityMapper)
     }
 
-    @Singleton
-    @Provides
-    fun provideRuleTagCrossRefDao(db: MainDatabase): RuleTagCrossRefDao {
-        return db.ruleTagCrossRefDao()
-    }
-
 }

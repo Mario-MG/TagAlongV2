@@ -5,16 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.components.AppNavigationBar
 import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.RuleItemList
@@ -38,6 +42,7 @@ class RulesFragment : Fragment() {
             setContent {
                 val rules = viewModel.rules
                 val loading = viewModel.loading.value
+                val navController = findNavController()
 
                 AppTheme(
                     displayProgressBar = loading,
@@ -46,26 +51,28 @@ class RulesFragment : Fragment() {
                     Scaffold(
                         bottomBar = {
                             AppNavigationBar(
-                                navController = findNavController()
+                                navController = navController
                             )
                         },
                         floatingActionButton = {
                             FloatingActionButton(
                                 onClick = {
-                                    viewModel.onTriggerEvent(CreateNewRuleEvent)
+                                    navController.navigate(R.id.createRule)
                                 }
                             ) {
                                 Icon(Icons.Filled.Add,"Add Rule icon")
                             }
                         }
-                    ) {
-                        if (rules.isNotEmpty()) {
-                            RuleItemList(
-                                rules = rules,
-                                onClickRuleItem = {}
-                            )
-                        } else if (!loading) {
-                            EmptyListPlaceholderText(text = "There are no rules to show")
+                    ) { innerPadding -> // TODO: Include this in all Scaffold uses
+                        Box(modifier = Modifier.padding(innerPadding)) {
+                            if (rules.isNotEmpty()) {
+                                RuleItemList(
+                                    rules = rules,
+                                    onClickRuleItem = {}
+                                )
+                            } else if (!loading) {
+                                EmptyListPlaceholderText(text = "There are no rules to show")
+                            }
                         }
                     }
                 }

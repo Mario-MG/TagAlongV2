@@ -4,11 +4,11 @@ import androidx.room.*
 import com.hfad.tagalong.cache.model.*
 
 @Dao
-interface RuleDao {
+abstract class RuleDao {
 
     @Transaction
     @Query("SELECT * FROM $RULE_TABLE")
-    suspend fun getAll(): List<RuleWithTags>
+    abstract suspend fun getAll(): List<RuleWithTags>
 
     @Transaction
     @Query("""
@@ -29,15 +29,22 @@ interface RuleDao {
             )
         )
     """)
-    suspend fun getRulesFulfilledByTagIds(newTagId: Long, vararg originalTagsIds: Long): List<RuleWithTags>
+    abstract suspend fun getRulesFulfilledByTagIds(newTagId: Long, vararg originalTagsIds: Long): List<RuleWithTags>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(rule: RuleEntity): Long
+    suspend fun insert(ruleWithTags: RuleWithTags) {
+        val ruleId = _insert(ruleWithTags.rule)
+        _insert(*ruleWithTags.tags.map { tag ->
+            RuleTagCrossRef(
+                ruleId = ruleId,
+                tagId = tag.id
+            )
+        }.toTypedArray())
+    }
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(vararg rule: RuleEntity): List<Long>
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    internal abstract suspend fun _insert(rule: RuleEntity): Long
 
-    @Delete
-    suspend fun delete(vararg rule: RuleEntity): Int
+    @Insert
+    internal abstract suspend fun _insert(vararg ruleTagCrossRefs: RuleTagCrossRef)
 
 }

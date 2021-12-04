@@ -74,12 +74,10 @@ object RepositoryModule {
     @Provides
     fun provideRuleRepository(
         ruleDao: RuleDao,
-        ruleEntityMapper: RuleEntityMapper,
-        ruleTagCrossRefDao: RuleTagCrossRefDao
+        ruleEntityMapper: RuleEntityMapper
     ): RuleRepository = RuleRepositoryImpl(
         ruleDao = ruleDao,
-        ruleEntityMapper = ruleEntityMapper,
-        ruleTagCrossRefDao = ruleTagCrossRefDao
+        ruleEntityMapper = ruleEntityMapper
     )
 
     @Singleton
