@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.material.Scaffold
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
@@ -14,10 +13,9 @@ import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.presentation.BUNDLE_KEY_TAG_ID
-import com.hfad.tagalong.presentation.components.AppNavigationBar
 import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.TagItemList
-import com.hfad.tagalong.presentation.theme.AppTheme
+import com.hfad.tagalong.presentation.theme.AppScaffold
 import com.hfad.tagalong.presentation.ui.tags.TagsEvent.LoadTagsEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,27 +36,22 @@ class TagsFragment : Fragment() {
                 val tags = viewModel.tags
                 val loading = viewModel.loading.value
 
-                AppTheme(
+                val navController = findNavController()
+
+                AppScaffold(
                     displayProgressBar = loading,
-                    progressBarAlignment = if (tags.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
+                    progressBarAlignment = if (tags.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter,
+                    navController = navController
                 ) {
-                    Scaffold(
-                        bottomBar = {
-                            AppNavigationBar(
-                                navController = findNavController()
-                            )
-                        }
-                    ) {
-                        if (tags.isNotEmpty()) {
-                            TagItemList(
-                                tags = tags,
-                                onClickTagItem = { tag ->
-                                    navigateToTrackList(tag)
-                                }
-                            )
-                        } else if (!loading) {
-                            EmptyListPlaceholderText(text = "There are no tags to show")
-                        }
+                    if (tags.isNotEmpty()) {
+                        TagItemList(
+                            tags = tags,
+                            onClickTagItem = { tag ->
+                                navigateToTrackList(tag)
+                            }
+                        )
+                    } else if (!loading) {
+                        EmptyListPlaceholderText(text = "There are no tags to show")
                     }
                 }
             }
