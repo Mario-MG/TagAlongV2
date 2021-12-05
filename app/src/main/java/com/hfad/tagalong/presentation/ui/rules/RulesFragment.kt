@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.ui.Alignment
@@ -47,7 +48,8 @@ class RulesFragment : Fragment() {
                         FloatingActionButton(
                             onClick = {
                                 navController.navigate(R.id.createRule)
-                            }
+                            },
+                            backgroundColor = MaterialTheme.colors.primary
                         ) {
                             Icon(Icons.Filled.Add,"Add Rule icon")
                         }
