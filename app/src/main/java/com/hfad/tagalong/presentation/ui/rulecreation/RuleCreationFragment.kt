@@ -96,7 +96,12 @@ class RuleCreationFragment : Fragment() {
                             FlowKeywordList(
                                 keywordObjects = tags,
                                 onAddNewKeyword = { tagName ->
-                                    viewModel.onTriggerEvent(AddTagEvent(tagName))
+                                    if (viewModel.canAddTag(tagName)) {
+                                        viewModel.onTriggerEvent(AddTagEvent(tagName))
+                                        return@FlowKeywordList ""
+                                    } else {
+                                        return@FlowKeywordList tagName
+                                    }
                                 },
                                 onClickDeleteIcon = { tag ->
                                     viewModel.onTriggerEvent(DeleteTagEvent(tag))
@@ -161,8 +166,11 @@ class RuleCreationFragment : Fragment() {
                             ) {
                                 Button(
                                     onClick = {
-                                        viewModel.onTriggerEvent(CreateRuleEvent(navController)) // TODO: Change navController param to callback function?
-                                    }
+                                        viewModel.onTriggerEvent(CreateRuleEvent {
+                                            navController.popBackStack()
+                                        })
+                                    },
+                                    enabled = tags.isNotEmpty() && playlistName.isNotBlank()
                                 ) {
                                     Text("Create")
                                 }

@@ -64,8 +64,7 @@ constructor(
                     switchAutoUpdate()
                 }
                 is CreateRuleEvent -> {
-                    createRule()
-                    event.navController.popBackStack()
+                    createRuleAndExecuteCallback(event.callback)
                 }
             }
         }
@@ -79,12 +78,15 @@ constructor(
         this.playlistName.value = playlistName
     }
 
-    private fun addTag(tagName: String) { // TODO: This logic is for testing purposes only
+    private fun addTag(tagName: String) {
         val existingTag = this.allTags.find { tag -> tag.name == tagName }
         existingTag?.let {
             tags.add(existingTag)
         }
     }
+
+    fun canAddTag(tagName: String): Boolean = this.allTags.any { tag -> tag.name == tagName }
+            && this.tags.none { tag -> tag.name == tagName }
 
     private fun deleteTag(tag: Tag) {
         tags.remove(tag)
@@ -96,6 +98,13 @@ constructor(
 
     private fun switchAutoUpdate() {
         this.autoUpdate.value = !this.autoUpdate.value
+    }
+
+    private suspend fun createRuleAndExecuteCallback(callback: () -> Unit) {
+        if (tags.isNotEmpty() && playlistName.value.isNotBlank()) {
+            createRule()
+            callback()
+        }
     }
 
     private suspend fun createRule() {
@@ -112,6 +121,7 @@ constructor(
             tags = tags
         )
         ruleRepository.createNewRule(rule)
+        // TODO: Add tracks to new playlist
         loading.value = false
     }
 

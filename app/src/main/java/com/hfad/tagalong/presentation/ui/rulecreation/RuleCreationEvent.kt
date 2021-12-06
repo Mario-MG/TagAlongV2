@@ -17,6 +17,6 @@ sealed class RuleCreationEvent {
 
     object SwitchAutoUpdateEvent : RuleCreationEvent()
 
-    data class CreateRuleEvent(val navController: NavController) : RuleCreationEvent()
+    data class CreateRuleEvent(val callback: () -> Unit = {}) : RuleCreationEvent()
 
 }
