@@ -40,13 +40,14 @@ class PlaylistsFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val isLoggedIn = mainViewModel.isLoggedIn.value
+                val loadingSession = mainViewModel.loading.value
                 val playlists = viewModel.playlists
                 val loading = viewModel.loading.value
 
                 val navController = findNavController()
 
-                if (!isLoggedIn) {
-                    findNavController().navigate(R.id.init_login)
+                if (!isLoggedIn && !loadingSession) {
+                    navController.navigate(R.id.init_login)
                 } else {
                     AppScaffold(
                         displayProgressBar = loading,
@@ -65,7 +66,7 @@ class PlaylistsFragment : Fragment() {
                                 }
                             )
                         } else if (!loading) {
-                            EmptyListPlaceholderText(text = "There are no playlists to show")
+                            EmptyListPlaceholderText(text = "There are no playlists to show") // FIXME: This is being shown momentarily between session loaded and LoadFirstPageEvent triggered
                         }
                     }
                 }
@@ -81,8 +82,8 @@ class PlaylistsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (mainViewModel.isLoggedIn.value) {
-            viewModel.onTriggerEvent(FirstPageEvent)
+        mainViewModel.addLoginSuccessListener {
+            viewModel.onTriggerEvent(FirstPageEvent) // TODO: Could this be called once viewModel has been destroyed?
         }
 
         // Source: https://youtu.be/09qjn706ITA?t=284
@@ -91,9 +92,7 @@ class PlaylistsFragment : Fragment() {
             ?: throw IllegalStateException()
         savedStateHandle.getLiveData<Boolean>(LOGIN_SUCCESSFUL)
             .observe(viewLifecycleOwner) { success ->
-                if (success) {
-                    viewModel.onTriggerEvent(FirstPageEvent)
-                } else {
+                if (!success) {
                     requireActivity().finish()
                 }
             }

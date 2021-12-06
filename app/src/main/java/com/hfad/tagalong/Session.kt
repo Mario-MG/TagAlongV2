@@ -25,8 +25,8 @@ class Session(
     var user: User? = null
 
     suspend fun init() {
-        authRepository.loadRefreshToken()?.let {
-            this.refreshToken = it
+        authRepository.loadRefreshToken()?.let { savedRefreshToken ->
+            login(refreshToken = savedRefreshToken)
         }
     }
 
@@ -42,11 +42,20 @@ class Session(
             codeVerifier = codeVerifier,
             redirectUri = redirectUri
         )
-        this.refreshToken = tokenObj.refreshToken
         this.token = tokenObj.accessToken
+        this.refreshToken = tokenObj.refreshToken
         if (stayLoggedIn) {
             authRepository.saveRefreshToken(refreshToken!!)
         }
+        this.user = userRepository.get(auth = getAuthorizationHeader())
+        this.isLoggedIn = true
+    }
+
+    private suspend fun login(
+        refreshToken: String
+    ) {
+        this.refreshToken = refreshToken
+        refreshToken()
         this.user = userRepository.get(auth = getAuthorizationHeader())
         this.isLoggedIn = true
     }

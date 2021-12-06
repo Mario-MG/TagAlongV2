@@ -19,12 +19,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.BUNDLE_KEY_URI
-import com.hfad.tagalong.presentation.components.LoginButton
 import com.hfad.tagalong.presentation.LOGIN_SUCCESSFUL
+import com.hfad.tagalong.presentation.components.LoginButton
 import com.hfad.tagalong.presentation.theme.AppTheme
-import com.hfad.tagalong.presentation.ui.login.LoginEvent.ClickLoginButtonEvent
-import com.hfad.tagalong.presentation.ui.login.LoginEvent.ReceiveLoginCodeEvent
-import com.hfad.tagalong.presentation.ui.login.LoginEvent.ChangeStayLoggedInOptionEvent
+import com.hfad.tagalong.presentation.ui.login.LoginEvent.*
 import com.hfad.tagalong.presentation.ui.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,39 +42,37 @@ class LoginFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val isLoggedIn = mainViewModel.isLoggedIn.value
+                val loadingSession = mainViewModel.loading.value
                 val stayLoggedIn = viewModel.stayLoggedIn.value
 
-                AppTheme {
-                    if (isLoggedIn) {
-                        findNavController().navigate(R.id.login)
-                    } else {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            LoginButton(
-                                iconDrawable = R.drawable.ic_spotify_icon_green,
-                                text = "LOG IN WITH SPOTIFY",
-                                onClick = {
-                                    viewModel.onTriggerEvent(ClickLoginButtonEvent(requireActivity()))
+                AppTheme(
+                    displayProgressBar = loadingSession
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        LoginButton(
+                            iconDrawable = R.drawable.ic_spotify_icon_green,
+                            text = "LOG IN WITH SPOTIFY",
+                            onClick = {
+                                viewModel.onTriggerEvent(ClickLoginButtonEvent(requireActivity()))
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(36.dp))
+                        Row {
+                            Checkbox(
+                                checked = stayLoggedIn,
+                                onCheckedChange = {
+                                    viewModel.onTriggerEvent(ChangeStayLoggedInOptionEvent)
                                 }
                             )
-                            Spacer(modifier = Modifier.height(36.dp))
-                            Row {
-                                Checkbox(
-                                    checked = stayLoggedIn,
-                                    onCheckedChange = {
-                                        viewModel.onTriggerEvent(ChangeStayLoggedInOptionEvent)
-                                    }
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text(
-                                    text = "Stay logged in",
-                                    color = MaterialTheme.colors.onBackground
-                                )
-                            }
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "Stay logged in",
+                                color = MaterialTheme.colors.onBackground
+                            )
                         }
                     }
                 }
