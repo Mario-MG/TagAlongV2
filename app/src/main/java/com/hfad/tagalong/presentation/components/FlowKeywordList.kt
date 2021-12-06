@@ -31,7 +31,7 @@ fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (a
     onClickDeleteIcon: ((T) -> Unit)? = null,
     textFieldLabel: @Composable (() -> Unit)? = { Text("Add a keyword here...") },
     textFieldLeadingIcon: @Composable (() -> Unit)? = null,
-    onAddNewKeyword: ((String) -> Unit)? = null
+    onAddNewKeyword: ((String) -> String)? = null
 ) {
     val newKeyword = remember { mutableStateOf("") }
 
@@ -75,8 +75,7 @@ fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (a
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            onAddNewKeyword(newKeyword.value)
-                            newKeyword.value = ""
+                            newKeyword.value = onAddNewKeyword(newKeyword.value)
                             refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
                         },
                     ),
