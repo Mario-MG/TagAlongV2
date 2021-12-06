@@ -2,6 +2,7 @@ package com.hfad.tagalong.di
 
 import com.hfad.tagalong.Session
 import com.hfad.tagalong.repository.AuthRepository
+import com.hfad.tagalong.repository.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,11 +18,13 @@ object SessionModule {
     @Provides
     fun provideSession(
         authRepository: AuthRepository,
-        @Named(APP_CLIENT_ID) clientId: String
+        @Named(APP_CLIENT_ID) clientId: String,
+        userRepository: UserRepository
     ): Session {
         return Session(
             authRepository = authRepository,
-            clientId = clientId
+            clientId = clientId,
+            userRepository = userRepository
         )
     }
 
