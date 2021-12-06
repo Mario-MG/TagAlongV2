@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3f96ffc4fb4fcb95cb1ed803c87ecf26",
+    "identityHash": "5e18b2fb17cdcd897144d7b041fcaf17",
     "entities": [
       {
         "tableName": "Tag",
@@ -152,18 +152,12 @@
       },
       {
         "tableName": "Rule",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rule_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `playlistId` TEXT NOT NULL, `optionality` INTEGER NOT NULL, `auto_update` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rule_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `optionality` INTEGER NOT NULL, `auto_update` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "rule_id",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "playlistId",
-            "columnName": "playlistId",
-            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -254,12 +248,105 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "Playlist",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playlist_id` TEXT NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`playlist_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "playlist_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "playlist_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "RulePlaylistCrossRef",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rule_id` INTEGER NOT NULL, `playlist_id` TEXT NOT NULL, PRIMARY KEY(`rule_id`, `playlist_id`), FOREIGN KEY(`rule_id`) REFERENCES `Rule`(`rule_id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playlist_id`) REFERENCES `Playlist`(`playlist_id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "ruleId",
+            "columnName": "rule_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playlistId",
+            "columnName": "playlist_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "rule_id",
+            "playlist_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_RulePlaylistCrossRef_rule_id",
+            "unique": false,
+            "columnNames": [
+              "rule_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RulePlaylistCrossRef_rule_id` ON `${TABLE_NAME}` (`rule_id`)"
+          },
+          {
+            "name": "index_RulePlaylistCrossRef_playlist_id",
+            "unique": false,
+            "columnNames": [
+              "playlist_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RulePlaylistCrossRef_playlist_id` ON `${TABLE_NAME}` (`playlist_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Rule",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rule_id"
+            ],
+            "referencedColumns": [
+              "rule_id"
+            ]
+          },
+          {
+            "table": "Playlist",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "playlist_id"
+            ],
+            "referencedColumns": [
+              "playlist_id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3f96ffc4fb4fcb95cb1ed803c87ecf26')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5e18b2fb17cdcd897144d7b041fcaf17')"
     ]
   }
 }

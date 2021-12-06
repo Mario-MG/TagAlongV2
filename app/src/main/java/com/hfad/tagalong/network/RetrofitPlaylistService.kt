@@ -27,4 +27,11 @@ interface RetrofitPlaylistService {
         @Body body: JsonObject
     ): PlaylistDto
 
+    @POST("playlists/{id}/tracks")
+    suspend fun addTracksToPlaylist(
+        @Header("Authorization") auth: String,
+        @Path("id") playlistId: String,
+        @Query("uris") trackUris: String
+    )
+
 }

@@ -11,9 +11,6 @@ data class RuleEntity(
     @ColumnInfo(name = RULE_ID)
     val id: Long,
 
-    @ColumnInfo(name = RULE_PLAYLIST_ID)
-    val playlistId: String,
-
     @ColumnInfo(name = RULE_OPTIONALITY)
     val optionality: Boolean,
 

@@ -7,17 +7,18 @@ class TrackEntityMapper : DomainMapper<TrackEntity, Track> {
 
     override fun mapToDomainModel(model: TrackEntity): Track {
         return Track(
-            id = model.id,
+            id = model.id.split(":").last(),
             name = model.name,
             album = model.album,
             artists = model.artists.split(", "), // TODO: Come up with a better way to store artists
-            imageUrl = model.imageUrl
+            imageUrl = model.imageUrl,
+            uri = model.id
         )
     }
 
     override fun mapFromDomainModel(domainModel: Track): TrackEntity {
         return TrackEntity(
-            id = domainModel.id,
+            id = domainModel.uri,
             name = domainModel.name,
             album = domainModel.album,
             artists = domainModel.artists.joinToString(", "), // TODO: Come up with a better way to store artists

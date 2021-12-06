@@ -12,8 +12,12 @@ const val TRACK_TAG_CROSS_REF_TABLE = "TrackTagCrossRef"
 
 const val RULE_TABLE = "Rule"
 const val RULE_ID = "rule_id"
-const val RULE_PLAYLIST_ID = "playlistId"
 const val RULE_OPTIONALITY = "optionality"
 const val RULE_AUTOUPDATE = "auto_update"
 
 const val RULE_TAG_CROSS_REF_TABLE = "RuleTagCrossRef"
+
+const val PLAYLIST_TABLE = "Playlist"
+const val PLAYLIST_ID = "playlist_id"
+
+const val RULE_PLAYLIST_CROSS_REF_TABLE = "RulePlaylistCrossRef"

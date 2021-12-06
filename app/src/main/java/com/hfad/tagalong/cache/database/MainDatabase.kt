@@ -11,7 +11,9 @@ import com.hfad.tagalong.cache.model.*
         TrackEntity::class,
         TrackTagCrossRef::class,
         RuleEntity::class,
-        RuleTagCrossRef::class
+        RuleTagCrossRef::class,
+        PlaylistEntity::class,
+        RulePlaylistCrossRef::class
     ],
     version = 1
 )
@@ -23,6 +25,8 @@ abstract class MainDatabase : RoomDatabase() {
     abstract fun trackTagCrossRefDao(): TrackTagCrossRefDao
 
     abstract fun ruleDao(): RuleDao
+
+    abstract fun playlistDao(): PlaylistDao
 
     companion object {
         val DATABASE_NAME: String = "main_db"

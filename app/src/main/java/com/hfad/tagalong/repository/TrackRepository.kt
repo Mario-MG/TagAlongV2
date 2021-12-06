@@ -1,5 +1,6 @@
 package com.hfad.tagalong.repository
 
+import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
 
 interface TrackRepository {
@@ -9,5 +10,9 @@ interface TrackRepository {
     suspend fun getTrack(auth: String, trackId: String): Track
 
     suspend fun getTracksForTag(tagId: Long): List<Track>
+
+    suspend fun getTracksWithAnyOfTheTags(tags: List<Tag>): List<Track>
+
+    suspend fun getTracksWithAllOfTheTags(tags: List<Tag>): List<Track>
 
 }

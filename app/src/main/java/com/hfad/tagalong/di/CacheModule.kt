@@ -3,6 +3,7 @@ package com.hfad.tagalong.di
 import androidx.room.Room
 import com.hfad.tagalong.cache.dao.*
 import com.hfad.tagalong.cache.database.MainDatabase
+import com.hfad.tagalong.cache.model.PlaylistEntityMapper
 import com.hfad.tagalong.cache.model.RuleEntityMapper
 import com.hfad.tagalong.cache.model.TagEntityMapper
 import com.hfad.tagalong.cache.model.TrackEntityMapper
@@ -71,9 +72,25 @@ object CacheModule {
     @Singleton
     @Provides
     fun provideRuleEntityMapper(
+        playlistEntityMapper: PlaylistEntityMapper,
         tagEntityMapper: TagEntityMapper
     ): RuleEntityMapper {
-        return RuleEntityMapper(tagEntityMapper = tagEntityMapper)
+        return RuleEntityMapper(
+            playlistEntityMapper = playlistEntityMapper,
+            tagEntityMapper = tagEntityMapper
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun providePlaylistDao(db: MainDatabase): PlaylistDao {
+        return db.playlistDao()
+    }
+
+    @Singleton
+    @Provides
+    fun providePlaylistEntityMapper(): PlaylistEntityMapper {
+        return PlaylistEntityMapper()
     }
 
 }
