@@ -82,8 +82,12 @@ class PlaylistsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainViewModel.addLoginSuccessListener {
-            viewModel.onTriggerEvent(FirstPageEvent) // TODO: Could this be called once viewModel has been destroyed?
+        if (mainViewModel.isLoggedIn.value) { // TODO: Improve this
+            viewModel.onTriggerEvent(FirstPageEvent)
+        } else {
+            mainViewModel.addLoginSuccessListener {
+                viewModel.onTriggerEvent(FirstPageEvent) // TODO: Could this be called once viewModel has been destroyed?
+            }
         }
 
         // Source: https://youtu.be/09qjn706ITA?t=284
@@ -97,4 +101,5 @@ class PlaylistsFragment : Fragment() {
                 }
             }
     }
+
 }
