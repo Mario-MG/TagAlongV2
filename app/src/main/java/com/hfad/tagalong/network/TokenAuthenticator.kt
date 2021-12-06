@@ -9,8 +9,8 @@ import okhttp3.Route
 
 // Source: https://www.simplifiedcoding.net/retrofit-authenticator-refresh-token/
 class TokenAuthenticator(
-    private val session: Session
-): Authenticator {
+    private val session: Session // TODO: Review if session should really be depended on here
+) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request { // TODO: Handle if refreshToken() is unsuccessful
         return runBlocking {

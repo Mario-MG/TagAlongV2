@@ -4,9 +4,12 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hfad.tagalong.Session
+import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
+import com.hfad.tagalong.repository.PlaylistRepository
 import com.hfad.tagalong.repository.RuleRepository
 import com.hfad.tagalong.repository.TagRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,8 +20,10 @@ import javax.inject.Inject
 class RuleCreationViewModel
 @Inject
 constructor(
+    private val session: Session,
     private val ruleRepository: RuleRepository,
-    private val tagRepository: TagRepository
+    private val tagRepository: TagRepository,
+    private val playlistRepository: PlaylistRepository
 ) : ViewModel() {
 
     val loading = mutableStateOf(false)
@@ -95,9 +100,13 @@ constructor(
 
     private suspend fun createRule() {
         loading.value = true
-        // TODO: Create new playlist
+        val newPlaylist = playlistRepository.create(
+            auth = session.getAuthorizationHeader(),
+            userId = session.user!!.id,
+            playlist = Playlist(name = playlistName.value)
+        )
         val rule = Rule(
-            playlistId = "TODO", // TODO: New playlist id goes here
+            playlistId = newPlaylist.id,
             optionality = optionality.value,
             autoUpdate = autoUpdate.value,
             tags = tags
