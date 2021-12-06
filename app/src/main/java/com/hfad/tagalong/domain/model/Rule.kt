@@ -2,19 +2,19 @@ package com.hfad.tagalong.domain.model
 
 data class Rule(
     val id: Long,
-    val playlistId: String,
+    val playlist: Playlist,
     val optionality: Boolean,
     val autoUpdate: Boolean,
     val tags: List<Tag>
 ) {
     constructor(
-        playlistId: String,
+        playlist: Playlist,
         optionality: Boolean,
         autoUpdate: Boolean,
         tags: List<Tag>
     ) : this(
         id = 0,
-        playlistId = playlistId,
+        playlist = playlist,
         optionality = optionality,
         autoUpdate = autoUpdate,
         tags = tags

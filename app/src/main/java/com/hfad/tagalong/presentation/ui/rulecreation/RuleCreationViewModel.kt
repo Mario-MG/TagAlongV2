@@ -12,6 +12,7 @@ import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
 import com.hfad.tagalong.repository.PlaylistRepository
 import com.hfad.tagalong.repository.RuleRepository
 import com.hfad.tagalong.repository.TagRepository
+import com.hfad.tagalong.repository.TrackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,7 +24,8 @@ constructor(
     private val session: Session,
     private val ruleRepository: RuleRepository,
     private val tagRepository: TagRepository,
-    private val playlistRepository: PlaylistRepository
+    private val playlistRepository: PlaylistRepository,
+    private val tracksRepository: TrackRepository
 ) : ViewModel() {
 
     val loading = mutableStateOf(false)
@@ -102,27 +104,41 @@ constructor(
 
     private suspend fun createRuleAndExecuteCallback(callback: () -> Unit) {
         if (tags.isNotEmpty() && playlistName.value.isNotBlank()) {
-            createRule()
+            loading.value = true
+            val newPlaylist = createPlaylist()
+            val newRule = createRuleForPlaylist(newPlaylist)
+            applyRule(newRule)
             callback()
+            loading.value = false
         }
     }
 
-    private suspend fun createRule() {
-        loading.value = true
-        val newPlaylist = playlistRepository.create(
+    private suspend fun createPlaylist(): Playlist {
+        return playlistRepository.create(
             auth = session.getAuthorizationHeader(),
             userId = session.user!!.id,
             playlist = Playlist(name = playlistName.value)
         )
+    }
+
+    private suspend fun createRuleForPlaylist(playlist: Playlist): Rule {
         val rule = Rule(
-            playlistId = newPlaylist.id,
+            playlist = playlist,
             optionality = optionality.value,
             autoUpdate = autoUpdate.value,
             tags = tags
         )
         ruleRepository.createNewRule(rule)
-        // TODO: Add tracks to new playlist
-        loading.value = false
+        return rule
+    }
+
+    private suspend fun applyRule(rule: Rule) {
+        val tracks = if (rule.optionality) tracksRepository.getTracksWithAnyOfTheTags(tags) else tracksRepository.getTracksWithAllOfTheTags(tags)
+        playlistRepository.addTracksToPlaylist(
+            auth = session.getAuthorizationHeader(),
+            playlist = rule.playlist,
+            tracks = tracks
+        )
     }
 
 }

@@ -4,6 +4,4 @@ sealed class RulesEvent {
 
     object LoadRulesEvent : RulesEvent()
 
-    object CreateNewRuleEvent : RulesEvent()
-
 }

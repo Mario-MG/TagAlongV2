@@ -1,6 +1,7 @@
 package com.hfad.tagalong.di
 
 import com.hfad.tagalong.cache.dao.*
+import com.hfad.tagalong.cache.model.PlaylistEntityMapper
 import com.hfad.tagalong.cache.model.RuleEntityMapper
 import com.hfad.tagalong.cache.model.TagEntityMapper
 import com.hfad.tagalong.cache.model.TrackEntityMapper
@@ -26,10 +27,14 @@ object RepositoryModule {
     @Provides
     fun providePlaylistRepository(
         playlistService: RetrofitPlaylistService,
-        playlistMapper: PlaylistDtoMapper
+        playlistDtoMapper: PlaylistDtoMapper,
+        playlistDao: PlaylistDao,
+        playlistEntityMapper: PlaylistEntityMapper
     ): PlaylistRepository = PlaylistRepositoryImpl(
         playlistService = playlistService,
-        playlistMapper = playlistMapper
+        playlistDtoMapper = playlistDtoMapper,
+        playlistDao = playlistDao,
+        playlistEntityMapper = playlistEntityMapper
     )
 
     @Singleton

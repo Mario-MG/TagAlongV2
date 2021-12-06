@@ -4,28 +4,29 @@ import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.util.DomainMapper
 
 class RuleEntityMapper(
+    private val playlistEntityMapper: PlaylistEntityMapper,
     private val tagEntityMapper: TagEntityMapper
-) : DomainMapper<RuleWithTags, Rule> {
+) : DomainMapper<RulePoko, Rule> {
 
-    override fun mapToDomainModel(model: RuleWithTags): Rule {
+    override fun mapToDomainModel(model: RulePoko): Rule {
         return Rule(
             id = model.rule.id,
-            playlistId = model.rule.playlistId,
+            playlist = playlistEntityMapper.mapToDomainModel(model.playlist),
             optionality = model.rule.optionality,
             autoUpdate = model.rule.autoUpdate,
             tags = tagEntityMapper.toDomainList(model.tags.map { tag -> TagEntityPoko(tag, 0) }) // TODO: Improve this
         )
     }
 
-    override fun mapFromDomainModel(domainModel: Rule): RuleWithTags {
-        return RuleWithTags(
+    override fun mapFromDomainModel(domainModel: Rule): RulePoko {
+        return RulePoko(
             RuleEntity(
                 id = domainModel.id,
-                playlistId = domainModel.playlistId,
                 optionality = domainModel.optionality,
                 autoUpdate = domainModel.autoUpdate
             ),
-            tagEntityMapper.fromDomainList(domainModel.tags).map { it.tagEntity } // TODO: Improve this
+            playlist = playlistEntityMapper.mapFromDomainModel(domainModel.playlist),
+            tags = tagEntityMapper.fromDomainList(domainModel.tags).map { it.tagEntity } // TODO: Improve this
         )
     }
 

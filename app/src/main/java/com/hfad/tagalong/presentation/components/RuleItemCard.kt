@@ -53,7 +53,7 @@ fun RuleItemCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = rule.playlistId, // TODO: Bring playlist name from API
+                    text = rule.playlist.name,
                     style = MaterialTheme.typography.h5,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

@@ -8,7 +8,7 @@ abstract class RuleDao {
 
     @Transaction
     @Query("SELECT * FROM $RULE_TABLE")
-    abstract suspend fun getAll(): List<RuleWithTags>
+    abstract suspend fun getAll(): List<RulePoko>
 
     @Transaction
     @Query("""
@@ -29,11 +29,17 @@ abstract class RuleDao {
             )
         )
     """)
-    abstract suspend fun getRulesFulfilledByTagIds(newTagId: Long, vararg originalTagsIds: Long): List<RuleWithTags>
+    abstract suspend fun getRulesFulfilledByTagIds(newTagId: Long, vararg originalTagsIds: Long): List<RulePoko>
 
-    suspend fun insert(ruleWithTags: RuleWithTags) {
-        val ruleId = _insert(ruleWithTags.rule)
-        _insert(*ruleWithTags.tags.map { tag ->
+    suspend fun insert(rulePoko: RulePoko) {
+        val ruleId = _insert(rulePoko.rule)
+        _insert(
+            RulePlaylistCrossRef(
+                ruleId = ruleId,
+                playlistId = rulePoko.playlist.id
+            )
+        )
+        _insert(*rulePoko.tags.map { tag ->
             RuleTagCrossRef(
                 ruleId = ruleId,
                 tagId = tag.id
@@ -43,6 +49,9 @@ abstract class RuleDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     internal abstract suspend fun _insert(rule: RuleEntity): Long
+
+    @Insert
+    internal abstract suspend fun _insert(vararg rulePlaylistCrossRefs: RulePlaylistCrossRef)
 
     @Insert
     internal abstract suspend fun _insert(vararg ruleTagCrossRefs: RuleTagCrossRef)
