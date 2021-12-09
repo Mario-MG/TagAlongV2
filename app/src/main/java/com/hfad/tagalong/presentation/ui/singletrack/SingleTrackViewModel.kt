@@ -9,9 +9,7 @@ import com.hfad.tagalong.Session
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.presentation.ui.singletrack.SingleTrackEvent.*
-import com.hfad.tagalong.repository.TagRepository
-import com.hfad.tagalong.repository.TrackRepository
-import com.hfad.tagalong.repository.TrackTagRepository
+import com.hfad.tagalong.repository.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,14 +21,16 @@ constructor(
     private val trackRepository: TrackRepository,
     private val session: Session,
     private val trackTagRepository: TrackTagRepository,
-    private val tagRepository: TagRepository
+    private val tagRepository: TagRepository,
+    private val ruleRepository: RuleRepository,
+    private val playlistRepository: PlaylistRepository
 ) : ViewModel() {
 
     val track = mutableStateOf<Track?>(null)
 
     val tagsForTrack = mutableStateListOf<Tag>()
 
-    val allTags = mutableStateListOf<Tag>() // TODO: These will be later used for autocompletion
+    val allTags = mutableStateListOf<Tag>()
 
     val loading = mutableStateOf(false)
 
@@ -57,20 +57,28 @@ constructor(
             auth = session.getAuthorizationHeader(),
             trackId = trackId
         )
-        this.track.value = track // TODO: Handle null
+        this.track.value = track // TODO: Handle null?
         loading.value = false
     }
 
     private suspend fun addTag(tagName: String) {
-        if (this.tagsForTrack.none { it.name == tagName }) {
-            val existingTag = this.allTags.find { tag -> tag.name == tagName }
-            if (existingTag != null) {
-                trackTagRepository.addTagToTrack(tag = existingTag, track = track.value!!)
-            } else {
-                trackTagRepository.addTagToTrack(tag = Tag(name = tagName), track = track.value!!)
-            }
+        val tag = this.allTags.find { tag -> tag.name == tagName } ?: Tag(name = tagName)
+        if (!this.tagsForTrack.contains(tag)) {
+            trackTagRepository.addTagToTrack(tag = tag, track = track.value!!)
+            applyRules(tag = tag, track = track.value!!)
         } else {
             // TODO: Show snack
+        }
+    }
+
+    private suspend fun applyRules(tag: Tag, track: Track) {
+        val rules = ruleRepository.getRulesFulfilledByTags(newTag = tag, originalTags = tagsForTrack)
+        for (rule in rules) {
+            playlistRepository.addTracksToPlaylist(
+                auth = session.getAuthorizationHeader(),
+                playlist = rule.playlist,
+                tracks = listOf(track)
+            )
         }
     }
 

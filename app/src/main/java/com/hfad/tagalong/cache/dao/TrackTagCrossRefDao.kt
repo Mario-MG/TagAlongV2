@@ -17,9 +17,9 @@ interface TrackTagCrossRefDao {
     suspend fun insert(trackTagCrossRef: TrackTagCrossRef)
 
     @Insert
-    suspend fun insertAll(vararg trackTagCrossRefs: TrackTagCrossRef)
+    suspend fun insert(vararg trackTagCrossRefs: TrackTagCrossRef)
 
     @Delete
-    suspend fun delete(trackTagCrossRef: TrackTagCrossRef)
+    suspend fun delete(trackTagCrossRef: TrackTagCrossRef): Int
 
 }

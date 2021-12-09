@@ -1,43 +1,44 @@
 package com.hfad.tagalong.presentation.components
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @Composable
-fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (appearance-wise)?
+fun <T : Keyword> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (appearance-wise)?
     keywordObjects: List<T>,
     onClickDeleteIcon: ((T) -> Unit)? = null,
-    textFieldLabel: @Composable (() -> Unit)? = { Text("Add a keyword here...") },
+    textFieldLabel: String = "Add a keyword here...",
     textFieldLeadingIcon: @Composable (() -> Unit)? = null,
-    onAddNewKeyword: ((String) -> Unit)? = null
+    onAddNewKeyword: ((String) -> Unit)? = null,
+    newKeywordValidation: (String) -> Boolean = { true },
+    predictions: List<T> = emptyList(),
+    predictionFilter: (T, String) -> Boolean = { _, _ -> true }
 ) {
-    val newKeyword = remember { mutableStateOf("") }
+    var currentKeyword by remember { mutableStateOf("") }
 
     // Source: https://issuetracker.google.com/issues/192043120#comment17 (see comment #19 too)
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
+
+    val view = LocalView.current
 
     Surface(
         color = Color.Black,
@@ -62,33 +63,47 @@ fun <T> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (a
                 }
             }
             onAddNewKeyword?.let {
-                TextField(
-                    value = newKeyword.value,
-                    onValueChange = {
-                        newKeyword.value = it
-                        refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
-                    },
-                    label = textFieldLabel,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done,
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            onAddNewKeyword(newKeyword.value)
-                            newKeyword.value = ""
-                            refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
-                        },
-                    ),
-                    leadingIcon = textFieldLeadingIcon,
+                val onNewKeyword = { newKeyword: String ->
+                    if (newKeywordValidation(newKeyword)) {
+                        onAddNewKeyword(newKeyword)
+                        currentKeyword = ""
+                        view.clearFocus()
+                    }
+                }
+                AutoCompleteTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .bringIntoViewRequester(bringIntoViewRequester)
                         .onFocusChanged {
                             if ("$it" == "Active") {
-                                refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
+                                refocus(
+                                    bringIntoViewRequester = bringIntoViewRequester,
+                                    scope = scope
+                                )
                             }
-                        }
+                        },
+                    query = currentKeyword,
+                    queryLabel = textFieldLabel,
+                    leadingIcon = textFieldLeadingIcon,
+                    onQueryChange = {
+                        currentKeyword = it
+                        refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
+                    },
+                    predictions = predictions,
+                    predictionFilter = { keyword -> predictionFilter(keyword, currentKeyword) },
+                    onDoneActionClick = {
+                        onNewKeyword(currentKeyword)
+                        refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
+                    },
+                    onClearClick = {
+                        currentKeyword = ""
+                    },
+                    onItemClick = { clickedKeyword ->
+                        onNewKeyword(clickedKeyword.value())
+                    },
+                    itemContent = {
+                        Keyword(keywordObject = it)
+                    }
                 )
             }
         }

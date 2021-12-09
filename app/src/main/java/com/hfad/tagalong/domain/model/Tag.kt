@@ -1,13 +1,19 @@
 package com.hfad.tagalong.domain.model
 
-data class Tag (
+import com.hfad.tagalong.presentation.components.Keyword
+
+data class Tag(
     val id: Long,
     val name: String,
     val size: Int
-) {
-    constructor(name: String) : this(0, name, 0)
+) : Keyword {
+    constructor(name: String) : this(
+        id = 0,
+        name = name,
+        size = 0
+    )
 
-    override fun toString(): String {
+    override fun value(): String {
         return name
     }
 }

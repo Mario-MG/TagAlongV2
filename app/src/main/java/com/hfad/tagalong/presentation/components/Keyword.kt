@@ -12,21 +12,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun <T> Keyword(
+fun <T : Keyword> Keyword(
     keywordObject: T,
     onClickDeleteIcon: ((T) -> Unit)? = null
 ) {
     Surface(
         color = MaterialTheme.colors.primary,
-        modifier = Modifier
-            .padding(4.dp),
+        modifier = Modifier.padding(4.dp),
         shape = MaterialTheme.shapes.small
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = keywordObject.toString(),
+                text = keywordObject.value(),
                 modifier = Modifier
                     .padding(
                         vertical = 2.dp,
@@ -51,4 +50,8 @@ fun <T> Keyword(
             }
         }
     }
+}
+
+interface Keyword {
+    fun value(): String
 }

@@ -18,13 +18,12 @@ class TrackTagRepositoryImpl(
 ) : TrackTagRepository {
 
     override suspend fun addTagToTrack(tag: Tag, track: Track) {
-        val newTagId = tagDao.insert(tagEntityMapper.mapFromDomainModel(tag))
-        val isExistingTag = newTagId == -1L
+        val tagId = if (tag.id > 0) tag.id else tagDao.insert(tagEntityMapper.mapFromDomainModel(tag))
         trackDao.insert(trackEntityMapper.mapFromDomainModel(track))
         trackTagCrossRefDao.insert(
             TrackTagCrossRef(
-                trackId = track.id,
-                tagId = if (isExistingTag) tag.id else newTagId
+                trackId = track.uri, // TODO
+                tagId = tagId
             ) // TODO: How to abstract this?
         )
     }
@@ -32,7 +31,7 @@ class TrackTagRepositoryImpl(
     override suspend fun deleteTagFromTrack(tag: Tag, track: Track) {
         trackTagCrossRefDao.delete(
             TrackTagCrossRef(
-                trackId = track.id,
+                trackId = track.uri, // TODO
                 tagId = tag.id
             ) // TODO: How to abstract this?
         )

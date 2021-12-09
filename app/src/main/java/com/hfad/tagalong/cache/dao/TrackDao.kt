@@ -29,9 +29,9 @@ interface TrackDao {
     suspend fun insert(track: TrackEntity)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAll(vararg tracks: TrackEntity)
+    suspend fun insert(vararg tracks: TrackEntity)
 
-    @Delete(entity = TrackEntity::class)
-    suspend fun deleteById(vararg trackIds: TrackEntity.Id): Int
+    @Delete
+    suspend fun delete(vararg tracks: TrackEntity): Int
 
 }

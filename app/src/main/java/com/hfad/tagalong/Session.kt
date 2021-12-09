@@ -1,18 +1,17 @@
 package com.hfad.tagalong
 
+import com.hfad.tagalong.domain.model.User
 import com.hfad.tagalong.repository.AuthRepository
+import com.hfad.tagalong.repository.UserRepository
 import kotlin.properties.Delegates
 
 class Session(
     private val authRepository: AuthRepository,
-    private val clientId: String
+    private val clientId: String,
+    private val userRepository: UserRepository
 ) {
 
     private var refreshToken: String? = null
-        set(value) {
-            field = value
-            isLoggedIn = value != null
-        }
 
     private var token: String? = null
 
@@ -23,9 +22,11 @@ class Session(
     }
         private set
 
+    var user: User? = null
+
     suspend fun init() {
-        authRepository.loadRefreshToken()?.let {
-            this.refreshToken = it
+        authRepository.loadRefreshToken()?.let { savedRefreshToken ->
+            login(refreshToken = savedRefreshToken)
         }
     }
 
@@ -41,11 +42,22 @@ class Session(
             codeVerifier = codeVerifier,
             redirectUri = redirectUri
         )
-        this.refreshToken = tokenObj.refreshToken
         this.token = tokenObj.accessToken
+        this.refreshToken = tokenObj.refreshToken
         if (stayLoggedIn) {
             authRepository.saveRefreshToken(refreshToken!!)
         }
+        this.user = userRepository.get(auth = getAuthorizationHeader())
+        this.isLoggedIn = true
+    }
+
+    private suspend fun login(
+        refreshToken: String
+    ) {
+        this.refreshToken = refreshToken
+        refreshToken()
+        this.user = userRepository.get(auth = getAuthorizationHeader())
+        this.isLoggedIn = true
     }
 
     suspend fun getAuthorizationHeader(): String {
@@ -76,7 +88,9 @@ class Session(
     suspend fun logOut() {
         refreshToken = null
         token = null
+        user = null
         authRepository.deleteRefreshToken()
+        isLoggedIn = false
     }
 
 }
