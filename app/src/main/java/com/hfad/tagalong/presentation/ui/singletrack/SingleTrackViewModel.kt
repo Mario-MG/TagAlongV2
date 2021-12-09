@@ -30,7 +30,7 @@ constructor(
 
     val tagsForTrack = mutableStateListOf<Tag>()
 
-    val allTags = mutableStateListOf<Tag>() // TODO: These will be later used for autocompletion
+    val allTags = mutableStateListOf<Tag>()
 
     val loading = mutableStateOf(false)
 
