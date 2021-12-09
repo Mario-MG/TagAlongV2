@@ -6,9 +6,9 @@ import com.hfad.tagalong.domain.util.DomainMapper
 class RuleEntityMapper(
     private val playlistEntityMapper: PlaylistEntityMapper,
     private val tagEntityMapper: TagEntityMapper
-) : DomainMapper<RulePoko, Rule> {
+) : DomainMapper<RuleEntityPoko, Rule> {
 
-    override fun mapToDomainModel(model: RulePoko): Rule {
+    override fun mapToDomainModel(model: RuleEntityPoko): Rule {
         return Rule(
             id = model.rule.id,
             playlist = playlistEntityMapper.mapToDomainModel(model.playlist),
@@ -18,9 +18,9 @@ class RuleEntityMapper(
         )
     }
 
-    override fun mapFromDomainModel(domainModel: Rule): RulePoko {
-        return RulePoko(
-            RuleEntity(
+    override fun mapFromDomainModel(domainModel: Rule): RuleEntityPoko {
+        return RuleEntityPoko(
+            rule = RuleEntity(
                 id = domainModel.id,
                 optionality = domainModel.optionality,
                 autoUpdate = domainModel.autoUpdate

@@ -38,7 +38,7 @@ fun <T : Keyword> FlowKeywordList( // TODO: Make TextField and/or Keywords custo
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
 
-    val view = LocalView.current // TODO: PRUEBA
+    val view = LocalView.current
 
     Surface(
         color = Color.Black,

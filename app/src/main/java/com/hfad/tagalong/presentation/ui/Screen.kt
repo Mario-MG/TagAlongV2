@@ -10,7 +10,7 @@ import androidx.compose.material.icons.filled.Tag
 import androidx.compose.runtime.Composable
 import com.hfad.tagalong.R
 
-sealed class Screen(
+sealed class Screen( // TODO: Change this to enum?
     val icon: @Composable () -> Unit,
     val label: String,
     @IdRes val route: Int

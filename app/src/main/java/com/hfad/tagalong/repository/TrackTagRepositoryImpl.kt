@@ -22,7 +22,7 @@ class TrackTagRepositoryImpl(
         trackDao.insert(trackEntityMapper.mapFromDomainModel(track))
         trackTagCrossRefDao.insert(
             TrackTagCrossRef(
-                trackId = track.uri,
+                trackId = track.uri, // TODO
                 tagId = tagId
             ) // TODO: How to abstract this?
         )
@@ -31,7 +31,7 @@ class TrackTagRepositoryImpl(
     override suspend fun deleteTagFromTrack(tag: Tag, track: Track) {
         trackTagCrossRefDao.delete(
             TrackTagCrossRef(
-                trackId = track.uri,
+                trackId = track.uri, // TODO
                 tagId = tag.id
             ) // TODO: How to abstract this?
         )

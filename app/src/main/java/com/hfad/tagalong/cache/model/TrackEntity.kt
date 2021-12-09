@@ -20,9 +20,4 @@ data class TrackEntity(
     @ColumnInfo(name = "image_url")
     val imageUrl: String?
 
-) {
-    data class Id(
-        @ColumnInfo(name = TRACK_ID)
-        val id: String
-    )
-}
+)
