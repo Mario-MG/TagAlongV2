@@ -38,7 +38,7 @@ constructor(
 
     val autoUpdate = mutableStateOf(true)
 
-    private lateinit var allTags: List<Tag>
+    val allTags = mutableStateListOf<Tag>()
 
     init {
         onTriggerEvent(InitRuleCreationEvent)
@@ -73,7 +73,9 @@ constructor(
     }
 
     private suspend fun getAllTags() {
-        this.allTags = tagRepository.getAll()
+        val allTags = tagRepository.getAll()
+        this.allTags.clear()
+        this.allTags.addAll(allTags)
     }
 
     private fun changePlaylistName(playlistName: String) {

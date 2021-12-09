@@ -1,11 +1,13 @@
 package com.hfad.tagalong.presentation.components
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import com.hfad.tagalong.domain.model.Rule
 
+@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @Composable
 fun RuleItemList(
