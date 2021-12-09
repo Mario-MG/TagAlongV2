@@ -1,7 +1,9 @@
 package com.hfad.tagalong.presentation.theme
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -25,7 +27,11 @@ fun AppTheme(
         colors = DarkThemeColours,
         typography = AppTypography
     ) {
-        Box {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colors.background)
+        ) {
             content()
             if (displayProgressBar) {
                 CircularProgressIndicator(
