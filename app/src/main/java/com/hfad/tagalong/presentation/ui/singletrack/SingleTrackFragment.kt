@@ -59,6 +59,7 @@ class SingleTrackFragment : Fragment() {
                 val track = viewModel.track.value
                 val tags = viewModel.tagsForTrack
                 val loading = viewModel.loading.value
+                val allTags = viewModel.allTags
 
                 AppTheme(
                     displayProgressBar = loading
@@ -112,7 +113,11 @@ class SingleTrackFragment : Fragment() {
                                     textFieldLeadingIcon = {
                                         Icon(Icons.Filled.Tag, contentDescription = "Tag icon")
                                     },
-                                    textFieldLabel = "Add a tag here..."
+                                    textFieldLabel = "Add a tag here...",
+                                    predictions = allTags,
+                                    predictionFilter = { tag, currentValue ->
+                                        !tags.contains(tag) && tag.name.contains(currentValue)
+                                    }
                                 )
                             }
                         }
