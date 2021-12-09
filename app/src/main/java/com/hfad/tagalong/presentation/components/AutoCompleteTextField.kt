@@ -47,7 +47,6 @@ fun <T> AutoCompleteTextField(
             leadingIcon = leadingIcon,
             onQueryChange = onQueryChange,
             onDoneActionClick = {
-                view.clearFocus()
                 onDoneActionClick()
             },
             onClearClick = {
