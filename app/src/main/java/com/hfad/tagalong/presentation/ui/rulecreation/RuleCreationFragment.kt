@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -29,6 +30,7 @@ import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
 import dagger.hilt.android.AndroidEntryPoint
 
+@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @AndroidEntryPoint
 class RuleCreationFragment : Fragment() {
@@ -47,6 +49,7 @@ class RuleCreationFragment : Fragment() {
                 val tags = viewModel.tags
                 val optionality = viewModel.optionality.value
                 val autoUpdate = viewModel.autoUpdate.value
+                val allTags = viewModel.allTags
 
                 val navController = findNavController()
 
@@ -109,8 +112,10 @@ class RuleCreationFragment : Fragment() {
                                 textFieldLeadingIcon = {
                                     Icon(Icons.Filled.Tag, contentDescription = "Tag icon")
                                 },
-                                textFieldLabel = {
-                                    Text("Add a tag here...")
+                                textFieldLabel = "Add a tag here...",
+                                predictions = allTags,
+                                predictionFilter = { tag, currentValue ->
+                                    !tags.contains(tag) && tag.name.contains(currentValue)
                                 }
                             )
                             Spacer(modifier = Modifier.height(12.dp))

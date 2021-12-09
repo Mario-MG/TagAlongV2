@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -22,6 +23,7 @@ import com.hfad.tagalong.presentation.theme.AppScaffold
 import com.hfad.tagalong.presentation.ui.rules.RulesEvent.LoadRulesEvent
 import dagger.hilt.android.AndroidEntryPoint
 
+@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @AndroidEntryPoint
 class RulesFragment : Fragment() {
