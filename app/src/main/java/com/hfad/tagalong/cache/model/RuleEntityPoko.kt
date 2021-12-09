@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
-data class RulePoko(
+data class RuleEntityPoko(
 
     @Embedded
     val rule: RuleEntity,

@@ -53,14 +53,14 @@ fun <T> AutoCompleteTextField(
                 onClearClick()
             }
         )
-        LazyColumn(
-            state = lazyListState,
-            modifier = modifier
-                .heightIn(max = TextFieldDefaults.MinHeight * 2)
-                .padding(vertical = 4.dp)
-        ) {
-            items(predictions.filter(predictionFilter)) { prediction ->
-                AnimatedVisibility(visible = isSearching) {
+        AnimatedVisibility(visible = isSearching) {
+            LazyColumn(
+                state = lazyListState,
+                modifier = modifier
+                    .heightIn(max = TextFieldDefaults.MinHeight * 2)
+                    .padding(vertical = 4.dp)
+            ) {
+                items(predictions.filter(predictionFilter)) { prediction ->
                     Row(
                         Modifier
                             .clickable {

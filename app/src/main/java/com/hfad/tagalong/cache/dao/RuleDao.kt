@@ -8,9 +8,9 @@ abstract class RuleDao {
 
     @Transaction
     @Query("SELECT * FROM $RULE_TABLE")
-    abstract suspend fun getAll(): List<RulePoko>
+    abstract suspend fun getAll(): List<RuleEntityPoko>
 
-    suspend fun getRulesFulfilledByTagIds(newTagId: Long, vararg originalTagsIds: Long): List<RulePoko> {
+    suspend fun getRulesFulfilledByTagIds(newTagId: Long, vararg originalTagsIds: Long): List<RuleEntityPoko> {
         return if (originalTagsIds.isNotEmpty()) {
             _getRulesFulfilledByTagIds(newTagId = newTagId, originalTagsIds = originalTagsIds)
         } else {
@@ -36,7 +36,7 @@ abstract class RuleDao {
             )
         )
     """)
-    internal abstract suspend fun _getRulesFulfilledByTagIds(newTagId: Long, vararg originalTagsIds: Long): List<RulePoko>
+    internal abstract suspend fun _getRulesFulfilledByTagIds(newTagId: Long, vararg originalTagsIds: Long): List<RuleEntityPoko>
 
     @Transaction
     @Query("""
@@ -55,9 +55,9 @@ abstract class RuleDao {
             )
         )
     """)
-    internal abstract suspend fun _getRulesFulfilledByTagIds(newTagId: Long): List<RulePoko>
+    internal abstract suspend fun _getRulesFulfilledByTagIds(newTagId: Long): List<RuleEntityPoko>
 
-    suspend fun insert(rulePoko: RulePoko) {
+    suspend fun insert(rulePoko: RuleEntityPoko) {
         val ruleId = _insert(rulePoko.rule)
         _insert(
             RulePlaylistCrossRef(
