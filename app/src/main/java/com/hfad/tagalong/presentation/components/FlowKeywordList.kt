@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import kotlinx.coroutines.CoroutineScope
@@ -26,15 +27,18 @@ fun <T : Keyword> FlowKeywordList( // TODO: Make TextField and/or Keywords custo
     onClickDeleteIcon: ((T) -> Unit)? = null,
     textFieldLabel: String = "Add a keyword here...",
     textFieldLeadingIcon: @Composable (() -> Unit)? = null,
-    onAddNewKeyword: ((String) -> String)? = null,
+    onAddNewKeyword: ((String) -> Unit)? = null,
+    newKeywordValidation: (String) -> Boolean = { true },
     predictions: List<T> = emptyList(),
     predictionFilter: (T, String) -> Boolean = { _, _ -> true }
 ) {
-    var newKeyword by remember { mutableStateOf("") }
+    var currentKeyword by remember { mutableStateOf("") }
 
     // Source: https://issuetracker.google.com/issues/192043120#comment17 (see comment #19 too)
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
+
+    val view = LocalView.current // TODO: PRUEBA
 
     Surface(
         color = Color.Black,
@@ -59,6 +63,13 @@ fun <T : Keyword> FlowKeywordList( // TODO: Make TextField and/or Keywords custo
                 }
             }
             onAddNewKeyword?.let {
+                val onNewKeyword = { newKeyword: String ->
+                    if (newKeywordValidation(newKeyword)) {
+                        onAddNewKeyword(newKeyword)
+                        currentKeyword = ""
+                        view.clearFocus()
+                    }
+                }
                 AutoCompleteTextField(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -71,24 +82,24 @@ fun <T : Keyword> FlowKeywordList( // TODO: Make TextField and/or Keywords custo
                                 )
                             }
                         },
-                    query = newKeyword,
+                    query = currentKeyword,
                     queryLabel = textFieldLabel,
                     leadingIcon = textFieldLeadingIcon,
                     onQueryChange = {
-                        newKeyword = it
+                        currentKeyword = it
                         refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
                     },
                     predictions = predictions,
-                    predictionFilter = { tag -> predictionFilter(tag, newKeyword) },
+                    predictionFilter = { keyword -> predictionFilter(keyword, currentKeyword) },
                     onDoneActionClick = {
-                        newKeyword = onAddNewKeyword(newKeyword)
+                        onNewKeyword(currentKeyword)
                         refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
                     },
                     onClearClick = {
-                        newKeyword = ""
+                        currentKeyword = ""
                     },
-                    onItemClick = { keyword ->
-                        newKeyword = onAddNewKeyword(keyword.value())
+                    onItemClick = { clickedKeyword ->
+                        onNewKeyword(clickedKeyword.value())
                     },
                     itemContent = {
                         Keyword(keywordObject = it)

@@ -79,33 +79,21 @@ class RuleCreationFragment : Fragment() {
                             TextField(
                                 value = playlistName,
                                 onValueChange = {
-                                    viewModel.onTriggerEvent(ChangePlaylistNameEvent(it))
-//                                    refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
+                                    viewModel.onTriggerEvent(ChangePlaylistNameEvent(it)) // FIXME: Issue with backspace long press
                                 },
                                 label = { Text("Playlist name") },
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Text,
                                     imeAction = ImeAction.Done
-                                ),
-                                modifier = Modifier
-//                                    .bringIntoViewRequester(bringIntoViewRequester)
-//                                    .onFocusChanged {
-//                                        if ("$it" == "Active") {
-//                                            refocus(bringIntoViewRequester = bringIntoViewRequester, scope = scope)
-//                                        }
-//                                    }
+                                )
                             )
                             Spacer(modifier = Modifier.height(24.dp))
                             FlowKeywordList(
                                 keywordObjects = tags,
                                 onAddNewKeyword = { tagName ->
-                                    if (viewModel.canAddTag(tagName)) {
-                                        viewModel.onTriggerEvent(AddTagEvent(tagName))
-                                        return@FlowKeywordList ""
-                                    } else {
-                                        return@FlowKeywordList tagName
-                                    }
+                                    viewModel.onTriggerEvent(AddTagEvent(tagName))
                                 },
+                                newKeywordValidation = viewModel::canAddTag,
                                 onClickDeleteIcon = { tag ->
                                     viewModel.onTriggerEvent(DeleteTagEvent(tag))
                                 },

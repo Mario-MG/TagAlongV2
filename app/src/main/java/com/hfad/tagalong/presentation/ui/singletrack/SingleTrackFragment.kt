@@ -105,7 +105,6 @@ class SingleTrackFragment : Fragment() {
                                     keywordObjects = tags,
                                     onAddNewKeyword = { tagName ->
                                         viewModel.onTriggerEvent(AddTagEvent(tagName))
-                                        return@FlowKeywordList ""
                                     },
                                     onClickDeleteIcon = { tag ->
                                         viewModel.onTriggerEvent(DeleteTagEvent(tag))

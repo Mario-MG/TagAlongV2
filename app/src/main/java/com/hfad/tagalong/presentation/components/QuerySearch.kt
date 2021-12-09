@@ -35,7 +35,7 @@ fun QuerySearch(
         onValueChange = onQueryChange,
         label = { Text(text = label) },
         leadingIcon = leadingIcon,
-        textStyle = MaterialTheme.typography.subtitle1, // TODO: Check style
+        textStyle = MaterialTheme.typography.subtitle1,
         singleLine = true,
         trailingIcon = {
             if (showClearButton) {
