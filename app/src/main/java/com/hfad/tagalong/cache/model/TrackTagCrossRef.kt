@@ -3,6 +3,7 @@ package com.hfad.tagalong.cache.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     tableName = TRACK_TAG_CROSS_REF_TABLE,
@@ -20,14 +21,22 @@ import androidx.room.ForeignKey
             childColumns = [TAG_ID],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index(
+            value = [TRACK_ID]
+        ),
+        Index(
+            value = [TAG_ID]
+        )
     ]
 )
-data class TrackTagCrossRef (
+data class TrackTagCrossRef(
 
     @ColumnInfo(name = TRACK_ID)
     val trackId: String,
-    
+
     @ColumnInfo(name = TAG_ID)
     val tagId: Long
-    
+
 )

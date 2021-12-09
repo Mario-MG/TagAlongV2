@@ -4,9 +4,12 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!--  FIXME: Backup was disabled to avoid problems with EncryptedSharedPreferences
+            see: https://stackoverflow.com/questions/63597398/androidx-security-encryptedsharedpreferences-v1-1-0-w-api-21-issue -->
     <application
         android:name=".presentation.BaseApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"

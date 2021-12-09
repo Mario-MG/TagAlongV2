@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.material.Scaffold
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
@@ -16,10 +15,9 @@ import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.presentation.BUNDLE_KEY_PLAYLIST_ID
 import com.hfad.tagalong.presentation.LOGIN_SUCCESSFUL
-import com.hfad.tagalong.presentation.components.AppNavigationBar
 import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
-import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.components.PlaylistItemList
+import com.hfad.tagalong.presentation.theme.AppScaffold
 import com.hfad.tagalong.presentation.ui.main.MainViewModel
 import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.FirstPageEvent
 import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.NextPageEvent
@@ -42,37 +40,33 @@ class PlaylistsFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val isLoggedIn = mainViewModel.isLoggedIn.value
+                val loadingSession = mainViewModel.loading.value
                 val playlists = viewModel.playlists
                 val loading = viewModel.loading.value
 
-                AppTheme(
-                    displayProgressBar = loading,
-                    progressBarAlignment = if (playlists.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
-                ) {
-                    if (!isLoggedIn) {
-                        findNavController().navigate(R.id.init_login)
-                    } else {
-                        Scaffold(
-                            bottomBar = {
-                                AppNavigationBar(
-                                    navController = findNavController()
-                                )
-                            }
-                        ) {
-                            if (playlists.isNotEmpty()) {
-                                PlaylistItemList(
-                                    playlists = playlists,
-                                    loading = loading,
-                                    onTriggerNextPage = {
-                                        viewModel.onTriggerEvent(NextPageEvent)
-                                    },
-                                    onNavigateToTrackList = { playlist ->
-                                        navigateToTrackList(playlist)
-                                    }
-                                )
-                            } else if (!loading) {
-                                EmptyListPlaceholderText(text = "There are no playlists to show")
-                            }
+                val navController = findNavController()
+
+                if (!isLoggedIn && !loadingSession) {
+                    navController.navigate(R.id.init_login)
+                } else {
+                    AppScaffold(
+                        displayProgressBar = loading,
+                        progressBarAlignment = if (playlists.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter,
+                        navController = navController
+                    ) {
+                        if (playlists.isNotEmpty()) {
+                            PlaylistItemList(
+                                playlists = playlists,
+                                loading = loading,
+                                onTriggerNextPage = {
+                                    viewModel.onTriggerEvent(NextPageEvent)
+                                },
+                                onClickPlaylistItem = { playlist ->
+                                    navigateToTrackList(playlist)
+                                }
+                            )
+                        } else if (!loading) {
+                            EmptyListPlaceholderText(text = "There are no playlists to show") // FIXME: This is being shown momentarily between session loaded and LoadFirstPageEvent triggered
                         }
                     }
                 }
@@ -88,8 +82,12 @@ class PlaylistsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (mainViewModel.isLoggedIn.value) {
+        if (mainViewModel.isLoggedIn.value) { // TODO: Improve this
             viewModel.onTriggerEvent(FirstPageEvent)
+        } else {
+            mainViewModel.addLoginSuccessListener {
+                viewModel.onTriggerEvent(FirstPageEvent) // TODO: Could this be called once viewModel has been destroyed?
+            }
         }
 
         // Source: https://youtu.be/09qjn706ITA?t=284
@@ -98,11 +96,10 @@ class PlaylistsFragment : Fragment() {
             ?: throw IllegalStateException()
         savedStateHandle.getLiveData<Boolean>(LOGIN_SUCCESSFUL)
             .observe(viewLifecycleOwner) { success ->
-                if (success) {
-                    viewModel.onTriggerEvent(FirstPageEvent)
-                } else {
+                if (!success) {
                     requireActivity().finish()
                 }
             }
     }
+
 }

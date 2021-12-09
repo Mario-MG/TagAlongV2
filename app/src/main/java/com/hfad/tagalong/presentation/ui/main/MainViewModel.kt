@@ -17,6 +17,8 @@ constructor (
 
     val isLoggedIn = mutableStateOf(session.isLoggedIn)
 
+    val loading = mutableStateOf(false)
+
     init {
         viewModelScope.launch {
             initSession()
@@ -24,10 +26,12 @@ constructor (
     }
 
     private suspend fun initSession() {
+        loading.value = true
         session.addLoginStatusObserver {
             isLoggedIn.value = it
         }
         session.init()
+        loading.value = false
     }
 
     fun addLoginSuccessListener(listener: () -> Unit) {

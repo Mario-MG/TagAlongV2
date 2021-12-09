@@ -3,13 +3,11 @@ package com.hfad.tagalong.di
 import com.google.gson.GsonBuilder
 import com.hfad.tagalong.BuildConfig
 import com.hfad.tagalong.Session
-import com.hfad.tagalong.network.RetrofitAuthService
-import com.hfad.tagalong.network.RetrofitPlaylistService
-import com.hfad.tagalong.network.RetrofitTrackService
-import com.hfad.tagalong.network.TokenAuthenticator
+import com.hfad.tagalong.network.*
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.TrackDtoMapper
+import com.hfad.tagalong.network.model.UserDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -85,6 +83,29 @@ object NetworkModule {
     @Provides
     fun provideTrackMapper(): TrackDtoMapper {
         return TrackDtoMapper()
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserService(): RetrofitUserService {
+        return Retrofit.Builder()
+            .baseUrl(NETWORK_SPOTIFY_API_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+            .client(OkHttpClient.Builder().also { client ->
+                if (BuildConfig.DEBUG) {
+                    val logging = HttpLoggingInterceptor()
+                    logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
+                    client.addInterceptor(logging)
+                }
+            }.build())
+            .build()
+            .create(RetrofitUserService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserMapper(): UserDtoMapper {
+        return UserDtoMapper()
     }
 
     @Singleton

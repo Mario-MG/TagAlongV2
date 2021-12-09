@@ -21,6 +21,7 @@ fun AppNavigationBar(
         val items = listOf(
             Screen.Playlists,
             Screen.Tags,
+            Screen.Rules,
             Screen.Settings
         )
         val navBackStackEntry = navController.currentBackStackEntry

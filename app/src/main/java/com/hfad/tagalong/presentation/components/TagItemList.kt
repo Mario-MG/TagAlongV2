@@ -10,14 +10,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Composable
 fun TagItemList(
     tags: List<Tag>,
-    onNavigateToTrackList: (Tag) -> Unit
+    onClickTagItem: (Tag) -> Unit
 ) {
     LazyColumn {
         items(items = tags) { tag ->
             TagItemCard(
                 tag = tag,
                 onClick = {
-                    onNavigateToTrackList(tag)
+                    onClickTagItem(tag)
                 }
             )
         }

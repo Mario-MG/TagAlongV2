@@ -12,7 +12,7 @@ fun PlaylistItemList(
     playlists: List<Playlist>,
     loading: Boolean,
     onTriggerNextPage: () -> Unit,
-    onNavigateToTrackList: (Playlist) -> Unit
+    onClickPlaylistItem: (Playlist) -> Unit
 ) {
     LazyColumn {
         itemsIndexed(items = playlists) { index, playlist ->
@@ -22,7 +22,7 @@ fun PlaylistItemList(
             PlaylistItemCard(
                 playlist = playlist,
                 onClick = {
-                    onNavigateToTrackList(playlist)
+                    onClickPlaylistItem(playlist)
                 }
             )
         }
