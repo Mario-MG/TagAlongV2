@@ -45,7 +45,7 @@ class SettingsFragment : Fragment() {
                             title = "Log out",
                             onClick = {
                                 viewModel.onTriggerEvent(LogOutEvent {
-                                    findNavController().navigate(R.id.logOut) // TODO: Change to popBackStack up to PlaylistsFragment
+                                    findNavController().navigate(R.id.logOut)
                                 })
                             },
                             cardHeight = 60.dp
