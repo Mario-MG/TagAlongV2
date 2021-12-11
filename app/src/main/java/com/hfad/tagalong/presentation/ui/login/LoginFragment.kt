@@ -42,12 +42,9 @@ class LoginFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-//                val loadingSession = mainViewModel.loading.value
                 val stayLoggedIn = viewModel.stayLoggedIn.value
 
-                AppTheme(
-//                    displayProgressBar = loadingSession
-                ) {
+                AppTheme {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
