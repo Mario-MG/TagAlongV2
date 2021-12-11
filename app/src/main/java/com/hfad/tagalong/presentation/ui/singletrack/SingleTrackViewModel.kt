@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hfad.tagalong.Session
+import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.presentation.ui.singletrack.SingleTrackEvent.*
@@ -19,7 +19,7 @@ class SingleTrackViewModel
 @Inject
 constructor(
     private val trackRepository: TrackRepository,
-    private val session: Session,
+    private val sessionManager: SessionManager,
     private val trackTagRepository: TrackTagRepository,
     private val tagRepository: TagRepository,
     private val ruleRepository: RuleRepository,
@@ -54,7 +54,7 @@ constructor(
     private suspend fun loadTrack(trackId: String) {
         loading.value = true
         val track = trackRepository.getTrack(
-            auth = session.getAuthorizationHeader(),
+            auth = sessionManager.getAuthorizationHeader(),
             trackId = trackId
         )
         this.track.value = track // TODO: Handle null?
@@ -75,7 +75,7 @@ constructor(
         val rules = ruleRepository.getRulesFulfilledByTags(newTag = tag, originalTags = tagsForTrack)
         for (rule in rules) {
             playlistRepository.addTracksToPlaylist(
-                auth = session.getAuthorizationHeader(),
+                auth = sessionManager.getAuthorizationHeader(),
                 playlist = rule.playlist,
                 tracks = listOf(track)
             )

@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.BuildConfig
-import com.hfad.tagalong.Session
+import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.FirstPageEvent
 import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.NextPageEvent
@@ -20,7 +20,7 @@ class PlaylistsViewModel
 @Inject
 constructor(
     private val playlistRepository: PlaylistRepository,
-    private val session: Session
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     val playlists = mutableStateListOf<Playlist>()
@@ -44,7 +44,7 @@ constructor(
 
     private suspend fun loadFirstPage() {
         loading.value = true
-        val playlists = playlistRepository.getList(auth = session.getAuthorizationHeader())
+        val playlists = playlistRepository.getList(auth = sessionManager.getAuthorizationHeader())
         this.playlists.clear()
         this.playlists.addAll(playlists)
         loading.value = false
@@ -55,7 +55,7 @@ constructor(
             loading.value = true
             val currentListSize = this.playlists.size
             val newPlaylists = playlistRepository.getList(
-                auth = session.getAuthorizationHeader(),
+                auth = sessionManager.getAuthorizationHeader(),
                 offset = currentListSize
             )
             if (BuildConfig.DEBUG) delay(1000) // TODO: Remove

@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hfad.tagalong.Session
+import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.model.Tag
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class RuleCreationViewModel
 @Inject
 constructor(
-    private val session: Session,
+    private val sessionManager: SessionManager,
     private val ruleRepository: RuleRepository,
     private val tagRepository: TagRepository,
     private val playlistRepository: PlaylistRepository,
@@ -117,8 +117,8 @@ constructor(
 
     private suspend fun createPlaylist(): Playlist {
         return playlistRepository.create(
-            auth = session.getAuthorizationHeader(),
-            userId = session.user!!.id,
+            auth = sessionManager.getAuthorizationHeader(),
+            userId = sessionManager.getUser().id,
             playlist = Playlist(name = playlistName.value)
         )
     }
@@ -137,7 +137,7 @@ constructor(
     private suspend fun applyRule(rule: Rule) {
         val tracks = if (rule.optionality) tracksRepository.getTracksWithAnyOfTheTags(tags) else tracksRepository.getTracksWithAllOfTheTags(tags)
         playlistRepository.addTracksToPlaylist(
-            auth = session.getAuthorizationHeader(),
+            auth = sessionManager.getAuthorizationHeader(),
             playlist = rule.playlist,
             tracks = tracks
         )
