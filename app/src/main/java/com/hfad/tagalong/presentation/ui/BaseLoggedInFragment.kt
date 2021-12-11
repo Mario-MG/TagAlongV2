@@ -21,8 +21,6 @@ abstract class BaseLoggedInFragment : Fragment() {
                 null,
                 NavOptions.Builder()
                     .setEnterAnim(R.anim.slide_in_up)
-//                    .setExitAnim(R.anim.slide_out_down)
-//                    .setPopEnterAnim(R.anim.slide_in_down)
                     .setPopExitAnim(R.anim.slide_out_up)
                     .build()
             )
