@@ -145,22 +145,18 @@
         android:label="SettingsFragment" >
 
         <action
-            android:id="@+id/logOut"
-            app:destination="@id/loginFragment"
-            app:popUpTo="@id/settingsFragment"
-            app:popUpToInclusive="true"
-            app:popEnterAnim="@anim/slide_in_down"
-            app:popExitAnim="@anim/slide_out_up"
-            app:enterAnim="@anim/slide_in_up"
-            app:exitAnim="@anim/slide_out_down" />
-
-        <action
             android:id="@+id/settings_to_playlists"
             app:destination="@id/playlistsFragment" />
 
         <action
             android:id="@+id/settings_to_tags"
             app:destination="@id/tagsFragment" />
+
+        <action
+            android:id="@+id/logOut"
+            app:destination="@id/playlistsFragment"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
 
         <action
             android:id="@+id/settings_to_rules"

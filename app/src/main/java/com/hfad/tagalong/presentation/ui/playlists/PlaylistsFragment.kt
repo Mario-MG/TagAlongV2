@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
@@ -18,7 +16,7 @@ import com.hfad.tagalong.presentation.LOGIN_SUCCESSFUL
 import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.PlaylistItemList
 import com.hfad.tagalong.presentation.theme.AppScaffold
-import com.hfad.tagalong.presentation.ui.main.MainViewModel
+import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
 import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.FirstPageEvent
 import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.NextPageEvent
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,11 +24,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class PlaylistsFragment : Fragment() {
-
-    private val mainViewModel: MainViewModel by activityViewModels()
+class PlaylistsFragment : BaseLoggedInFragment() {
 
     private val viewModel: PlaylistsViewModel by viewModels()
+
+    private var isLoggedIn = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,16 +37,12 @@ class PlaylistsFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val isLoggedIn = mainViewModel.isLoggedIn.value
-                val loadingSession = mainViewModel.loading.value
                 val playlists = viewModel.playlists
                 val loading = viewModel.loading.value
 
                 val navController = findNavController()
 
-                if (!isLoggedIn && !loadingSession) {
-                    navController.navigate(R.id.init_login)
-                } else {
+                if (isLoggedIn) {
                     AppScaffold(
                         displayProgressBar = loading,
                         progressBarAlignment = if (playlists.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter,
@@ -66,7 +60,7 @@ class PlaylistsFragment : Fragment() {
                                 }
                             )
                         } else if (!loading) {
-                            EmptyListPlaceholderText(text = "There are no playlists to show") // FIXME: This is being shown momentarily between session loaded and LoadFirstPageEvent triggered
+                            EmptyListPlaceholderText(text = "There are no playlists to show")
                         }
                     }
                 }
@@ -82,17 +76,17 @@ class PlaylistsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (mainViewModel.isLoggedIn.value) { // TODO: Improve this
+        mainViewModel.addLoginSuccessObserver(viewLifecycleOwner, {
             viewModel.onTriggerEvent(FirstPageEvent)
-        } else {
-            mainViewModel.addLoginSuccessListener {
-                viewModel.onTriggerEvent(FirstPageEvent) // TODO: Could this be called once viewModel has been destroyed?
-            }
-        }
+            isLoggedIn = true
+        })
+
+        mainViewModel.addLogoutObserver(viewLifecycleOwner, {
+            isLoggedIn = false
+        })
 
         // Source: https://youtu.be/09qjn706ITA?t=284
-        val navController = findNavController()
-        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+        val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle
             ?: throw IllegalStateException()
         savedStateHandle.getLiveData<Boolean>(LOGIN_SUCCESSFUL)
             .observe(viewLifecycleOwner) { success ->

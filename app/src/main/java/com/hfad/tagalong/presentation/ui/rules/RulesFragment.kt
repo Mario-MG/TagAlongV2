@@ -13,20 +13,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.RuleItemList
 import com.hfad.tagalong.presentation.theme.AppScaffold
+import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
 import com.hfad.tagalong.presentation.ui.rules.RulesEvent.LoadRulesEvent
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @AndroidEntryPoint
-class RulesFragment : Fragment() {
+class RulesFragment : BaseLoggedInFragment() {
 
     private val viewModel: RulesViewModel by viewModels()
 

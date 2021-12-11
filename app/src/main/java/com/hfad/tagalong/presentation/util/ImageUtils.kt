@@ -1,4 +1,4 @@
-package com.hfad.tagalong.util
+package com.hfad.tagalong.presentation.util
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable

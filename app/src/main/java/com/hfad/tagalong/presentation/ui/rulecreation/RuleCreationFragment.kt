@@ -22,18 +22,18 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.presentation.components.FlowKeywordList
 import com.hfad.tagalong.presentation.theme.AppTheme
+import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
 import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @AndroidEntryPoint
-class RuleCreationFragment : Fragment() {
+class RuleCreationFragment : BaseLoggedInFragment() {
 
     private val viewModel: RuleCreationViewModel by viewModels()
 

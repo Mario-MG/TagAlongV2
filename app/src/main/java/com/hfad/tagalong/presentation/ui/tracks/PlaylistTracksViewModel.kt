@@ -2,7 +2,7 @@ package com.hfad.tagalong.presentation.ui.tracks
 
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.BuildConfig
-import com.hfad.tagalong.Session
+import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.presentation.ui.tracks.PlaylistTracksEvent.FirstPageEvent
 import com.hfad.tagalong.presentation.ui.tracks.PlaylistTracksEvent.NextPageEvent
 import com.hfad.tagalong.repository.TrackRepository
@@ -16,7 +16,7 @@ class PlaylistTracksViewModel
 @Inject
 constructor(
     private val trackRepository: TrackRepository,
-    private val session: Session
+    private val sessionManager: SessionManager
 ) : TracksViewModel() {
 
     private var allTracksLoaded = false // TODO: Find out a way to improve this
@@ -37,7 +37,7 @@ constructor(
     private suspend fun loadFirstPage(playlistId: String) {
         loading.value = true
         val tracks = trackRepository.getItemsInPlaylist(
-            auth = session.getAuthorizationHeader(),
+            auth = sessionManager.getAuthorizationHeader(),
             playlistId = playlistId
         )
         this.tracks.clear()
@@ -50,7 +50,7 @@ constructor(
             loading.value = true
             val currentListSize = this.tracks.size
             val newTracks = trackRepository.getItemsInPlaylist(
-                auth = session.getAuthorizationHeader(),
+                auth = sessionManager.getAuthorizationHeader(),
                 playlistId = playlistId,
                 offset = currentListSize
             )
