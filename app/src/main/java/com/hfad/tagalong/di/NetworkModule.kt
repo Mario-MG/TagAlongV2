@@ -2,7 +2,7 @@ package com.hfad.tagalong.di
 
 import com.google.gson.GsonBuilder
 import com.hfad.tagalong.BuildConfig
-import com.hfad.tagalong.Session
+import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.network.*
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
@@ -26,9 +26,9 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideAuthenticator(
-        session: Session
+        sessionManager: SessionManager
     ): Authenticator {
-        return TokenAuthenticator(session = session)
+        return TokenAuthenticator(sessionManager = sessionManager)
     }
 
     @Singleton
