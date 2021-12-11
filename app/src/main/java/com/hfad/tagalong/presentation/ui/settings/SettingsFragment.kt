@@ -44,8 +44,9 @@ class SettingsFragment : Fragment() {
                         ItemCard(
                             title = "Log out",
                             onClick = {
-                                viewModel.onTriggerEvent(LogOutEvent)
-                                findNavController().navigate(R.id.logOut)
+                                viewModel.onTriggerEvent(LogOutEvent {
+                                    findNavController().navigate(R.id.logOut)
+                                })
                             },
                             cardHeight = 60.dp
                         )

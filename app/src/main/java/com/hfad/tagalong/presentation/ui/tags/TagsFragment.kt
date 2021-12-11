@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
@@ -16,13 +15,14 @@ import com.hfad.tagalong.presentation.BUNDLE_KEY_TAG_ID
 import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.TagItemList
 import com.hfad.tagalong.presentation.theme.AppScaffold
+import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
 import com.hfad.tagalong.presentation.ui.tags.TagsEvent.LoadTagsEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class TagsFragment : Fragment() {
+class TagsFragment : BaseLoggedInFragment() {
 
     private val viewModel: TagsViewModel by viewModels()
 

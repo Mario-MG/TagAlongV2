@@ -23,14 +23,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.hfad.tagalong.presentation.BUNDLE_KEY_TRACK_ID
 import com.hfad.tagalong.presentation.components.FlowKeywordList
 import com.hfad.tagalong.presentation.theme.AppTheme
+import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
 import com.hfad.tagalong.presentation.ui.singletrack.SingleTrackEvent.*
-import com.hfad.tagalong.util.DEFAULT_ALBUM_IMAGE
-import com.hfad.tagalong.util.loadPicture
+import com.hfad.tagalong.presentation.util.DEFAULT_ALBUM_IMAGE
+import com.hfad.tagalong.presentation.util.loadPicture
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -38,7 +38,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class SingleTrackFragment : Fragment() {
+class SingleTrackFragment : BaseLoggedInFragment() {
 
     private val viewModel: SingleTrackViewModel by viewModels()
 
