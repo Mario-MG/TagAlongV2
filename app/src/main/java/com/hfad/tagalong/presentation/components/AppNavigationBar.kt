@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.ui.Screen
 
 @Composable
@@ -18,16 +19,11 @@ fun AppNavigationBar(
         containerColor = MaterialTheme.colors.primary,
         contentColor = MaterialTheme.colors.onPrimary
     ) {
-        val items = listOf(
-            Screen.Playlists,
-            Screen.Tags,
-            Screen.Rules,
-            Screen.Settings
-        )
+        val screens = Screen.values()
         val navBackStackEntry = navController.currentBackStackEntry
         val currentDestination = navBackStackEntry?.destination
-        items.forEach { screen ->
-            val selected = screen.route == currentDestination?.id
+        screens.forEach { screen ->
+            val selected = screen.destination == currentDestination?.id
             NavigationBarItem(
                 icon = screen.icon,
                 label = { Text(screen.label) },
@@ -35,11 +31,15 @@ fun AppNavigationBar(
                 onClick = {
                     if (!selected) {
                         navController.navigate(
-                            screen.route,
+                            screen.destination,
                             null,
-                            NavOptions.Builder()
-                                .setPopUpTo(items[0].route, false)
+                            NavOptions.Builder() // FIXME: NavigationBar visibly "pulsates" when changing tabs
+                                .setPopUpTo(screens[0].destination, false)
                                 .setLaunchSingleTop(true)
+                                .setEnterAnim(R.anim.fade_in)
+                                .setExitAnim(R.anim.fade_out)
+                                .setPopEnterAnim(R.anim.fade_in)
+                                .setPopExitAnim(R.anim.fade_out)
                                 .build()
                         )
                     }

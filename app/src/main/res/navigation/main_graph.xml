@@ -5,8 +5,6 @@
     android:id="@+id/main_graph"
     app:startDestination="@id/playlistsFragment">
 
-    <!-- TODO: Add animations -->
-
     <fragment
         android:id="@+id/playlistsFragment"
         android:name="com.hfad.tagalong.presentation.ui.playlists.PlaylistsFragment"
@@ -18,7 +16,11 @@
 
         <action
             android:id="@+id/viewPlaylistTracks"
-            app:destination="@id/playlistTracksFragment" />
+            app:destination="@id/playlistTracksFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 
         <action
             android:id="@+id/playlists_to_tags"
@@ -40,9 +42,7 @@
 
         <action
             android:id="@+id/login"
-            app:destination="@id/playlistsFragment"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
+            app:destination="@id/playlistsFragment" />
     </fragment>
 
     <fragment
@@ -52,7 +52,11 @@
 
         <action
             android:id="@+id/viewTrackFromPlaylist"
-            app:destination="@id/singleTrackFragment" />
+            app:destination="@id/singleTrackFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -67,7 +71,11 @@
 
         <action
             android:id="@+id/viewTagTracks"
-            app:destination="@id/tagTracksFragment" />
+            app:destination="@id/tagTracksFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 
         <action
             android:id="@+id/tags_to_playlists"
@@ -89,13 +97,25 @@
 
         <action
             android:id="@+id/viewTrackFromTag"
-            app:destination="@id/singleTrackFragment" />
+            app:destination="@id/singleTrackFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
         android:id="@+id/rulesFragment"
         android:name="com.hfad.tagalong.presentation.ui.rules.RulesFragment"
         android:label="RulesFragment" >
+
+        <action
+            android:id="@+id/createRule"
+            app:destination="@id/ruleCreationFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 
         <action
             android:id="@+id/rules_to_playlists"
@@ -108,10 +128,6 @@
         <action
             android:id="@+id/rules_to_settings"
             app:destination="@id/settingsFragment" />
-
-        <action
-            android:id="@+id/createRule"
-            app:destination="@id/ruleCreationFragment" />
     </fragment>
 
     <fragment
@@ -135,6 +151,7 @@
         <action
             android:id="@+id/logOut"
             app:destination="@id/playlistsFragment"
+            app:launchSingleTop="true"
             app:popUpTo="@id/settingsFragment"
             app:popUpToInclusive="true" />
 

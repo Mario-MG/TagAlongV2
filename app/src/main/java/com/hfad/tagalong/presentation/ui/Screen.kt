@@ -10,34 +10,34 @@ import androidx.compose.material.icons.filled.Tag
 import androidx.compose.runtime.Composable
 import com.hfad.tagalong.R
 
-sealed class Screen( // TODO: Change this to enum?
+enum class Screen(
     val icon: @Composable () -> Unit,
     val label: String,
-    @IdRes val route: Int
+    @IdRes val destination: Int
 ) {
 
-    object Playlists : Screen(
+    Playlists(
         icon = { Icon(Icons.Filled.QueueMusic, contentDescription = "Playlists icon") },
         label = "Playlists",
-        route = R.id.playlistsFragment
-    )
+        destination = R.id.playlistsFragment
+    ),
 
-    object Tags : Screen(
+    Tags(
         icon = { Icon(Icons.Filled.Tag, contentDescription = "Tags icon") },
         label = "Tags",
-        route = R.id.tagsFragment
-    )
+        destination = R.id.tagsFragment
+    ),
 
-    object Rules : Screen(
+    Rules(
         icon = { Icon(Icons.Filled.PlaylistAdd, contentDescription = "Rules icon") },
         label = "Rules",
-        route = R.id.rulesFragment
-    )
+        destination = R.id.rulesFragment
+    ),
 
-    object Settings : Screen(
+    Settings(
         icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings icon") },
         label = "Settings",
-        route = R.id.settingsFragment
+        destination = R.id.settingsFragment
     )
 
 }
