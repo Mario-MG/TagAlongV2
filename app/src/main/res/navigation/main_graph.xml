@@ -134,7 +134,7 @@
 
         <action
             android:id="@+id/logOut"
-            app:destination="@id/loginFragment"
+            app:destination="@id/playlistsFragment"
             app:popUpTo="@id/settingsFragment"
             app:popUpToInclusive="true" />
 
