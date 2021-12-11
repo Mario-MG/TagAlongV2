@@ -19,14 +19,15 @@ constructor(
         viewModelScope.launch {
             when (event) {
                 is LogOutEvent -> {
-                    logOut()
+                    logOut(event.callback)
                 }
             }
         }
     }
 
-    private suspend fun logOut() {
+    private suspend fun logOut(callback: () -> Unit) {
         sessionManager.logOut()
+        callback()
     }
 
 }
