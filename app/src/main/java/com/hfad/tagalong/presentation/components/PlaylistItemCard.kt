@@ -2,7 +2,7 @@ package com.hfad.tagalong.presentation.components
 
 import androidx.compose.runtime.Composable
 import com.hfad.tagalong.domain.model.Playlist
-import com.hfad.tagalong.util.DEFAULT_ALBUM_IMAGE
+import com.hfad.tagalong.presentation.util.DEFAULT_ALBUM_IMAGE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi

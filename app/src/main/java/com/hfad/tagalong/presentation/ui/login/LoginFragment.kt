@@ -42,11 +42,11 @@ class LoginFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val loadingSession = mainViewModel.loading.value
+//                val loadingSession = mainViewModel.loading.value
                 val stayLoggedIn = viewModel.stayLoggedIn.value
 
                 AppTheme(
-                    displayProgressBar = loadingSession
+//                    displayProgressBar = loadingSession
                 ) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
@@ -88,10 +88,10 @@ class LoginFragment : Fragment() {
         val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
             ?: throw IllegalStateException("LoginFragment must not be a start destination")
         savedStateHandle.set(LOGIN_SUCCESSFUL, false)
-        mainViewModel.addLoginSuccessListener {
+        mainViewModel.addLoginSuccessObserver(viewLifecycleOwner, {
             savedStateHandle.set(LOGIN_SUCCESSFUL, true)
             navController.popBackStack()
-        }
+        })
     }
 
     override fun onResume() {

@@ -7,7 +7,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hfad.tagalong.Session
+import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.di.APP_REDIRECT_URI
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.*
@@ -24,7 +24,7 @@ import javax.inject.Named
 class LoginViewModel
 @Inject
 constructor(
-    private val session: Session,
+    private val sessionManager: SessionManager,
     @Named(APP_CLIENT_ID) private val clientId: String,
     @Named(APP_REDIRECT_URI) private val redirectUri: String,
     private val settingsRepository: SettingsRepository
@@ -105,7 +105,7 @@ constructor(
     private suspend fun login(uri: Uri) {
         val code = uri.getQueryParameter("code")
         code?.let {
-            session.login(
+            sessionManager.login(
                 code = code,
                 codeVerifier = codeVerifier,
                 redirectUri = redirectUri,
