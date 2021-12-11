@@ -12,19 +12,15 @@
 
         <action
             android:id="@+id/init_login"
-            app:destination="@id/loginFragment"
-            app:popEnterAnim="@anim/slide_in_down"
-            app:popExitAnim="@anim/slide_out_up"
-            app:enterAnim="@anim/slide_in_up"
-            app:exitAnim="@anim/slide_out_down" />
+            app:destination="@id/loginFragment" />
 
         <action
             android:id="@+id/viewPlaylistTracks"
             app:destination="@id/playlistTracksFragment"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
             app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left" />
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 
         <action
             android:id="@+id/playlists_to_tags"
@@ -57,10 +53,10 @@
         <action
             android:id="@+id/viewTrackFromPlaylist"
             app:destination="@id/singleTrackFragment"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
             app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left" />
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -76,10 +72,10 @@
         <action
             android:id="@+id/viewTagTracks"
             app:destination="@id/tagTracksFragment"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
             app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left" />
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 
         <action
             android:id="@+id/tags_to_playlists"
@@ -102,10 +98,10 @@
         <action
             android:id="@+id/viewTrackFromTag"
             app:destination="@id/singleTrackFragment"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
             app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left" />
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -116,10 +112,10 @@
         <action
             android:id="@+id/createRule"
             app:destination="@id/ruleCreationFragment"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
             app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left" />
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 
         <action
             android:id="@+id/rules_to_playlists"
@@ -155,6 +151,7 @@
         <action
             android:id="@+id/logOut"
             app:destination="@id/playlistsFragment"
+            app:launchSingleTop="true"
             app:popUpTo="@id/settingsFragment"
             app:popUpToInclusive="true" />
 

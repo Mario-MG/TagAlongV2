@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.ui.Screen
 
 @Composable
@@ -37,9 +38,13 @@ fun AppNavigationBar(
                         navController.navigate(
                             screen.route,
                             null,
-                            NavOptions.Builder()
+                            NavOptions.Builder() // FIXME: NavigationBar visibly "pulsates" when changing tabs
                                 .setPopUpTo(items[0].route, false)
                                 .setLaunchSingleTop(true)
+                                .setEnterAnim(R.anim.fade_in)
+                                .setExitAnim(R.anim.fade_out)
+                                .setPopEnterAnim(R.anim.fade_in)
+                                .setPopExitAnim(R.anim.fade_out)
                                 .build()
                         )
                     }
