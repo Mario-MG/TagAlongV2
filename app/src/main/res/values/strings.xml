@@ -1,5 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TagAlong</string>
-    <string name="app_deep_link_schema">appscheme</string>
-    <string name="app_deep_link_url">tagalong-app.com</string>
+    <!--  NON-TRANSLATABLE  -->
+    <string name="app_name" translatable="false">TagAlong</string>
+    <string name="app_deep_link_schema" translatable="false">appscheme</string>
+    <string name="app_deep_link_url" translatable="false">tagalong-app.com</string>
+
+    <!--  LOGIN  -->
+    <string name="log_in_with_spotify">Log in with Spotify</string>
+    <string name="stay_logged_in">Stay logged in</string>
+    <string name="login_button_icon_description">Login button icon</string>
+    <string name="spotify_auth_uri_lang_path">en</string>
+
+    <!--  NAVIGATION BAR  -->
+    <string name="playlists_screen_label">Playlists</string>
+    <string name="playlists_icon_description">Playlists icon</string>
+    <string name="tags_screen_label">Tags</string>
+    <string name="tags_icon_description">Tags icon</string>
+    <string name="rules_screen_label">Rules</string>
+    <string name="rules_icon_description">Rules icon</string>
+    <string name="settings_screen_label">Settings</string>
+    <string name="settings_icon_description">Settings icon</string>
+
+    <!--  PLAYLISTS  -->
+    <string name="no_playlists">There are no playlists to show</string>
+
+    <!--  TRACKS  -->
+    <string name="no_tracks">There are no tracks to show</string>
+
+    <!--  SINGLE TRACK  -->
+    <string name="track_image_description">Track image</string>
+
+    <!--  TAGS  -->
+    <string name="no_tags">There are no tags to show</string>
+    <string name="tag_icon_description">Tag icon</string>
+
+    <!--  RULES  -->
+    <string name="add_rule_icon_description">Add rule icon</string>
+    <string name="no_rules">There are no rules to show</string>
+    <string name="autoupdate_icon_description">Auto-update icon</string>
+    <string name="before_rule_optionality_any">"Songs with "</string>
+    <string name="rule_optionality_any">ANY</string>
+    <string name="after_rule_optionality_any">" of the tags:"</string>
+    <string name="before_rule_optionality_all">"Songs with "</string>
+    <string name="rule_optionality_all">ALL</string>
+    <string name="after_rule_optionality_all">" of the tags:"</string>
+
+    <!--  RULE CREATION  -->
+    <string name="new_rule_icon_description">New rule icon</string>
+    <string name="playlist_name">Playlist name</string>
+    <string name="add_songs_with_all_tags">Add songs with ALL of the tags indicated above</string>
+    <string name="autoupdate">Auto-update</string>
+    <string name="create_rule">Create</string>
+    <string name="new_tagalong_playlist">New TagAlong Playlist</string>
+
+    <!--  SETTINGS  -->
+    <string name="log_out">Log out</string>
+
+    <!--  COMMON  -->
+    <string name="item_image_description">Item image</string>
+    <string name="add_tag_here">Add a tag here…</string>
+    <string name="add_keyword_here">Add a keyword here…</string>
+    <string name="delete_keyword_icon">Delete keyword icon</string>
+    <string name="clear_button_description">Clear</string>
+    <string name="icon_item_card_description">Item icon</string>
+    <string name="cancel">Cancel</string>
 </resources>

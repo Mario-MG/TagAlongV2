@@ -13,8 +13,10 @@ import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
+import com.hfad.tagalong.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -25,7 +27,7 @@ import kotlinx.coroutines.launch
 fun <T : Keyword> FlowKeywordList( // TODO: Make TextField and/or Keywords customizable (appearance-wise)?
     keywordObjects: List<T>,
     onClickDeleteIcon: ((T) -> Unit)? = null,
-    textFieldLabel: String = "Add a keyword here...",
+    textFieldLabel: String = stringResource(R.string.add_keyword_here),
     textFieldLeadingIcon: @Composable (() -> Unit)? = null,
     onAddNewKeyword: ((String) -> Unit)? = null,
     newKeywordValidation: (String) -> Boolean = { true },

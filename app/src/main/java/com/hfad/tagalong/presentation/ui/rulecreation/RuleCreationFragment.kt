@@ -19,11 +19,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.components.FlowKeywordList
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
@@ -69,7 +71,7 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                             val imageSize = 200.dp
                             Image( // TODO: To be implemented: add custom image
                                 imageVector = Icons.Default.QueueMusic,
-                                contentDescription = "New Rule Icon",
+                                contentDescription = stringResource(R.string.new_rule_icon_description),
                                 modifier = Modifier
                                     .height(imageSize)
                                     .width(imageSize),
@@ -81,7 +83,7 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                                 onValueChange = {
                                     viewModel.onTriggerEvent(ChangePlaylistNameEvent(it)) // FIXME: Issue with backspace long press
                                 },
-                                label = { Text("Playlist name") },
+                                label = { Text(stringResource(R.string.playlist_name)) },
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Text,
                                     imeAction = ImeAction.Done
@@ -98,9 +100,9 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                                     viewModel.onTriggerEvent(DeleteTagEvent(tag))
                                 },
                                 textFieldLeadingIcon = {
-                                    Icon(Icons.Filled.Tag, contentDescription = "Tag icon")
+                                    Icon(Icons.Filled.Tag, contentDescription = stringResource(R.string.tag_icon_description))
                                 },
-                                textFieldLabel = "Add a tag here...",
+                                textFieldLabel = stringResource(R.string.add_tag_here),
                                 predictions = allTags,
                                 predictionFilter = { tag, currentValue ->
                                     !tags.contains(tag) && tag.name.contains(currentValue)
@@ -122,7 +124,7 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
-                                    text = "Add songs with ALL of the tags indicated above",
+                                    text = stringResource(R.string.add_songs_with_all_tags),
                                     color = MaterialTheme.colors.onBackground,
                                     softWrap = true
                                 )
@@ -143,7 +145,7 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
-                                    text = "Auto-update",
+                                    text = stringResource(R.string.autoupdate),
                                     color = MaterialTheme.colors.onBackground,
                                     softWrap = true
                                 )
@@ -165,10 +167,10 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                                     },
                                     enabled = tags.isNotEmpty() && playlistName.isNotBlank()
                                 ) {
-                                    Text("Create")
+                                    Text(stringResource(R.string.create_rule))
                                 }
                                 Button(onClick = { navController.popBackStack() }) {
-                                    Text("Cancel")
+                                    Text(stringResource(R.string.cancel))
                                 }
                             }
                         }

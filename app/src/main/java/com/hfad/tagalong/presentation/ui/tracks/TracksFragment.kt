@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.presentation.BUNDLE_KEY_TRACK_ID
 import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
@@ -50,7 +52,7 @@ abstract class TracksFragment(
                             }
                         )
                     } else if (!loading) {
-                        EmptyListPlaceholderText(text = "There are no tracks to show")
+                        EmptyListPlaceholderText(text = stringResource(R.string.no_tracks))
                     }
                 }
             }
