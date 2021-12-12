@@ -26,7 +26,7 @@ fun AppNavigationBar(
             val selected = screen.destination == currentDestination?.id
             NavigationBarItem(
                 icon = screen.icon,
-                label = { Text(screen.label) },
+                label = { Text(screen.getLabel()) },
                 selected = selected,
                 onClick = {
                     if (!selected) {

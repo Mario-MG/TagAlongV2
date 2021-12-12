@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -51,7 +52,7 @@ class TagsFragment : BaseLoggedInFragment() {
                             }
                         )
                     } else if (!loading) {
-                        EmptyListPlaceholderText(text = "There are no tags to show")
+                        EmptyListPlaceholderText(text = stringResource(R.string.no_tags))
                     }
                 }
             }

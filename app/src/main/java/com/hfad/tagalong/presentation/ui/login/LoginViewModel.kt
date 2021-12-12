@@ -7,9 +7,11 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.di.APP_REDIRECT_URI
+import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.*
 import com.hfad.tagalong.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -91,7 +93,7 @@ constructor(
         return Uri.Builder()
             .scheme("https")
             .authority("accounts.spotify.com")
-            .appendPath("en")
+            .appendPath(BaseApplication.getContext().getString(R.string.spotify_auth_uri_lang_path))
             .appendPath("authorize")
             .appendQueryParameter("client_id", clientId)
             .appendQueryParameter("response_type", "code")
