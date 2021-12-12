@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
@@ -53,7 +54,7 @@ class RulesFragment : BaseLoggedInFragment() {
                             },
                             backgroundColor = MaterialTheme.colors.primary
                         ) {
-                            Icon(Icons.Filled.Add,"Add Rule icon")
+                            Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_rule_icon_description))
                         }
                     }
                 ) {
@@ -63,7 +64,7 @@ class RulesFragment : BaseLoggedInFragment() {
                             onClickRuleItem = {}
                         )
                     } else if (!loading) {
-                        EmptyListPlaceholderText(text = "There are no rules to show")
+                        EmptyListPlaceholderText(text = stringResource(R.string.no_rules))
                     }
                 }
             }

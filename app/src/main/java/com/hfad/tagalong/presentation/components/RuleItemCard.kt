@@ -13,12 +13,14 @@ import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Rule
 
 @ExperimentalAnimationApi
@@ -63,21 +65,32 @@ fun RuleItemCard(
                 )
                 Icon(
                     imageVector = Icons.Default.Autorenew,
-                    contentDescription = "Auto-update icon",
+                    contentDescription = stringResource(R.string.autoupdate_icon_description),
                     tint = if (rule.autoUpdate) Color.Green else MaterialTheme.colors.onSurface.copy(0.2f)
                 )
             }
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = buildAnnotatedString {
-                    append("Songs with ")
-                    withStyle(style = SpanStyle(
-                        color = MaterialTheme.colors.onSurface.copy(0.8f),
-                        fontWeight = FontWeight.Medium
-                    )) {
-                        append(if (rule.optionality) "ANY" else "ALL")
+                    if (rule.optionality) {
+                        append(stringResource(R.string.before_rule_optionality_any))
+                        withStyle(style = SpanStyle(
+                            color = MaterialTheme.colors.onSurface.copy(0.8f),
+                            fontWeight = FontWeight.Medium
+                        )) {
+                            append(stringResource(R.string.rule_optionality_any))
+                        }
+                        append(stringResource(R.string.after_rule_optionality_any))
+                    } else {
+                        append(stringResource(R.string.before_rule_optionality_all))
+                        withStyle(style = SpanStyle(
+                            color = MaterialTheme.colors.onSurface.copy(0.8f),
+                            fontWeight = FontWeight.Medium
+                        )) {
+                            append(stringResource(R.string.rule_optionality_all))
+                        }
+                        append(stringResource(R.string.after_rule_optionality_all))
                     }
-                    append(" of the tags:")
                 },
                 style = MaterialTheme.typography.h6.copy(
                     color = MaterialTheme.colors.onSurface.copy(0.5f)

@@ -21,9 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
+import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.BUNDLE_KEY_TRACK_ID
 import com.hfad.tagalong.presentation.components.FlowKeywordList
 import com.hfad.tagalong.presentation.theme.AppTheme
@@ -80,7 +82,7 @@ class SingleTrackFragment : BaseLoggedInFragment() {
                                 image?.let { img ->
                                     Image(
                                         bitmap = img.asImageBitmap(),
-                                        contentDescription = "Item Image",
+                                        contentDescription = stringResource(R.string.track_image_description),
                                         modifier = Modifier
                                             .height(imageSize)
                                             .width(imageSize),
@@ -111,9 +113,9 @@ class SingleTrackFragment : BaseLoggedInFragment() {
                                         viewModel.onTriggerEvent(DeleteTagEvent(tag))
                                     },
                                     textFieldLeadingIcon = {
-                                        Icon(Icons.Filled.Tag, contentDescription = "Tag icon")
+                                        Icon(Icons.Filled.Tag, contentDescription = stringResource(R.string.tag_icon_description))
                                     },
-                                    textFieldLabel = "Add a tag here...",
+                                    textFieldLabel = stringResource(R.string.add_tag_here),
                                     predictions = allTags,
                                     predictionFilter = { tag, currentValue ->
                                         !tags.contains(tag) && tag.name.contains(currentValue)

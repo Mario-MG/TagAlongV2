@@ -9,8 +9,10 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import com.hfad.tagalong.R
 
 // Source: https://www.devbitsandbytes.com/jetpack-compose-a-simple-opiniated-autocompletetextview/
 @Composable
@@ -40,7 +42,7 @@ fun QuerySearch(
         trailingIcon = {
             if (showClearButton) {
                 IconButton(onClick = { onClearClick() }) {
-                    Icon(imageVector = Icons.Filled.Close, contentDescription = "Clear")
+                    Icon(imageVector = Icons.Filled.Close, contentDescription = stringResource(R.string.clear_button_description))
                 }
             }
         },

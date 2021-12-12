@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -42,7 +43,7 @@ class SettingsFragment : Fragment() {
                             .fillMaxSize()
                     ) {
                         ItemCard(
-                            title = "Log out",
+                            title = stringResource(R.string.log_out),
                             onClick = {
                                 viewModel.onTriggerEvent(LogOutEvent {
                                     findNavController().navigate(R.id.logOut)
