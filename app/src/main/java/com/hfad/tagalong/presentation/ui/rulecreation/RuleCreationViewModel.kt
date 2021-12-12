@@ -4,10 +4,12 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
 import com.hfad.tagalong.repository.PlaylistRepository
 import com.hfad.tagalong.repository.RuleRepository
@@ -30,7 +32,7 @@ constructor(
 
     val loading = mutableStateOf(false)
 
-    val playlistName = mutableStateOf("New TagAlong Playlist")
+    val playlistName = mutableStateOf(BaseApplication.getContext().getString(R.string.new_tagalong_playlist))
 
     val tags = mutableStateListOf<Tag>()
 

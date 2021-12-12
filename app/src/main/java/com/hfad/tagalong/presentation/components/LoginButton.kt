@@ -14,7 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
+import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.util.loadPicture
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -40,7 +44,7 @@ fun LoginButton(
             icon?.let {
                 Icon(
                     bitmap = icon.asImageBitmap(),
-                    contentDescription = "Login button icon",
+                    contentDescription = stringResource(R.string.login_button_icon_description),
                     modifier = Modifier
                         .size(36.dp)
                         .align(Alignment.CenterVertically),
@@ -49,10 +53,9 @@ fun LoginButton(
                 Spacer(modifier = Modifier.size(20.dp))
             }
             Text(
-                text = text,
+                text = text.toUpperCase(Locale.current),
                 style = MaterialTheme.typography.h3,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically)
             )
         }
     }

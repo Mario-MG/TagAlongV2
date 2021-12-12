@@ -9,7 +9,9 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.hfad.tagalong.R
 
 @Composable
 fun <T : Keyword> Keyword(
@@ -43,7 +45,7 @@ fun <T : Keyword> Keyword(
                 ) {
                     Icon(
                         Icons.Filled.Cancel,
-                        contentDescription = "Delete tag",
+                        contentDescription = stringResource(R.string.delete_keyword_icon),
                         tint = MaterialTheme.colors.surface
                     )
                 }

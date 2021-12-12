@@ -12,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -52,7 +53,7 @@ class LoginFragment : Fragment() {
                     ) {
                         LoginButton(
                             iconDrawable = R.drawable.ic_spotify_icon_green,
-                            text = "LOG IN WITH SPOTIFY",
+                            text = stringResource(R.string.log_in_with_spotify),
                             onClick = {
                                 viewModel.onTriggerEvent(ClickLoginButtonEvent(requireActivity()))
                             }
@@ -67,7 +68,7 @@ class LoginFragment : Fragment() {
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = "Stay logged in",
+                                text = stringResource(R.string.stay_logged_in),
                                 color = MaterialTheme.colors.onBackground
                             )
                         }
