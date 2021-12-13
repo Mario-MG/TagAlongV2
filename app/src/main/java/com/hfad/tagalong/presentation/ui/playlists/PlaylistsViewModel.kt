@@ -58,7 +58,6 @@ constructor(
                 auth = sessionManager.getAuthorizationHeader(),
                 offset = currentListSize
             )
-            if (BuildConfig.DEBUG) delay(1000) // TODO: Remove
             if (newPlaylists.isEmpty()) {
                 allPlaylistsLoaded = true
             } else {

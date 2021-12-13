@@ -1,32 +1,31 @@
 package com.hfad.tagalong.presentation.ui.tracks
 
 import android.os.Bundle
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.fragment.app.viewModels
-import com.hfad.tagalong.R
-import com.hfad.tagalong.presentation.BUNDLE_KEY_TAG_ID
-import com.hfad.tagalong.presentation.ui.tracks.TagTracksEvent.LoadTagTracksEvent
+import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.presentation.BUNDLE_KEY_TAG
+import com.hfad.tagalong.presentation.ui.tracks.TagTracksEvent.InitTagTracksEvent
+import com.hfad.tagalong.presentation.ui.tracks.TagTracksEvent.ReloadTagTracksEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlin.properties.Delegates
 
+@ExperimentalMaterial3Api
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class TagTracksFragment : TracksFragment(viewTrackAction = R.id.viewTrackFromTag) {
+class TagTracksFragment : TracksFragment() {
 
     override val viewModel: TagTracksViewModel by viewModels()
 
-    private var tagId by Delegates.notNull<Long>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.getLong(BUNDLE_KEY_TAG_ID)?.let { tagId ->
-            this.tagId = tagId
-            viewModel.onTriggerEvent(LoadTagTracksEvent(tagId))
+        arguments?.getParcelable<Tag>(BUNDLE_KEY_TAG)?.let { tag ->
+            viewModel.onTriggerEvent(InitTagTracksEvent(tag))
         }
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.onTriggerEvent(LoadTagTracksEvent(tagId))
+        viewModel.onTriggerEvent(ReloadTagTracksEvent)
     }
 }

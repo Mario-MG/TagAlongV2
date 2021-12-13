@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
@@ -12,15 +13,17 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Tag
-import com.hfad.tagalong.presentation.BUNDLE_KEY_TAG_ID
+import com.hfad.tagalong.presentation.BUNDLE_KEY_TAG
 import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.TagItemList
 import com.hfad.tagalong.presentation.theme.AppScaffold
 import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
+import com.hfad.tagalong.presentation.ui.Screen
 import com.hfad.tagalong.presentation.ui.tags.TagsEvent.LoadTagsEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalMaterial3Api
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class TagsFragment : BaseLoggedInFragment() {
@@ -42,7 +45,9 @@ class TagsFragment : BaseLoggedInFragment() {
                 AppScaffold(
                     displayProgressBar = loading,
                     progressBarAlignment = if (tags.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter,
-                    navController = navController
+                    navController = navController,
+                    displayNavBar = true,
+                    screenTitle = Screen.Tags.getLabel()
                 ) {
                     if (tags.isNotEmpty()) {
                         TagItemList(
@@ -65,7 +70,7 @@ class TagsFragment : BaseLoggedInFragment() {
     }
 
     private fun navigateToTrackList(tag: Tag) {
-        val bundle = bundleOf(BUNDLE_KEY_TAG_ID to tag.id)
+        val bundle = bundleOf(BUNDLE_KEY_TAG to tag)
         findNavController().navigate(R.id.viewTagTracks, bundle)
     }
 }
