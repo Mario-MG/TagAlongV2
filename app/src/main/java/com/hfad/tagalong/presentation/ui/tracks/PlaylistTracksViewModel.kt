@@ -1,10 +1,11 @@
 package com.hfad.tagalong.presentation.ui.tracks
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.BuildConfig
+import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.presentation.session.SessionManager
-import com.hfad.tagalong.presentation.ui.tracks.PlaylistTracksEvent.FirstPageEvent
-import com.hfad.tagalong.presentation.ui.tracks.PlaylistTracksEvent.NextPageEvent
+import com.hfad.tagalong.presentation.ui.tracks.PlaylistTracksEvent.*
 import com.hfad.tagalong.repository.TrackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -19,42 +20,52 @@ constructor(
     private val sessionManager: SessionManager
 ) : TracksViewModel() {
 
+    val playlist = mutableStateOf<Playlist?>(null)
+
+    override val screenTitle = mutableStateOf("")
+
     private var allTracksLoaded = false // TODO: Find out a way to improve this
 
     fun onTriggerEvent(event: PlaylistTracksEvent) {
         viewModelScope.launch {
             when (event) {
-                is FirstPageEvent -> {
-                    loadFirstPage(event.playlistId)
+                is InitPlaylistTracksEvent -> {
+                    init(event.playlist)
+                    loadFirstPage()
                 }
                 is NextPageEvent -> {
-                    loadNextPage(event.playlistId)
+                    loadNextPage()
                 }
             }
         }
     }
 
-    private suspend fun loadFirstPage(playlistId: String) {
+    private suspend fun init(playlist: Playlist) {
+        this.playlist.value = playlist
+        this.screenTitle.value = playlist.name
+        loadFirstPage()
+    }
+
+    private suspend fun loadFirstPage() {
         loading.value = true
         val tracks = trackRepository.getItemsInPlaylist(
             auth = sessionManager.getAuthorizationHeader(),
-            playlistId = playlistId
+            playlist = this.playlist.value!!
         )
         this.tracks.clear()
         this.tracks.addAll(tracks)
         loading.value = false
     }
 
-    private suspend fun loadNextPage(playlistId: String) {
+    private suspend fun loadNextPage() {
         if (!allTracksLoaded) {
             loading.value = true
             val currentListSize = this.tracks.size
             val newTracks = trackRepository.getItemsInPlaylist(
                 auth = sessionManager.getAuthorizationHeader(),
-                playlistId = playlistId,
+                playlist = this.playlist.value!!,
                 offset = currentListSize
             )
-            if (BuildConfig.DEBUG) delay(1000) // TODO: Remove
             if (newTracks.isEmpty()) {
                 allTracksLoaded = true
             } else {

@@ -2,6 +2,7 @@ package com.hfad.tagalong.repository
 
 import com.hfad.tagalong.cache.dao.TrackDao
 import com.hfad.tagalong.cache.model.TrackEntityMapper
+import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.network.RetrofitTrackService
@@ -14,10 +15,10 @@ class TrackRepositoryImpl(
     private val trackEntityMapper: TrackEntityMapper
 ): TrackRepository {
 
-    override suspend fun getItemsInPlaylist(auth: String, playlistId: String, limit: Int, offset: Int): List<Track> {
+    override suspend fun getItemsInPlaylist(auth: String, playlist: Playlist, limit: Int, offset: Int): List<Track> {
         val playlistItemsPage = trackService.getItemsInPlaylist(
             auth = auth,
-            playlistId = playlistId,
+            playlistId = playlist.id,
             limit = limit,
             offset = offset
         )
@@ -29,8 +30,8 @@ class TrackRepositoryImpl(
         return trackDtoMapper.mapToDomainModel(trackService.getTrack(auth = auth, trackId = trackId))
     }
 
-    override suspend fun getTracksForTag(tagId: Long): List<Track> {
-        return trackEntityMapper.toDomainList(trackDao.getTracksWithAnyOfTheTagsById(tagId))
+    override suspend fun getTracksForTag(tag: Tag): List<Track> {
+        return trackEntityMapper.toDomainList(trackDao.getTracksWithAnyOfTheTagsById(tag.id))
     }
 
     override suspend fun getTracksWithAnyOfTheTags(tags: List<Tag>): List<Track> {

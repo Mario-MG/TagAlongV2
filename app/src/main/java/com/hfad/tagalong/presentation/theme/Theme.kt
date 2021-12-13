@@ -9,19 +9,24 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.darkColors
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.components.AppNavigationBar
+import com.hfad.tagalong.presentation.components.AppTopBar
 
 @Composable
 fun AppTheme(
-    displayProgressBar: Boolean = false,
-    progressBarAlignment: Alignment = Alignment.TopCenter,
-    content: @Composable () -> Unit
+    content: @Composable BoxScope.() -> Unit
 ) {
     MaterialTheme(
         colors = DarkThemeColours,
@@ -33,42 +38,56 @@ fun AppTheme(
                 .background(color = MaterialTheme.colors.background)
         ) {
             content()
-            if (displayProgressBar) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .align(progressBarAlignment)
-                        .padding(
-                            bottom = 96.dp,
-                            top = 12.dp
-                        )
-                )
-            }
         }
     }
 }
 
+@ExperimentalMaterial3Api
 @Composable
 fun AppScaffold(
     displayProgressBar: Boolean = false,
     progressBarAlignment: Alignment = Alignment.TopCenter,
+    displayNavBar: Boolean = false,
     navController: NavController,
     floatingActionButton: @Composable () -> Unit = {},
+    screenTitle: String = stringResource(R.string.app_name),
+    showBackButtonInTopBar: Boolean = false,
     content: @Composable BoxScope.() -> Unit
 ) {
-    AppTheme(
-        displayProgressBar = displayProgressBar,
-        progressBarAlignment = progressBarAlignment
-    ) {
+    AppTheme {
+        val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
         Scaffold(
-            bottomBar = {
-                AppNavigationBar(
-                    navController = navController
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                AppTopBar(
+                    title = screenTitle,
+                    navController = navController,
+                    showBackButton = showBackButtonInTopBar,
+                    scrollBehavior = scrollBehavior
                 )
+            },
+            bottomBar = {
+                if (displayNavBar) {
+                    AppNavigationBar(
+                        navController = navController
+                    )
+                }
             },
             floatingActionButton = floatingActionButton
         ) { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
                 content()
+                if (displayProgressBar) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .align(progressBarAlignment)
+                            .padding(12.dp)
+                    )
+                }
             }
         }
     }

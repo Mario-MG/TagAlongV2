@@ -1,9 +1,11 @@
 package com.hfad.tagalong.presentation.ui.tracks
 
+import com.hfad.tagalong.domain.model.Playlist
+
 sealed class PlaylistTracksEvent {
 
-    data class FirstPageEvent(val playlistId: String) : PlaylistTracksEvent()
+    data class InitPlaylistTracksEvent(val playlist: Playlist) : PlaylistTracksEvent()
 
-    data class NextPageEvent(val playlistId: String) : PlaylistTracksEvent()
+    object NextPageEvent : PlaylistTracksEvent()
 
 }

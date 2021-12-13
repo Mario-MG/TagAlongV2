@@ -47,6 +47,7 @@
     <string name="autoupdate">Auto-actualizar</string>
     <string name="create_rule">Crear</string>
     <string name="new_tagalong_playlist">Nueva Playlist de TagAlong</string>
+    <string name="rule_creation_screen_title">Nueva Regla</string>
 
     <!--  SETTINGS  -->
     <string name="log_out">Cerrar sesión</string>
@@ -59,4 +60,5 @@
     <string name="clear_button_description">Eliminar</string>
     <string name="icon_item_card_description">Icono del elemento</string>
     <string name="cancel">Cancelar</string>
+    <string name="back_arrow_description">Ir atrás</string>
 </resources>

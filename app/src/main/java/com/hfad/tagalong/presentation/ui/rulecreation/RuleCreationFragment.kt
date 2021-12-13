@@ -15,6 +15,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.QueueMusic
 import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -27,11 +28,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.components.FlowKeywordList
+import com.hfad.tagalong.presentation.theme.AppScaffold
 import com.hfad.tagalong.presentation.theme.AppTheme
 import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
 import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
 import dagger.hilt.android.AndroidEntryPoint
 
+@ExperimentalMaterial3Api
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @AndroidEntryPoint
@@ -55,8 +58,11 @@ class RuleCreationFragment : BaseLoggedInFragment() {
 
                 val navController = findNavController()
 
-                AppTheme(
-                    displayProgressBar = loading
+                AppScaffold(
+                    displayProgressBar = loading,
+                    navController = navController,
+                    screenTitle = stringResource(R.string.rule_creation_screen_title),
+                    showBackButtonInTopBar = true
                 ) {
                     Surface(
                         modifier = Modifier
