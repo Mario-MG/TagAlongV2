@@ -71,7 +71,9 @@ class SingleTrackFragment : BaseLoggedInFragment() {
                     displayProgressBar = loading,
                     navController = findNavController(),
                     screenTitle = track!!.name,
-                    showBackButtonInTopBar = true
+                    showBackButtonInTopBar = true,
+                    helpContent = { Text(stringResource(R.string.single_track_help)) },
+                    pinnedTopBar = true
                 ) {
                     Surface(
                         modifier = Modifier.verticalScroll(rememberScrollState())

@@ -41,7 +41,8 @@ class SettingsFragment : Fragment() {
                 AppScaffold(
                     navController = navController,
                     displayNavBar = true,
-                    screenTitle = Screen.Settings.getLabel()
+                    screenTitle = Screen.Settings.getLabel(),
+                    pinnedTopBar = true
                 ) {
                     Column(
                         modifier = Modifier

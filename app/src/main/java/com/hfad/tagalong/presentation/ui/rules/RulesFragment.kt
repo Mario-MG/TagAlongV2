@@ -9,6 +9,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,7 +62,8 @@ class RulesFragment : BaseLoggedInFragment() {
                         ) {
                             Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_rule_icon_description))
                         }
-                    }
+                    },
+                    helpContent = { Text(stringResource(R.string.rules_help)) }
                 ) {
                     if (rules.isNotEmpty()) {
                         RuleItemList(

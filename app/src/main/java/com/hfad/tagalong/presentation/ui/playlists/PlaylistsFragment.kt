@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
@@ -52,7 +53,8 @@ class PlaylistsFragment : BaseLoggedInFragment() {
                         progressBarAlignment = if (playlists.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter,
                         displayNavBar = true,
                         navController = navController,
-                        screenTitle = Screen.Playlists.getLabel()
+                        screenTitle = Screen.Playlists.getLabel(),
+                        helpContent = { Text(stringResource(R.string.playlists_help)) }
                     ) {
                         if (playlists.isNotEmpty()) {
                             PlaylistItemList(

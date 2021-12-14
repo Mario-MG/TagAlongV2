@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
@@ -42,7 +43,8 @@ abstract class TracksFragment : BaseLoggedInFragment() {
                     progressBarAlignment = if (tracks.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter,
                     navController = findNavController(),
                     screenTitle = screenTitle,
-                    showBackButtonInTopBar = true
+                    showBackButtonInTopBar = true,
+                    helpContent = { Text(stringResource(R.string.tracks_help)) }
                 ) {
                     if (tracks.isNotEmpty()) {
                         TrackItemList(

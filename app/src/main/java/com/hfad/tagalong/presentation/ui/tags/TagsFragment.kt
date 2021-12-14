@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
@@ -47,7 +48,8 @@ class TagsFragment : BaseLoggedInFragment() {
                     progressBarAlignment = if (tags.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter,
                     navController = navController,
                     displayNavBar = true,
-                    screenTitle = Screen.Tags.getLabel()
+                    screenTitle = Screen.Tags.getLabel(),
+                    helpContent = { Text(stringResource(R.string.tags_help)) }
                 ) {
                     if (tags.isNotEmpty()) {
                         TagItemList(

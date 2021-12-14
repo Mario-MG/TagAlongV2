@@ -3,6 +3,7 @@ package com.hfad.tagalong.presentation.components
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Help
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -15,7 +16,8 @@ fun AppTopBar(
     title: String,
     showBackButton: Boolean = false,
     navController: NavController,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    onClickHelp: (() -> Unit)? = null
 ) {
     SmallTopAppBar(
         navigationIcon = {
@@ -31,6 +33,13 @@ fun AppTopBar(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis // TODO: This is not recommended by MaterialDesign
             )
+        },
+        actions = {
+            onClickHelp?.let {
+                IconButton(onClick = onClickHelp) {
+                    Icon(Icons.Default.Help, contentDescription = stringResource(R.string.help_button_description))
+                }
+            }
         },
         colors = TopAppBarDefaults.smallTopAppBarColors(
             containerColor = MaterialTheme.colors.surface,
