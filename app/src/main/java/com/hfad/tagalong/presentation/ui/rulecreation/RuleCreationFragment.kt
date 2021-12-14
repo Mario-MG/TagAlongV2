@@ -62,7 +62,9 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                     displayProgressBar = loading,
                     navController = navController,
                     screenTitle = stringResource(R.string.rule_creation_screen_title),
-                    showBackButtonInTopBar = true
+                    showBackButtonInTopBar = true,
+                    helpContent = { Text(stringResource(R.string.rule_creation_help)) },
+                    pinnedTopBar = true
                 ) {
                     Surface(
                         modifier = Modifier

@@ -23,16 +23,21 @@
 
     <!--  PLAYLISTS  -->
     <string name="no_playlists">There are no playlists to show</string>
+    <string name="playlists_help">Select a playlist to see its tracks and work with them.</string>
 
     <!--  TRACKS  -->
     <string name="no_tracks">There are no tracks to show</string>
+    <string name="tracks_help">Select a song to see and modify its tags.</string>
 
     <!--  SINGLE TRACK  -->
     <string name="track_image_description">Track image</string>
+    <string name="single_track_help">Add your custom tags for this song.</string>
 
     <!--  TAGS  -->
     <string name="no_tags">There are no tags to show</string>
     <string name="tag_icon_description">Tag icon</string>
+    <string name="tags_help">These are the tags you\'ve defined so far.
+        \nClick one to see the list of songs that are tagged with it.</string>
 
     <!--  RULES  -->
     <string name="add_rule_icon_description">Add rule icon</string>
@@ -44,6 +49,9 @@
     <string name="before_rule_optionality_all">"Songs with "</string>
     <string name="rule_optionality_all">ALL</string>
     <string name="after_rule_optionality_all">" of the tags:"</string>
+    <string name="rules_help">These are the rules you\'ve created so far.
+        \nA rule defines what tags a song must have for it to be added to a playlist.
+        \nClick on the + button to create a new rule.</string>
 
     <!--  RULE CREATION  -->
     <string name="new_rule_icon_description">New rule icon</string>
@@ -53,17 +61,24 @@
     <string name="create_rule">Create</string>
     <string name="new_tagalong_playlist">New TagAlong Playlist</string>
     <string name="rule_creation_screen_title">New Rule</string>
+    <string name="rule_creation_help">Yeah! You\'re creating a new rule!
+        \nYou can customise the name of the playlist that will be automatically created.
+        \nAdd whichever tags you want, choose if a song must be tagged with all or just one of them
+        and if the playlist will be automatically updated with every new song you tag with the
+        tags you define here.</string>
 
     <!--  SETTINGS  -->
     <string name="log_out">Log out</string>
 
     <!--  COMMON  -->
     <string name="item_image_description">Item image</string>
-    <string name="add_tag_here">Add a tag here…</string>
+    <string name="add_tag_here">Click here to add a new tag…</string>
     <string name="add_keyword_here">Add a keyword here…</string>
     <string name="delete_keyword_icon">Delete keyword icon</string>
     <string name="clear_button_description">Clear</string>
     <string name="icon_item_card_description">Item icon</string>
     <string name="cancel">Cancel</string>
     <string name="back_arrow_description">Back arrow</string>
+    <string name="help_button_description">Help</string>
+    <string name="help_dialog_ok">Got it!</string>
 </resources>

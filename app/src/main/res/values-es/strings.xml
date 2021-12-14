@@ -18,16 +18,21 @@
 
     <!--  PLAYLISTS  -->
     <string name="no_playlists">No hay playlists para mostrar</string>
+    <string name="playlists_help">Selecciona una playlist para ver sus canciones y empezar a etiquetarlas.</string>
 
     <!--  TRACKS  -->
     <string name="no_tracks">No hay canciones para mostrar</string>
+    <string name="tracks_help">Selecciona una canción para ver y modificar sus etiquetas.</string>
 
     <!--  SINGLE TRACK  -->
     <string name="track_image_description">Imagen de la canción</string>
+    <string name="single_track_help">Añade tus propias etiquetas para esta canción.</string>
 
     <!--  TAGS  -->
     <string name="no_tags">No hay tags para mostrar</string>
     <string name="tag_icon_description">Icono de tag</string>
+    <string name="tags_help">Estas son las etiquetas que has definido hasta el momento.
+        \nHaz clic en una para ver la lista de canciones que están etiquetadas con ella.</string>
 
     <!--  RULES  -->
     <string name="add_rule_icon_description">Icono de añadir regla</string>
@@ -39,6 +44,9 @@
     <string name="before_rule_optionality_all">"Canciones con "</string>
     <string name="rule_optionality_all">TODOS</string>
     <string name="after_rule_optionality_all">" los tags:"</string>
+    <string name="rules_help">Aquí se muestran las reglas que has creado hasta ahora.
+        \nUna regla define qué etiquetas debe tener una canción para que se añada a una playlist.
+        \nHaz clic en el botón de + para crear una nueva regla.</string>
 
     <!--  RULE CREATION  -->
     <string name="new_rule_icon_description">Icono de nueva regla</string>
@@ -48,17 +56,24 @@
     <string name="create_rule">Crear</string>
     <string name="new_tagalong_playlist">Nueva Playlist de TagAlong</string>
     <string name="rule_creation_screen_title">Nueva Regla</string>
+    <string name="rule_creation_help">¡Bien! ¡Estás creando una nueva regla!
+        \nPuedes personalizar el nombre de la playlist que se creará automáticamente.
+        \nAñade las etiquetas que quieras, decide si una canción debe contenerlas todas o solo una de ellas
+        y si la playlist se actualizará automáticamente con cada nueva canción a la que añadas las etiquetas
+        que hayas indicado.</string>
 
     <!--  SETTINGS  -->
     <string name="log_out">Cerrar sesión</string>
 
     <!--  COMMON  -->
     <string name="item_image_description">Imagen del elemento</string>
-    <string name="add_tag_here">Añade un tag aquí…</string>
+    <string name="add_tag_here">Haz click aquí para añadir un tag…</string>
     <string name="add_keyword_here">Añade una palabra clave aquí…</string>
     <string name="delete_keyword_icon">Icono de eliminar palabra clave</string>
     <string name="clear_button_description">Eliminar</string>
     <string name="icon_item_card_description">Icono del elemento</string>
     <string name="cancel">Cancelar</string>
     <string name="back_arrow_description">Ir atrás</string>
+    <string name="help_button_description">Ayuda</string>
+    <string name="help_dialog_ok">Entendido</string>
 </resources>

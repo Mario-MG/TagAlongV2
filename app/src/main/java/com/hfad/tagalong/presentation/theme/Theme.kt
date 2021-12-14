@@ -1,28 +1,27 @@
 package com.hfad.tagalong.presentation.theme
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.darkColors
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.components.AppNavigationBar
 import com.hfad.tagalong.presentation.components.AppTopBar
+import com.hfad.tagalong.presentation.components.HelpDialog
 
 @Composable
 fun AppTheme(
@@ -51,11 +50,18 @@ fun AppScaffold(
     navController: NavController,
     floatingActionButton: @Composable () -> Unit = {},
     screenTitle: String = stringResource(R.string.app_name),
+    pinnedTopBar: Boolean = false,
     showBackButtonInTopBar: Boolean = false,
+    helpContent: @Composable (() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit
 ) {
     AppTheme {
-        val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
+        val scrollBehavior = remember {
+            if (pinnedTopBar) TopAppBarDefaults.pinnedScrollBehavior()
+            else TopAppBarDefaults.enterAlwaysScrollBehavior()
+        }
+        var showHelpDialog by remember { mutableStateOf(false) }
+        val onClickHelp = helpContent?.let { { showHelpDialog = true } }
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
@@ -63,7 +69,8 @@ fun AppScaffold(
                     title = screenTitle,
                     navController = navController,
                     showBackButton = showBackButtonInTopBar,
-                    scrollBehavior = scrollBehavior
+                    scrollBehavior = scrollBehavior,
+                    onClickHelp = onClickHelp
                 )
             },
             bottomBar = {
@@ -87,6 +94,11 @@ fun AppScaffold(
                             .align(progressBarAlignment)
                             .padding(12.dp)
                     )
+                }
+                if (showHelpDialog) {
+                    HelpDialog(onDismissRequest = { showHelpDialog = false }) {
+                        helpContent!!()
+                    }
                 }
             }
         }
