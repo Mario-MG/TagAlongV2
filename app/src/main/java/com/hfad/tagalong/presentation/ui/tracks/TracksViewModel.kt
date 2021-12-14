@@ -12,6 +12,6 @@ abstract class TracksViewModel : ViewModel() {
 
     val loading = mutableStateOf(false)
 
-    abstract val screenTitle: MutableState<String>
+    abstract val screenTitle: MutableState<String> // TODO: Move this to the Fragment?
 
 }
