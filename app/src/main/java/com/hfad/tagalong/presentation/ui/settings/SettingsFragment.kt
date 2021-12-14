@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
@@ -16,10 +17,12 @@ import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.components.ItemCard
 import com.hfad.tagalong.presentation.theme.AppScaffold
+import com.hfad.tagalong.presentation.ui.Screen
 import com.hfad.tagalong.presentation.ui.settings.SettingsEvent.LogOutEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalMaterial3Api
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -36,7 +39,10 @@ class SettingsFragment : Fragment() {
                 val navController = findNavController()
 
                 AppScaffold(
-                    navController = navController
+                    navController = navController,
+                    displayNavBar = true,
+                    screenTitle = Screen.Settings.getLabel(),
+                    pinnedTopBar = true
                 ) {
                     Column(
                         modifier = Modifier

@@ -9,8 +9,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
@@ -21,9 +23,11 @@ import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.RuleItemList
 import com.hfad.tagalong.presentation.theme.AppScaffold
 import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
+import com.hfad.tagalong.presentation.ui.Screen
 import com.hfad.tagalong.presentation.ui.rules.RulesEvent.LoadRulesEvent
 import dagger.hilt.android.AndroidEntryPoint
 
+@ExperimentalMaterial3Api
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @AndroidEntryPoint
@@ -47,6 +51,8 @@ class RulesFragment : BaseLoggedInFragment() {
                     displayProgressBar = loading,
                     progressBarAlignment = if (rules.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter,
                     navController = navController,
+                    displayNavBar = true,
+                    screenTitle = Screen.Rules.getLabel(),
                     floatingActionButton = {
                         FloatingActionButton(
                             onClick = {
@@ -56,7 +62,8 @@ class RulesFragment : BaseLoggedInFragment() {
                         ) {
                             Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_rule_icon_description))
                         }
-                    }
+                    },
+                    helpContent = { Text(stringResource(R.string.rules_help)) }
                 ) {
                     if (rules.isNotEmpty()) {
                         RuleItemList(
