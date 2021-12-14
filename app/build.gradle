@@ -111,7 +111,7 @@ dependencies {
     def requery_version = "3.36.0"
     implementation "com.github.requery:sqlite-android:$requery_version"
 
-    def material3_version = "1.0.0-alpha01"
+    def material3_version = "1.0.0-alpha02"
     implementation "androidx.compose.material3:material3:$material3_version"
 
     def annotations_version = "28.0.0"

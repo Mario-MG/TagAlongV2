@@ -1,5 +1,6 @@
 package com.hfad.tagalong.presentation.ui.tracks
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -10,5 +11,7 @@ abstract class TracksViewModel : ViewModel() {
     val tracks = mutableStateListOf<Track>()
 
     val loading = mutableStateOf(false)
+
+    abstract val screenTitle: MutableState<String> // TODO: Move this to the Fragment?
 
 }

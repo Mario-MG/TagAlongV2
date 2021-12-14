@@ -18,7 +18,6 @@ import javax.inject.Inject
 class SingleTrackViewModel
 @Inject
 constructor(
-    private val trackRepository: TrackRepository,
     private val sessionManager: SessionManager,
     private val trackTagRepository: TrackTagRepository,
     private val tagRepository: TagRepository,
@@ -38,7 +37,7 @@ constructor(
         viewModelScope.launch {
             when (event) {
                 is LoadTrackDetailsEvent -> {
-                    loadTrack(event.trackId)
+                    loadTrack(event.track)
                 }
                 is AddTagEvent -> {
                     addTag(event.tagName)
@@ -51,13 +50,9 @@ constructor(
         }
     }
 
-    private suspend fun loadTrack(trackId: String) {
+    private fun loadTrack(track: Track) {
         loading.value = true
-        val track = trackRepository.getTrack(
-            auth = sessionManager.getAuthorizationHeader(),
-            trackId = trackId
-        )
-        this.track.value = track // TODO: Handle null?
+        this.track.value = track
         loading.value = false
     }
 
