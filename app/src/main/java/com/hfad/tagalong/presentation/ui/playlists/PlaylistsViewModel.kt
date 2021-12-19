@@ -4,14 +4,15 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hfad.tagalong.BuildConfig
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.domain.model.Playlist
+import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
+import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
 import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.FirstPageEvent
 import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.NextPageEvent
-import com.hfad.tagalong.repository.PlaylistRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,8 +20,9 @@ import javax.inject.Inject
 class PlaylistsViewModel
 @Inject
 constructor(
-    private val playlistRepository: PlaylistRepository,
-    private val sessionManager: SessionManager
+    private val loadFirstPlaylistsPage: LoadFirstPlaylistsPage,
+    private val loadNextPlaylistsPage: LoadNextPlaylistsPage,
+    private val sessionManager: SessionManager // TODO: Think about moving this dependency down to the use cases
 ) : ViewModel() {
 
     val playlists = mutableStateListOf<Playlist>()
@@ -36,35 +38,55 @@ constructor(
                     loadFirstPage()
                 }
                 is NextPageEvent -> {
-                    loadNextPage()
+                    if (!allPlaylistsLoaded) {
+                        loadNextPage()
+                    }
                 }
             }
         }
     }
 
-    private suspend fun loadFirstPage() {
-        loading.value = true
-        val playlists = playlistRepository.getList(auth = sessionManager.getAuthorizationHeader())
-        this.playlists.clear()
-        this.playlists.addAll(playlists)
-        loading.value = false
+    private fun loadFirstPage() {
+        loadFirstPlaylistsPage
+            .execute(auth = sessionManager.getAuthorizationHeader())
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let { playlists ->
+                    this.playlists.clear()
+                    this.playlists.addAll(playlists)
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
-    private suspend fun loadNextPage() {
-        if (!allPlaylistsLoaded) {
-            loading.value = true
-            val currentListSize = this.playlists.size
-            val newPlaylists = playlistRepository.getList(
+    private fun loadNextPage() {
+        val currentListSize = this.playlists.size
+        loadNextPlaylistsPage
+            .execute(
                 auth = sessionManager.getAuthorizationHeader(),
                 offset = currentListSize
             )
-            if (newPlaylists.isEmpty()) {
-                allPlaylistsLoaded = true
-            } else {
-                this.playlists.addAll(newPlaylists)
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let { playlists ->
+                    if (playlists.isEmpty()) {
+                        allPlaylistsLoaded = true
+                    } else {
+                        this.playlists.addAll(playlists)
+                    }
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
             }
-            loading.value = false
-        }
+            .launchIn(viewModelScope)
     }
 
 }
