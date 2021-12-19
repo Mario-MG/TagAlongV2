@@ -6,6 +6,6 @@ sealed class TagTracksEvent {
 
     data class InitTagTracksEvent(val tag: Tag) : TagTracksEvent()
 
-    object ReloadTagTracksEvent : TagTracksEvent()
+    object LoadTagTracksEvent : TagTracksEvent()
 
 }
