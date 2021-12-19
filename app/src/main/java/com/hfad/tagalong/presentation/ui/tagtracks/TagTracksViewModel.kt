@@ -3,11 +3,13 @@ package com.hfad.tagalong.presentation.ui.tagtracks
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.interactors.tagtracks.LoadAllTagTracks
 import com.hfad.tagalong.presentation.ui.tagtracks.TagTracksEvent.InitTagTracksEvent
-import com.hfad.tagalong.presentation.ui.tagtracks.TagTracksEvent.ReloadTagTracksEvent
+import com.hfad.tagalong.presentation.ui.tagtracks.TagTracksEvent.LoadTagTracksEvent
 import com.hfad.tagalong.presentation.ui.tracks.TracksViewModel
-import com.hfad.tagalong.repository.TrackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,7 +17,7 @@ import javax.inject.Inject
 class TagTracksViewModel
 @Inject
 constructor(
-    private val trackRepository: TrackRepository
+    private val loadAllTagTracks: LoadAllTagTracks
 ) : TracksViewModel() {
 
     val tag = mutableStateOf<Tag?>(null)
@@ -28,25 +30,34 @@ constructor(
                 is InitTagTracksEvent -> {
                     init(event.tag)
                 }
-                is ReloadTagTracksEvent -> {
+                is LoadTagTracksEvent -> {
                     loadTracks()
                 }
             }
         }
     }
 
-    private suspend fun init(tag: Tag) {
+    private fun init(tag: Tag) {
         this.tag.value = tag
         screenTitle.value = "#${tag.name}"
-        loadTracks()
     }
 
-    private suspend fun loadTracks() {
-        loading.value = true
-        val tracks = trackRepository.getTracksForTag(tag = tag.value!!)
-        this.tracks.clear()
-        this.tracks.addAll(tracks)
-        loading.value = false
+    private fun loadTracks() {
+        loadAllTagTracks
+            .execute(tag = this.tag.value!!)
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let { tracks ->
+                    this.tracks.clear()
+                    this.tracks.addAll(tracks)
+                }
+
+                dataState.error?.let {
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
 }
