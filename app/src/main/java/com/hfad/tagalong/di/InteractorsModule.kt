@@ -8,6 +8,8 @@ import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
 import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
+import com.hfad.tagalong.interactors.singletrack.CreateTag
+import com.hfad.tagalong.interactors.singletrack.LoadTrackTags
 import com.hfad.tagalong.interactors.tags.LoadAllTags
 import com.hfad.tagalong.interactors.tagtracks.LoadAllTagTracks
 import com.hfad.tagalong.network.RetrofitPlaylistService
@@ -74,7 +76,7 @@ object InteractorsModule {
 
     @Provides
     @ViewModelScoped
-    fun provideLoadAllTags(
+    fun provideLoadAllTags( // TODO: What if an interactor is shared between several viewmodels??
         tagDao: TagDao,
         tagEntityMapper: TagEntityMapper
     ): LoadAllTags {
@@ -93,6 +95,30 @@ object InteractorsModule {
         return LoadAllTagTracks(
             trackDao = trackDao,
             trackEntityMapper = trackEntityMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideLoadTrackTags(
+        tagDao: TagDao,
+        tagEntityMapper: TagEntityMapper
+    ): LoadTrackTags {
+        return LoadTrackTags(
+            tagDao = tagDao,
+            tagEntityMapper = tagEntityMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideCreateTag(
+        tagDao: TagDao,
+        tagEntityMapper: TagEntityMapper
+    ): CreateTag {
+        return CreateTag(
+            tagDao = tagDao,
+            tagEntityMapper = tagEntityMapper
         )
     }
 
