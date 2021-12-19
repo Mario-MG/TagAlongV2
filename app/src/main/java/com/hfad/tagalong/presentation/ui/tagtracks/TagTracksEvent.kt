@@ -1,4 +1,4 @@
-package com.hfad.tagalong.presentation.ui.tracks
+package com.hfad.tagalong.presentation.ui.tagtracks
 
 import com.hfad.tagalong.domain.model.Tag
 
