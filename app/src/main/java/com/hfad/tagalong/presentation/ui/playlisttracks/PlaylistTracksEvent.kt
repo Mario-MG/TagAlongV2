@@ -1,4 +1,4 @@
-package com.hfad.tagalong.presentation.ui.tracks
+package com.hfad.tagalong.presentation.ui.playlisttracks
 
 import com.hfad.tagalong.domain.model.Playlist
 

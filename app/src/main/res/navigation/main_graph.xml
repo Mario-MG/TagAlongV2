@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/playlistTracksFragment"
-        android:name="com.hfad.tagalong.presentation.ui.tracks.PlaylistTracksFragment"
+        android:name="com.hfad.tagalong.presentation.ui.playlisttracks.PlaylistTracksFragment"
         android:label="PlaylistTracksFragment">
 
         <action
@@ -92,7 +92,7 @@
 
     <fragment
         android:id="@+id/tagTracksFragment"
-        android:name="com.hfad.tagalong.presentation.ui.tracks.TagTracksFragment"
+        android:name="com.hfad.tagalong.presentation.ui.tagtracks.TagTracksFragment"
         android:label="TagTracksFragment" >
 
         <action

@@ -2,8 +2,12 @@ package com.hfad.tagalong.di
 
 import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
 import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
+import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
+import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
 import com.hfad.tagalong.network.RetrofitPlaylistService
+import com.hfad.tagalong.network.RetrofitTrackService
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
+import com.hfad.tagalong.network.model.TrackDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,6 +39,30 @@ object InteractorsModule {
         return LoadNextPlaylistsPage(
             playlistService = playlistService,
             playlistDtoMapper = playlistDtoMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideLoadFirstPlaylistTracksPage(
+        trackService: RetrofitTrackService,
+        trackDtoMapper: TrackDtoMapper
+    ): LoadFirstPlaylistTracksPage {
+        return LoadFirstPlaylistTracksPage(
+            trackService = trackService,
+            trackDtoMapper = trackDtoMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideLoadNextPlaylistTracksPage(
+        trackService: RetrofitTrackService,
+        trackDtoMapper: TrackDtoMapper
+    ): LoadNextPlaylistTracksPage {
+        return LoadNextPlaylistTracksPage(
+            trackService = trackService,
+            trackDtoMapper = trackDtoMapper
         )
     }
 

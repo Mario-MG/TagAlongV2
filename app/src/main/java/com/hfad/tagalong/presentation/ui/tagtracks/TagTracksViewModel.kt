@@ -1,10 +1,11 @@
-package com.hfad.tagalong.presentation.ui.tracks
+package com.hfad.tagalong.presentation.ui.tagtracks
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.domain.model.Tag
-import com.hfad.tagalong.presentation.ui.tracks.TagTracksEvent.InitTagTracksEvent
-import com.hfad.tagalong.presentation.ui.tracks.TagTracksEvent.ReloadTagTracksEvent
+import com.hfad.tagalong.presentation.ui.tagtracks.TagTracksEvent.InitTagTracksEvent
+import com.hfad.tagalong.presentation.ui.tagtracks.TagTracksEvent.ReloadTagTracksEvent
+import com.hfad.tagalong.presentation.ui.tracks.TracksViewModel
 import com.hfad.tagalong.repository.TrackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
