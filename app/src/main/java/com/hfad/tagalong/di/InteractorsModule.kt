@@ -1,9 +1,12 @@
 package com.hfad.tagalong.di
 
+import com.hfad.tagalong.cache.dao.TagDao
+import com.hfad.tagalong.cache.model.TagEntityMapper
 import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
 import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
+import com.hfad.tagalong.interactors.tags.LoadAllTags
 import com.hfad.tagalong.network.RetrofitPlaylistService
 import com.hfad.tagalong.network.RetrofitTrackService
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
@@ -63,6 +66,18 @@ object InteractorsModule {
         return LoadNextPlaylistTracksPage(
             trackService = trackService,
             trackDtoMapper = trackDtoMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideLoadAllTags(
+        tagDao: TagDao,
+        tagEntityMapper: TagEntityMapper
+    ): LoadAllTags {
+        return LoadAllTags(
+            tagDao = tagDao,
+            tagEntityMapper = tagEntityMapper
         )
     }
 
