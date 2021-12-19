@@ -29,13 +29,17 @@ constructor(
 
     val loading = mutableStateOf(false)
 
+    private var firstPageLoaded = false // TODO: Find out a way to improve this
+
     private var allPlaylistsLoaded = false // TODO: Find out a way to improve this
 
     fun onTriggerEvent(event: PlaylistsEvent) {
         viewModelScope.launch {
             when (event) {
                 is FirstPageEvent -> {
-                    loadFirstPage()
+                    if (!firstPageLoaded) {
+                        loadFirstPage()
+                    }
                 }
                 is NextPageEvent -> {
                     if (!allPlaylistsLoaded) {
@@ -55,6 +59,7 @@ constructor(
                 dataState.data?.let { playlists ->
                     this.playlists.clear()
                     this.playlists.addAll(playlists)
+                    firstPageLoaded = true
                 }
 
                 dataState.error?.let { error ->

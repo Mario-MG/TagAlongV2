@@ -27,6 +27,8 @@ constructor(
 
     override val screenTitle = mutableStateOf("")
 
+    private var firstPageLoaded = false // TODO: Find out a way to improve this
+
     private var allTracksLoaded = false // TODO: Find out a way to improve this
 
     fun onTriggerEvent(event: PlaylistTracksEvent) {
@@ -34,7 +36,9 @@ constructor(
             when (event) {
                 is InitPlaylistTracksEvent -> {
                     init(event.playlist)
-                    loadFirstPage()
+                    if (!firstPageLoaded) {
+                        loadFirstPage()
+                    }
                 }
                 is NextPageEvent -> {
                     if (!allTracksLoaded) {
@@ -62,6 +66,7 @@ constructor(
                 dataState.data?.let { tracks ->
                     this.tracks.clear()
                     this.tracks.addAll(tracks)
+                    firstPageLoaded = true
                 }
 
                 dataState.error?.let {
