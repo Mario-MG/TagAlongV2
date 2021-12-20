@@ -9,12 +9,12 @@ import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.interactors.rulecreation.ApplyNewRule
+import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
+import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors.tags.LoadAllTags
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
-import com.hfad.tagalong.repository.PlaylistRepository
-import com.hfad.tagalong.repository.RuleRepository
-import com.hfad.tagalong.repository.TrackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -26,10 +26,10 @@ class RuleCreationViewModel
 @Inject
 constructor(
     private val loadAllTags: LoadAllTags,
-    private val sessionManager: SessionManager,
-    private val ruleRepository: RuleRepository,
-    private val playlistRepository: PlaylistRepository,
-    private val tracksRepository: TrackRepository
+    private val createPlaylist: CreatePlaylist,
+    private val createRule: CreateRule,
+    private val applyNewRule: ApplyNewRule,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     val loading = mutableStateOf(false)
@@ -77,7 +77,7 @@ constructor(
                     switchAutoUpdate()
                 }
                 is CreateRuleEvent -> {
-                    createRule()
+                    createPlaylistAndRule()
                 }
             }
         }
@@ -127,43 +127,67 @@ constructor(
         this.autoUpdate.value = !this.autoUpdate.value
     }
 
-    private suspend fun createRule() {
-        if (isValidRule) {
-            loading.value = true
-            val newPlaylist = createPlaylist()
-            val newRule = createRuleForPlaylist(newPlaylist)
-            applyRule(newRule)
-            finishedRuleCreation.value = true
-            loading.value = false
-        }
+    private fun createPlaylistAndRule() {
+        createPlaylist
+            .execute(
+                auth = sessionManager.getAuthorizationHeader(),
+                userId = sessionManager.getUser().id,
+                playlistName = playlistName.value
+            )
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let { playlist ->
+                    createRuleForPlaylist(playlist)
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
-    private suspend fun createPlaylist(): Playlist {
-        return playlistRepository.create(
-            auth = sessionManager.getAuthorizationHeader(),
-            userId = sessionManager.getUser().id,
-            playlist = Playlist(name = playlistName.value)
-        )
+    private fun createRuleForPlaylist(playlist: Playlist) {
+        createRule
+            .execute(
+                playlist = playlist,
+                optionality = optionality.value,
+                autoUpdate = autoUpdate.value,
+                tags = tags
+            )
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let { rule ->
+                    applyRule(rule)
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
-    private suspend fun createRuleForPlaylist(playlist: Playlist): Rule {
-        val rule = Rule(
-            playlist = playlist,
-            optionality = optionality.value,
-            autoUpdate = autoUpdate.value,
-            tags = tags
-        )
-        ruleRepository.createNewRule(rule)
-        return rule
-    }
+    private fun applyRule(rule: Rule) {
+        applyNewRule
+            .execute(
+                rule = rule,
+                auth = sessionManager.getAuthorizationHeader()
+            )
+            .onEach { dataState ->
+                loading.value = dataState.loading
 
-    private suspend fun applyRule(rule: Rule) {
-        val tracks = if (rule.optionality) tracksRepository.getTracksWithAnyOfTheTags(tags) else tracksRepository.getTracksWithAllOfTheTags(tags)
-        playlistRepository.addTracksToPlaylist(
-            auth = sessionManager.getAuthorizationHeader(),
-            playlist = rule.playlist,
-            tracks = tracks
-        )
+                dataState.data?.let {
+                    finishedRuleCreation.value = true
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
 }

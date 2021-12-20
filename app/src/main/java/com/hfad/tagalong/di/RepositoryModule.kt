@@ -25,44 +25,6 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun providePlaylistRepository(
-        playlistService: RetrofitPlaylistService,
-        playlistDtoMapper: PlaylistDtoMapper,
-        playlistDao: PlaylistDao,
-        playlistEntityMapper: PlaylistEntityMapper
-    ): PlaylistRepository = PlaylistRepositoryImpl(
-        playlistService = playlistService,
-        playlistDtoMapper = playlistDtoMapper,
-        playlistDao = playlistDao,
-        playlistEntityMapper = playlistEntityMapper
-    )
-
-    @Singleton
-    @Provides
-    fun provideTrackRepository(
-        trackService: RetrofitTrackService,
-        trackDtoMapper: TrackDtoMapper,
-        trackDao: TrackDao,
-        trackEntityMapper: TrackEntityMapper
-    ): TrackRepository = TrackRepositoryImpl(
-        trackService = trackService,
-        trackDtoMapper = trackDtoMapper,
-        trackDao = trackDao,
-        trackEntityMapper = trackEntityMapper
-    )
-
-    @Singleton
-    @Provides
-    fun provideRuleRepository(
-        ruleDao: RuleDao,
-        ruleEntityMapper: RuleEntityMapper
-    ): RuleRepository = RuleRepositoryImpl(
-        ruleDao = ruleDao,
-        ruleEntityMapper = ruleEntityMapper
-    )
-
-    @Singleton
-    @Provides
     fun provideUserRepository(
         userService: RetrofitUserService,
         userMapper: UserDtoMapper
