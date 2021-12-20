@@ -63,22 +63,6 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideTrackTagRepository(
-        trackDao: TrackDao,
-        tagDao: TagDao,
-        trackTagCrossRefDao: TrackTagCrossRefDao,
-        trackEntityMapper: TrackEntityMapper,
-        tagEntityMapper: TagEntityMapper
-    ): TrackTagRepository = TrackTagRepositoryImpl(
-        trackDao = trackDao,
-        tagDao = tagDao,
-        trackTagCrossRefDao = trackTagCrossRefDao,
-        trackEntityMapper = trackEntityMapper,
-        tagEntityMapper = tagEntityMapper
-    )
-
-    @Singleton
-    @Provides
     fun provideRuleRepository(
         ruleDao: RuleDao,
         ruleEntityMapper: RuleEntityMapper
