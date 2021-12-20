@@ -16,6 +16,6 @@ sealed class RuleCreationEvent {
 
     object SwitchAutoUpdateEvent : RuleCreationEvent()
 
-    data class CreateRuleEvent(val callback: () -> Unit = {}) : RuleCreationEvent()
+    object CreateRuleEvent : RuleCreationEvent()
 
 }
