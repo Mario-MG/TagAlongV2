@@ -11,6 +11,7 @@ import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
 import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
+import com.hfad.tagalong.interactors.rules.LoadAllRules
 import com.hfad.tagalong.interactors.singletrack.*
 import com.hfad.tagalong.interactors.tags.LoadAllTags
 import com.hfad.tagalong.interactors.tagtracks.LoadAllTagTracks
@@ -159,6 +160,18 @@ object InteractorsModule {
     ): DeleteTagFromTrack {
         return DeleteTagFromTrack(
             trackTagCrossRefDao = trackTagCrossRefDao,
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideLoadAllRules(
+        ruleDao: RuleDao,
+        ruleEntityMapper: RuleEntityMapper
+    ): LoadAllRules {
+        return LoadAllRules(
+            ruleDao = ruleDao,
+            ruleEntityMapper = ruleEntityMapper
         )
     }
 
