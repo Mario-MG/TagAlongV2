@@ -5,9 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.domain.model.Rule
+import com.hfad.tagalong.interactors.rules.LoadAllRules
 import com.hfad.tagalong.presentation.ui.rules.RulesEvent.LoadRulesEvent
-import com.hfad.tagalong.repository.RuleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,7 +17,7 @@ import javax.inject.Inject
 class RulesViewModel
 @Inject
 constructor(
-    private val ruleRepository: RuleRepository
+    private val loadAllRules: LoadAllRules
 ) : ViewModel() {
 
     val loading = mutableStateOf(false)
@@ -36,12 +38,22 @@ constructor(
         }
     }
 
-    private suspend fun loadAllRules() {
-        loading.value = true
-        val rules = ruleRepository.getAll()
-        this.rules.clear()
-        this.rules.addAll(rules)
-        loading.value = false
+    private fun loadAllRules() {
+        loadAllRules
+            .execute()
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let { rules ->
+                    this.rules.clear()
+                    this.rules.addAll(rules)
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
 }
