@@ -1,15 +1,17 @@
 package com.hfad.tagalong.di
 
+import com.hfad.tagalong.cache.dao.RuleDao
 import com.hfad.tagalong.cache.dao.TagDao
 import com.hfad.tagalong.cache.dao.TrackDao
+import com.hfad.tagalong.cache.dao.TrackTagCrossRefDao
+import com.hfad.tagalong.cache.model.RuleEntityMapper
 import com.hfad.tagalong.cache.model.TagEntityMapper
 import com.hfad.tagalong.cache.model.TrackEntityMapper
 import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
 import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
-import com.hfad.tagalong.interactors.singletrack.CreateTag
-import com.hfad.tagalong.interactors.singletrack.LoadTrackTags
+import com.hfad.tagalong.interactors.singletrack.*
 import com.hfad.tagalong.interactors.tags.LoadAllTags
 import com.hfad.tagalong.interactors.tagtracks.LoadAllTagTracks
 import com.hfad.tagalong.network.RetrofitPlaylistService
@@ -119,6 +121,44 @@ object InteractorsModule {
         return CreateTag(
             tagDao = tagDao,
             tagEntityMapper = tagEntityMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideAddTagToTrack(
+        trackDao: TrackDao,
+        trackEntityMapper: TrackEntityMapper,
+        trackTagCrossRefDao: TrackTagCrossRefDao
+    ): AddTagToTrack {
+        return AddTagToTrack(
+            trackDao = trackDao,
+            trackEntityMapper = trackEntityMapper,
+            trackTagCrossRefDao = trackTagCrossRefDao,
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideApplyRules(
+        ruleDao: RuleDao,
+        ruleEntityMapper: RuleEntityMapper,
+        playlistService: RetrofitPlaylistService
+    ): ApplyRules {
+        return ApplyRules(
+            ruleDao = ruleDao,
+            ruleEntityMapper = ruleEntityMapper,
+            playlistService = playlistService
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideDeleteTagFromTrack(
+        trackTagCrossRefDao: TrackTagCrossRefDao,
+    ): DeleteTagFromTrack {
+        return DeleteTagFromTrack(
+            trackTagCrossRefDao = trackTagCrossRefDao,
         )
     }
 

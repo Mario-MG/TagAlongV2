@@ -7,11 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
-import com.hfad.tagalong.interactors.singletrack.CreateTag
-import com.hfad.tagalong.interactors.singletrack.LoadTrackTags
+import com.hfad.tagalong.interactors.singletrack.*
 import com.hfad.tagalong.interactors.tags.LoadAllTags
 import com.hfad.tagalong.presentation.ui.singletrack.SingleTrackEvent.*
-import com.hfad.tagalong.repository.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -25,10 +23,10 @@ constructor(
     private val loadAllTags: LoadAllTags,
     private val loadTrackTags: LoadTrackTags,
     private val createTag: CreateTag,
-    private val sessionManager: SessionManager,
-    private val trackTagRepository: TrackTagRepository,
-    private val ruleRepository: RuleRepository,
-    private val playlistRepository: PlaylistRepository
+    private val addTagToTrack: AddTagToTrack,
+    private val applyRules: ApplyRules,
+    private val deleteTagFromTrack: DeleteTagFromTrack,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     val track = mutableStateOf<Track?>(null)
@@ -47,11 +45,10 @@ constructor(
                     refreshTags()
                 }
                 is AddTagEvent -> {
-                    addTag(event.tagName)
+                    addTagByName(event.tagName)
                 }
                 is DeleteTagEvent -> {
                     deleteTag(event.tag)
-                    refreshTags() // TODO: Move this into "onSuccess"?
                 }
             }
         }
@@ -61,20 +58,14 @@ constructor(
         this.track.value = track
     }
 
-    private suspend fun addTag(tagName: String) {
+    private fun addTagByName(tagName: String) {
         createTag
             .execute(tagName = tagName)
             .onEach { dataState ->
                 loading.value = dataState.loading
 
                 dataState.data?.let { tag ->
-                    if (!this.tagsForTrack.contains(tag)) {
-                        trackTagRepository.addTagToTrack(tag = tag, track = track.value!!)
-                        applyRules(tag = tag, track = track.value!!)
-                        refreshTags()
-                    } else {
-                        // TODO: Show snack
-                    }
+                    addTagToTrack(tag = tag)
                 }
 
                 dataState.error?.let { error ->
@@ -84,20 +75,64 @@ constructor(
             .launchIn(viewModelScope)
     }
 
-    private suspend fun applyRules(tag: Tag, track: Track) {
-        val rules = ruleRepository.getRulesFulfilledByTags(newTag = tag, originalTags = tagsForTrack)
-        for (rule in rules) {
-            playlistRepository.addTracksToPlaylist(
-                auth = sessionManager.getAuthorizationHeader(),
-                playlist = rule.playlist,
-                tracks = listOf(track)
-            )
-        }
+    private fun addTagToTrack(tag: Tag) {
+        addTagToTrack
+            .execute(tag = tag, track = track.value!!)
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let {
+                    applyRules(newTag = tag)
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
-    private suspend fun deleteTag(tag: Tag) {
-        trackTagRepository.deleteTagFromTrack(tag = tag, track = track.value!!)
-        // TODO: Delete track from playlists where it doesn't fulfill the rules anymore
+    private fun applyRules(newTag: Tag) {
+        applyRules
+            .execute(
+                newTag = newTag,
+                originalTags = tagsForTrack,
+                track = track.value!!,
+                auth = sessionManager.getAuthorizationHeader()
+            )
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let {
+                    refreshTags()
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun deleteTag(tag: Tag) {
+        deleteTagFromTrack
+            .execute(
+                tag = tag,
+                track = track.value!!
+            )
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let {
+                    // TODO: Delete track from playlists where it doesn't fulfill the rules anymore
+                    refreshTags()
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun refreshTags() {
@@ -109,7 +144,7 @@ constructor(
         loadTrackTags
             .execute(track = track.value!!)
             .onEach { dataState ->
-//                loading.value = dataState.loading // TODO: Handle loading "chaining"
+                loading.value = dataState.loading
 
                 dataState.data?.let { tagsForTrack ->
                     this.tagsForTrack.clear()
@@ -127,7 +162,7 @@ constructor(
         loadAllTags
             .execute()
             .onEach { dataState ->
-//                loading.value = dataState.loading // TODO: Handle loading "chaining"
+                loading.value = dataState.loading
 
                 dataState.data?.let { allTags ->
                     this.allTags.clear()
