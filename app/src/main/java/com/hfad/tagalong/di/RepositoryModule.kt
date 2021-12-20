@@ -53,16 +53,6 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideTagRepository(
-        tagDao: TagDao,
-        tagEntityMapper: TagEntityMapper
-    ): TagRepository = TagRepositoryImpl(
-        tagDao = tagDao,
-        tagEntityMapper = tagEntityMapper
-    )
-
-    @Singleton
-    @Provides
     fun provideRuleRepository(
         ruleDao: RuleDao,
         ruleEntityMapper: RuleEntityMapper
