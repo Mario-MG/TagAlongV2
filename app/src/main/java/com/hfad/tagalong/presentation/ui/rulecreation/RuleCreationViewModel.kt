@@ -9,13 +9,15 @@ import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.interactors.tags.LoadAllTags
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
 import com.hfad.tagalong.repository.PlaylistRepository
 import com.hfad.tagalong.repository.RuleRepository
-import com.hfad.tagalong.repository.TagRepository
 import com.hfad.tagalong.repository.TrackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,9 +25,9 @@ import javax.inject.Inject
 class RuleCreationViewModel
 @Inject
 constructor(
+    private val loadAllTags: LoadAllTags,
     private val sessionManager: SessionManager,
     private val ruleRepository: RuleRepository,
-    private val tagRepository: TagRepository,
     private val playlistRepository: PlaylistRepository,
     private val tracksRepository: TrackRepository
 ) : ViewModel() {
@@ -74,10 +76,22 @@ constructor(
         }
     }
 
-    private suspend fun getAllTags() {
-        val allTags = tagRepository.getAll()
-        this.allTags.clear()
-        this.allTags.addAll(allTags)
+    private fun getAllTags() {
+        loadAllTags
+            .execute()
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let { tags ->
+                    this.allTags.clear()
+                    this.allTags.addAll(tags)
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun changePlaylistName(playlistName: String) {

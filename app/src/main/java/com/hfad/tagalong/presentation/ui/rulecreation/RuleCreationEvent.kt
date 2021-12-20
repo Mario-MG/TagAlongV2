@@ -1,6 +1,5 @@
 package com.hfad.tagalong.presentation.ui.rulecreation
 
-import androidx.navigation.NavController
 import com.hfad.tagalong.domain.model.Tag
 
 sealed class RuleCreationEvent {
