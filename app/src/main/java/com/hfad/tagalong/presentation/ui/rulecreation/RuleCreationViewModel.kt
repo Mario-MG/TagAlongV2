@@ -44,6 +44,8 @@ constructor(
 
     val allTags = mutableStateListOf<Tag>()
 
+    val finishedRuleCreation = mutableStateOf(false)
+
     val isValidRule: Boolean
         get() {
             return tags.isNotEmpty() && playlistName.value.isNotBlank()
@@ -75,7 +77,7 @@ constructor(
                     switchAutoUpdate()
                 }
                 is CreateRuleEvent -> {
-                    createRuleAndExecuteCallback(event.callback)
+                    createRule()
                 }
             }
         }
@@ -125,13 +127,13 @@ constructor(
         this.autoUpdate.value = !this.autoUpdate.value
     }
 
-    private suspend fun createRuleAndExecuteCallback(callback: () -> Unit) {
+    private suspend fun createRule() {
         if (isValidRule) {
             loading.value = true
             val newPlaylist = createPlaylist()
             val newRule = createRuleForPlaylist(newPlaylist)
             applyRule(newRule)
-            callback()
+            finishedRuleCreation.value = true
             loading.value = false
         }
     }
