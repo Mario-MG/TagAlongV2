@@ -173,7 +173,7 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                                             navController.popBackStack()
                                         })
                                     },
-                                    enabled = tags.isNotEmpty() && playlistName.isNotBlank()
+                                    enabled = viewModel.isValidRule
                                 ) {
                                     Text(stringResource(R.string.create_rule))
                                 }
