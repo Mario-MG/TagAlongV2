@@ -1,9 +1,7 @@
 package com.hfad.tagalong.di
 
-import com.hfad.tagalong.cache.dao.RuleDao
-import com.hfad.tagalong.cache.dao.TagDao
-import com.hfad.tagalong.cache.dao.TrackDao
-import com.hfad.tagalong.cache.dao.TrackTagCrossRefDao
+import com.hfad.tagalong.cache.dao.*
+import com.hfad.tagalong.cache.model.PlaylistEntityMapper
 import com.hfad.tagalong.cache.model.RuleEntityMapper
 import com.hfad.tagalong.cache.model.TagEntityMapper
 import com.hfad.tagalong.cache.model.TrackEntityMapper
@@ -11,6 +9,9 @@ import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
 import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
+import com.hfad.tagalong.interactors.rulecreation.ApplyNewRule
+import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
+import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors.rules.LoadAllRules
 import com.hfad.tagalong.interactors.singletrack.*
 import com.hfad.tagalong.interactors.tags.LoadAllTags
@@ -141,12 +142,12 @@ object InteractorsModule {
 
     @Provides
     @ViewModelScoped
-    fun provideApplyRules(
+    fun provideApplyExistingRules(
         ruleDao: RuleDao,
         ruleEntityMapper: RuleEntityMapper,
         playlistService: RetrofitPlaylistService
-    ): ApplyRules {
-        return ApplyRules(
+    ): ApplyExistingRules {
+        return ApplyExistingRules(
             ruleDao = ruleDao,
             ruleEntityMapper = ruleEntityMapper,
             playlistService = playlistService
@@ -172,6 +173,48 @@ object InteractorsModule {
         return LoadAllRules(
             ruleDao = ruleDao,
             ruleEntityMapper = ruleEntityMapper
+        )
+    }
+    
+    @Provides
+    @ViewModelScoped
+    fun provideCreatePlaylist(
+        playlistService: RetrofitPlaylistService,
+        playlistDtoMapper: PlaylistDtoMapper,
+        playlistDao: PlaylistDao,
+        playlistEntityMapper: PlaylistEntityMapper
+    ): CreatePlaylist {
+        return CreatePlaylist(
+            playlistService = playlistService,
+            playlistDtoMapper = playlistDtoMapper,
+            playlistDao = playlistDao,
+            playlistEntityMapper = playlistEntityMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideCreateRule(
+        ruleDao: RuleDao,
+        ruleEntityMapper: RuleEntityMapper
+    ): CreateRule {
+        return CreateRule(
+            ruleDao = ruleDao,
+            ruleEntityMapper = ruleEntityMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideApplyNewRule(
+        trackDao: TrackDao,
+        trackEntityMapper: TrackEntityMapper,
+        playlistService: RetrofitPlaylistService
+    ): ApplyNewRule {
+        return ApplyNewRule(
+            trackDao = trackDao,
+            trackEntityMapper = trackEntityMapper,
+            playlistService = playlistService
         )
     }
 

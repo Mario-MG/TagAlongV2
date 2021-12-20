@@ -24,7 +24,7 @@ constructor(
     private val loadTrackTags: LoadTrackTags,
     private val createTag: CreateTag,
     private val addTagToTrack: AddTagToTrack,
-    private val applyRules: ApplyRules,
+    private val applyExistingRules: ApplyExistingRules,
     private val deleteTagFromTrack: DeleteTagFromTrack,
     private val sessionManager: SessionManager
 ) : ViewModel() {
@@ -93,7 +93,7 @@ constructor(
     }
 
     private fun applyRules(newTag: Tag) {
-        applyRules
+        applyExistingRules
             .execute(
                 newTag = newTag,
                 originalTags = tagsForTrack,

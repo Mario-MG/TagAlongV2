@@ -11,7 +11,7 @@ import com.hfad.tagalong.network.RetrofitPlaylistService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class ApplyRules(
+class ApplyExistingRules(
     private val ruleDao: RuleDao,
     private val ruleEntityMapper: RuleEntityMapper,
     private val playlistService: RetrofitPlaylistService
