@@ -15,7 +15,7 @@ class SaveSessionInfo(
         try {
             emit(DataState.Loading)
 
-            saveRefreshToken(token.refreshToken!!)
+            saveRefreshToken(token.refreshToken)
 
             emit(DataState.Success(Unit))
         } catch (e: Exception) {
