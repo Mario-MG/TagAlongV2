@@ -11,10 +11,17 @@ import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.di.APP_REDIRECT_URI
+import com.hfad.tagalong.domain.model.Token
+import com.hfad.tagalong.interactors.login.GetTokenFromCode
+import com.hfad.tagalong.interactors.login.LoadUser
+import com.hfad.tagalong.interactors.login.SaveSessionInfo
+import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
+import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.*
-import com.hfad.tagalong.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.nio.charset.Charset
 import java.security.MessageDigest
@@ -26,10 +33,14 @@ import javax.inject.Named
 class LoginViewModel
 @Inject
 constructor(
+    private val getTokenFromCode: GetTokenFromCode,
+    private val loadUser: LoadUser,
+    private val saveSessionInfo: SaveSessionInfo,
+    private val loadStayLoggedIn: LoadStayLoggedIn,
+    private val saveStayLoggedIn: SaveStayLoggedIn,
     private val sessionManager: SessionManager,
     @Named(APP_CLIENT_ID) private val clientId: String,
-    @Named(APP_REDIRECT_URI) private val redirectUri: String,
-    private val settingsRepository: SettingsRepository
+    @Named(APP_REDIRECT_URI) private val redirectUri: String
 ) : ViewModel() {
 
     val stayLoggedIn = mutableStateOf(true)
@@ -39,9 +50,22 @@ constructor(
     private lateinit var codeChallenge: String
 
     init {
-        viewModelScope.launch {
-            stayLoggedIn.value = settingsRepository.loadStayLoggedIn()
-        }
+        loadStayLoggedIn()
+    }
+
+    private fun loadStayLoggedIn() {
+        loadStayLoggedIn
+            .execute()
+            .onEach { dataState ->
+                dataState.data?.let { stayLoggedIn ->
+                    this.stayLoggedIn.value = stayLoggedIn
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     // Source: https://auth0.com/docs/flows/call-your-api-using-the-authorization-code-flow-with-pkce
@@ -77,9 +101,20 @@ constructor(
         }
     }
 
-    private suspend fun changeStayLoggedInOption() {
-        stayLoggedIn.value = !stayLoggedIn.value
-        settingsRepository.saveStayLoggedIn(stayLoggedIn.value)
+    private fun changeStayLoggedInOption() {
+        val newStayLoggedInValue = !stayLoggedIn.value
+        saveStayLoggedIn
+            .execute(stayLoggedIn = newStayLoggedInValue)
+            .onEach { dataState ->
+                dataState.data?.let {
+                    stayLoggedIn.value = newStayLoggedInValue
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun onClickLoginButton(context: Context) {
@@ -104,16 +139,61 @@ constructor(
             .build()
     }
 
-    private suspend fun login(uri: Uri) {
+    private fun login(uri: Uri) {
         val code = uri.getQueryParameter("code")
         code?.let {
-            sessionManager.login(
-                code = code,
-                codeVerifier = codeVerifier,
-                redirectUri = redirectUri,
-                stayLoggedIn = stayLoggedIn.value
-            )
+            getTokenFromCode
+                .execute(
+                    clientId = clientId,
+                    code = code,
+                    codeVerifier = codeVerifier,
+                    redirectUri = redirectUri
+                )
+                .onEach { dataState ->
+                    dataState.data?.let { token ->
+                        loadUser(token = token)
+                        if (stayLoggedIn.value) {
+                            saveSessionInfo(token)
+                        }
+                    }
+
+                    dataState.error?.let { error ->
+                        // TODO
+                    }
+                }
+                .launchIn(viewModelScope)
+        } ?: {
+            // TODO
         }
+    }
+
+    private fun loadUser(token: Token) {
+        loadUser
+            .execute(token = token)
+            .onEach { dataState ->
+                dataState.data?.let { user ->
+                    sessionManager.login(
+                        token = token,
+                        user = user
+                    )
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun saveSessionInfo(token: Token) {
+        saveSessionInfo
+            .execute(token = token)
+            .onEach { dataState ->
+                dataState.error?.let { error ->
+                    //  TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     companion object {

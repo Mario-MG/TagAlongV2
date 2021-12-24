@@ -131,7 +131,7 @@ constructor(
         createPlaylist
             .execute(
                 auth = sessionManager.getAuthorizationHeader(),
-                userId = sessionManager.getUser().id,
+                userId = sessionManager.user.id,
                 playlistName = playlistName.value
             )
             .onEach { dataState ->
