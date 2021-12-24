@@ -17,6 +17,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -25,10 +26,43 @@ object NetworkModule {
 
     @Singleton
     @Provides
+    fun provideAuthService(): RetrofitAuthService {
+        return Retrofit.Builder()
+            .baseUrl(NETWORK_SPOTIFY_AUTH_API_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+            .client(
+                OkHttpClient.Builder().also { client ->
+                    if (BuildConfig.DEBUG) {
+                        val logging = HttpLoggingInterceptor()
+                        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+                        client.addInterceptor(logging)
+                    }
+                }.build()
+            )
+            .build()
+            .create(RetrofitAuthService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideTokenMapper(): TokenDtoMapper {
+        return TokenDtoMapper()
+    }
+
+    @Singleton
+    @Provides
     fun provideAuthenticator(
-        sessionManager: SessionManager
+        sessionManager: SessionManager,
+        authService: RetrofitAuthService,
+        tokenDtoMapper: TokenDtoMapper,
+        @Named(APP_CLIENT_ID) clientId: String
     ): Authenticator {
-        return TokenAuthenticator(sessionManager = sessionManager)
+        return TokenAuthenticator(
+            sessionManager = sessionManager,
+            authService = authService,
+            tokenDtoMapper = tokenDtoMapper,
+            clientId = clientId
+        )
     }
 
     @Singleton
@@ -106,29 +140,6 @@ object NetworkModule {
     @Provides
     fun provideUserMapper(): UserDtoMapper {
         return UserDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun provideAuthService(): RetrofitAuthService {
-        return Retrofit.Builder()
-            .baseUrl(NETWORK_SPOTIFY_AUTH_API_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-            .client(OkHttpClient.Builder().also { client ->
-                    if (BuildConfig.DEBUG) {
-                        val logging = HttpLoggingInterceptor()
-                        logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
-                        client.addInterceptor(logging)
-                    }
-                }.build())
-            .build()
-            .create(RetrofitAuthService::class.java)
-    }
-
-    @Singleton
-    @Provides
-    fun provideTokenMapper(): TokenDtoMapper {
-        return TokenDtoMapper()
     }
 
 }

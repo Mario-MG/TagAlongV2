@@ -1,10 +1,12 @@
 package com.hfad.tagalong.di
 
+import android.content.SharedPreferences
 import com.hfad.tagalong.cache.dao.*
 import com.hfad.tagalong.cache.model.PlaylistEntityMapper
 import com.hfad.tagalong.cache.model.RuleEntityMapper
 import com.hfad.tagalong.cache.model.TagEntityMapper
 import com.hfad.tagalong.cache.model.TrackEntityMapper
+import com.hfad.tagalong.interactors.login.*
 import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
 import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
@@ -13,18 +15,26 @@ import com.hfad.tagalong.interactors.rulecreation.ApplyNewRule
 import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors.rules.LoadAllRules
+import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
+import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
 import com.hfad.tagalong.interactors.singletrack.*
 import com.hfad.tagalong.interactors.tags.LoadAllTags
 import com.hfad.tagalong.interactors.tagtracks.LoadAllTagTracks
+import com.hfad.tagalong.network.RetrofitAuthService
 import com.hfad.tagalong.network.RetrofitPlaylistService
 import com.hfad.tagalong.network.RetrofitTrackService
+import com.hfad.tagalong.network.RetrofitUserService
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
+import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.TrackDtoMapper
+import com.hfad.tagalong.network.model.UserDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
+import javax.inject.Named
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -215,6 +225,75 @@ object InteractorsModule {
             trackDao = trackDao,
             trackEntityMapper = trackEntityMapper,
             playlistService = playlistService
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetTokenFromCode(
+        authService: RetrofitAuthService,
+        tokenDtoMapper: TokenDtoMapper
+    ): GetTokenFromCode {
+        return GetTokenFromCode(
+            authService = authService,
+            tokenDtoMapper = tokenDtoMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetTokenFromRefreshToken(
+        authService: RetrofitAuthService,
+        tokenDtoMapper: TokenDtoMapper
+    ): GetTokenFromRefreshToken {
+        return GetTokenFromRefreshToken(
+            authService = authService,
+            tokenDtoMapper = tokenDtoMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideLoadUser(
+        userService: RetrofitUserService,
+        userDtoMapper: UserDtoMapper
+    ): LoadUser {
+        return LoadUser(
+            userService = userService,
+            userDtoMapper = userDtoMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideLoadSessionInfo(
+        @Named("authSharedPreferences")
+        sharedPreferences: SharedPreferences
+    ): LoadSessionInfo {
+        return LoadSessionInfo(
+            sharedPreferences = sharedPreferences
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideLoadStayLoggedIn(
+        @Named("defaultSharedPreferences")
+        sharedPreferences: SharedPreferences
+    ): LoadStayLoggedIn {
+        return LoadStayLoggedIn(
+            sharedPreferences = sharedPreferences
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideSaveStayLoggedIn(
+        @Named("defaultSharedPreferences")
+        sharedPreferences: SharedPreferences
+    ): SaveStayLoggedIn {
+        return SaveStayLoggedIn(
+            sharedPreferences = sharedPreferences
         )
     }
 
