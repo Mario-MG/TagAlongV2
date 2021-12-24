@@ -21,7 +21,6 @@ interface RetrofitAuthService {
     suspend fun refreshToken(
         @Field("grant_type") grantType: String = "refresh_token",
         @Field("client_id") clientId: String,
-        @Field("client_secret") clientSecret: String = BuildConfig.CLIENT_SECRET, // TODO: For testing purposes only TO BE REMOVED
         @Field("refresh_token") refreshToken: String
     ): TokenDto
 

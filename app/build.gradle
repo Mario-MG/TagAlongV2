@@ -33,7 +33,6 @@ android {
                 properties.load(project.rootProject.file("local.properties").newDataInputStream())
             }
             buildConfigField "String", "CLIENT_ID", properties.getProperty("client_id")
-            buildConfigField "String", "CLIENT_SECRET", properties.getProperty("client_secret")
         }
         release {
             minifyEnabled false
