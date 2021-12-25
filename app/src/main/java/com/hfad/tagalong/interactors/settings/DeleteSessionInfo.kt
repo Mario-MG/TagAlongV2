@@ -1,20 +1,19 @@
-package com.hfad.tagalong.interactors.login
+package com.hfad.tagalong.interactors.settings
 
 import android.content.SharedPreferences
 import com.hfad.tagalong.domain.data.DataState
-import com.hfad.tagalong.domain.model.Token
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class SaveSessionInfo(
+class DeleteSessionInfo(
     private val sharedPreferences: SharedPreferences
 ) {
 
-    fun execute(token: Token): Flow<DataState<Unit>> = flow {
+    fun execute(): Flow<DataState<Unit>> = flow {
         try {
             emit(DataState.Loading)
 
-            saveRefreshToken(token.refreshToken)
+            deleteRefreshToken()
 
             emit(DataState.Success(Unit))
         } catch (e: Exception) {
@@ -22,9 +21,9 @@ class SaveSessionInfo(
         }
     }
 
-    private fun saveRefreshToken(refreshToken: String) {
+    private fun deleteRefreshToken() {
         sharedPreferences.edit()
-            .putString("refreshToken", refreshToken) // TODO: Extract String to Constants
+            .remove("refreshToken") // TODO: Extract String to Constants
             .apply()
     }
 

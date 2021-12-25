@@ -18,6 +18,7 @@ import com.hfad.tagalong.interactors.rulecreation.ApplyNewRule
 import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors.rules.LoadAllRules
+import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
 import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
 import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
 import com.hfad.tagalong.interactors.singletrack.*
@@ -295,6 +296,17 @@ object InteractorsModule {
         sharedPreferences: SharedPreferences
     ): SaveStayLoggedIn {
         return SaveStayLoggedIn(
+            sharedPreferences = sharedPreferences
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideDeleteSessionInfo(
+        @Named("authSharedPreferences")
+        sharedPreferences: SharedPreferences
+    ): DeleteSessionInfo {
+        return DeleteSessionInfo(
             sharedPreferences = sharedPreferences
         )
     }
