@@ -33,7 +33,6 @@ android {
                 properties.load(project.rootProject.file("local.properties").newDataInputStream())
             }
             buildConfigField "String", "CLIENT_ID", properties.getProperty("client_id")
-            buildConfigField "String", "CLIENT_SECRET", properties.getProperty("client_secret")
         }
         release {
             minifyEnabled false
@@ -77,7 +76,7 @@ dependencies {
 
     def hilt_version = "2.38.1"
     implementation "com.google.dagger:hilt-android:$hilt_version"
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     def hilt_lifecycle_viewmodel = "1.0.0-alpha03"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_lifecycle_viewmodel"

@@ -1,6 +1,5 @@
 package com.hfad.tagalong.presentation.ui.rulecreation
 
-import androidx.navigation.NavController
 import com.hfad.tagalong.domain.model.Tag
 
 sealed class RuleCreationEvent {
@@ -17,6 +16,6 @@ sealed class RuleCreationEvent {
 
     object SwitchAutoUpdateEvent : RuleCreationEvent()
 
-    data class CreateRuleEvent(val callback: () -> Unit = {}) : RuleCreationEvent()
+    object CreateRuleEvent : RuleCreationEvent()
 
 }

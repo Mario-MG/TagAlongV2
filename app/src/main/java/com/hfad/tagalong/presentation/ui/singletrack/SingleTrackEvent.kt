@@ -5,7 +5,7 @@ import com.hfad.tagalong.domain.model.Track
 
 sealed class SingleTrackEvent {
 
-    data class LoadTrackDetailsEvent(val track: Track) : SingleTrackEvent()
+    data class InitTrackEvent(val track: Track) : SingleTrackEvent()
 
     data class AddTagEvent(val tagName: String) : SingleTrackEvent()
 
