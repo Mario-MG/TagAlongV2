@@ -24,19 +24,11 @@ constructor (
 
     val loading = mutableStateOf(false)
 
-    private var tagsLoaded = false // TODO: Find out a way to improve this
-
-    init {
-        onTriggerEvent(LoadTagsEvent)
-    }
-
     fun onTriggerEvent(event: TagsEvent) {
         viewModelScope.launch {
             when (event) {
                 is LoadTagsEvent -> {
-                    if (!tagsLoaded) {
-                        loadAllTags()
-                    }
+                    loadAllTags()
                 }
             }
         }
@@ -51,7 +43,6 @@ constructor (
                 dataState.data?.let { tags ->
                     this.tags.clear()
                     this.tags.addAll(tags)
-                    tagsLoaded = true
                 }
 
                 dataState.error?.let { error ->
