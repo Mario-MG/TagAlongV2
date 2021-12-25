@@ -9,7 +9,7 @@ class LoadSessionInfo(
     private val sharedPreferences: SharedPreferences
 ) {
 
-    fun execute(): Flow<DataState<String?>> = flow {
+    fun execute(): Flow<DataState<String>> = flow {
         try {
             emit(DataState.Loading)
 
@@ -21,8 +21,8 @@ class LoadSessionInfo(
         }
     }
 
-    private fun loadRefreshToken(): String? {
-        return sharedPreferences.getString("refreshToken", null) // TODO: Extract String to Constants
+    private fun loadRefreshToken(): String {
+        return sharedPreferences.getString("refreshToken", "") ?: "" // TODO: Extract String to Constants
     }
 
 }

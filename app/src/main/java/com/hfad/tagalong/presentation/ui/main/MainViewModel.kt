@@ -46,12 +46,15 @@ constructor(
             .execute()
             .onEach { dataState ->
                 dataState.data?.let { refreshToken ->
-                    getTokenFromRefreshToken(refreshToken)
+                    if (refreshToken.isNotBlank()) {
+                        getTokenFromRefreshToken(refreshToken)
+                    } else {
+                        sessionManager.logOut()
+                    }
                 }
 
                 dataState.error?.let { error ->
                     // TODO
-                    sessionManager.logOut()
                 }
             }
             .launchIn(viewModelScope)

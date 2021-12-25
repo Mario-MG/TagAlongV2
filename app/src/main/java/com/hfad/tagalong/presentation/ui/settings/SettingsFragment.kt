@@ -12,12 +12,15 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.components.ItemCard
 import com.hfad.tagalong.presentation.theme.AppScaffold
 import com.hfad.tagalong.presentation.ui.Screen
+import com.hfad.tagalong.presentation.ui.main.MainViewModel
 import com.hfad.tagalong.presentation.ui.settings.SettingsEvent.LogOutEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,6 +29,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
+
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     private val viewModel: SettingsViewModel by viewModels()
 
@@ -62,4 +67,19 @@ class SettingsFragment : Fragment() {
             }
         }
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mainViewModel.addLogoutObserver(viewLifecycleOwner, {
+            findNavController().navigate(
+                R.id.playlistsFragment,
+                null,
+                NavOptions.Builder()
+                    .setEnterAnim(R.anim.slide_in_up)
+                    .setPopExitAnim(R.anim.slide_out_up)
+                    .build()
+            )
+        })
+    }
+
 }
