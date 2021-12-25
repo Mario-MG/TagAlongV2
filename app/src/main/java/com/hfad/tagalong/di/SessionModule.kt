@@ -1,15 +1,11 @@
 package com.hfad.tagalong.di
 
 import android.content.SharedPreferences
-import com.hfad.tagalong.interactors.login.GetTokenFromRefreshToken
 import com.hfad.tagalong.interactors.login.SaveSessionInfo
-import com.hfad.tagalong.network.RetrofitAuthService
-import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.presentation.session.SessionManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Named
 import javax.inject.Singleton

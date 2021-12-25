@@ -6,7 +6,10 @@ import com.hfad.tagalong.cache.model.PlaylistEntityMapper
 import com.hfad.tagalong.cache.model.RuleEntityMapper
 import com.hfad.tagalong.cache.model.TagEntityMapper
 import com.hfad.tagalong.cache.model.TrackEntityMapper
-import com.hfad.tagalong.interactors.login.*
+import com.hfad.tagalong.interactors.login.GetTokenFromCode
+import com.hfad.tagalong.interactors.login.GetTokenFromRefreshToken
+import com.hfad.tagalong.interactors.login.LoadSessionInfo
+import com.hfad.tagalong.interactors.login.LoadUser
 import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
 import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
@@ -34,7 +37,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Named
-import javax.inject.Singleton
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -185,7 +187,7 @@ object InteractorsModule {
             ruleEntityMapper = ruleEntityMapper
         )
     }
-    
+
     @Provides
     @ViewModelScoped
     fun provideCreatePlaylist(
