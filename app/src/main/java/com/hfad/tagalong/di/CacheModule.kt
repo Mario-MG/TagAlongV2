@@ -1,6 +1,10 @@
 package com.hfad.tagalong.di
 
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import androidx.room.Room
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.hfad.tagalong.cache.dao.*
 import com.hfad.tagalong.cache.database.MainDatabase
 import com.hfad.tagalong.cache.model.PlaylistEntityMapper
@@ -13,6 +17,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -91,6 +96,34 @@ object CacheModule {
     @Provides
     fun providePlaylistEntityMapper(): PlaylistEntityMapper {
         return PlaylistEntityMapper()
+    }
+
+    @Singleton
+    @Provides
+    @Named("defaultSharedPreferences")
+    fun provideDefaultSharedPreferences(
+        application: BaseApplication
+    ): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(application)
+    }
+
+    @Singleton
+    @Provides
+    @Named("authSharedPreferences")
+    fun provideAuthSharedPreferences(
+        application: BaseApplication
+    ): SharedPreferences {
+        val masterKey = MasterKey.Builder(application, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        return EncryptedSharedPreferences.create(
+            application,
+            AUTH_SHARED_PREFS,
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
     }
 
 }

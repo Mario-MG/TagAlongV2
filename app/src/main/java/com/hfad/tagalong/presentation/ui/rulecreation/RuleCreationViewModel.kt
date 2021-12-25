@@ -9,13 +9,15 @@ import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.interactors.rulecreation.ApplyNewRule
+import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
+import com.hfad.tagalong.interactors.rulecreation.CreateRule
+import com.hfad.tagalong.interactors.tags.LoadAllTags
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
-import com.hfad.tagalong.repository.PlaylistRepository
-import com.hfad.tagalong.repository.RuleRepository
-import com.hfad.tagalong.repository.TagRepository
-import com.hfad.tagalong.repository.TrackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,11 +25,11 @@ import javax.inject.Inject
 class RuleCreationViewModel
 @Inject
 constructor(
-    private val sessionManager: SessionManager,
-    private val ruleRepository: RuleRepository,
-    private val tagRepository: TagRepository,
-    private val playlistRepository: PlaylistRepository,
-    private val tracksRepository: TrackRepository
+    private val loadAllTags: LoadAllTags,
+    private val createPlaylist: CreatePlaylist,
+    private val createRule: CreateRule,
+    private val applyNewRule: ApplyNewRule,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     val loading = mutableStateOf(false)
@@ -41,6 +43,13 @@ constructor(
     val autoUpdate = mutableStateOf(true)
 
     val allTags = mutableStateListOf<Tag>()
+
+    val finishedRuleCreation = mutableStateOf(false)
+
+    val isValidRule: Boolean
+        get() {
+            return tags.isNotEmpty() && playlistName.value.isNotBlank()
+        }
 
     init {
         onTriggerEvent(InitRuleCreationEvent)
@@ -68,16 +77,28 @@ constructor(
                     switchAutoUpdate()
                 }
                 is CreateRuleEvent -> {
-                    createRuleAndExecuteCallback(event.callback)
+                    createPlaylistAndRule()
                 }
             }
         }
     }
 
-    private suspend fun getAllTags() {
-        val allTags = tagRepository.getAll()
-        this.allTags.clear()
-        this.allTags.addAll(allTags)
+    private fun getAllTags() {
+        loadAllTags
+            .execute()
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let { tags ->
+                    this.allTags.clear()
+                    this.allTags.addAll(tags)
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun changePlaylistName(playlistName: String) {
@@ -106,43 +127,67 @@ constructor(
         this.autoUpdate.value = !this.autoUpdate.value
     }
 
-    private suspend fun createRuleAndExecuteCallback(callback: () -> Unit) {
-        if (tags.isNotEmpty() && playlistName.value.isNotBlank()) {
-            loading.value = true
-            val newPlaylist = createPlaylist()
-            val newRule = createRuleForPlaylist(newPlaylist)
-            applyRule(newRule)
-            callback()
-            loading.value = false
-        }
+    private fun createPlaylistAndRule() {
+        createPlaylist
+            .execute(
+                auth = sessionManager.getAuthorizationHeader(),
+                userId = sessionManager.user.id,
+                playlistName = playlistName.value
+            )
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let { playlist ->
+                    createRuleForPlaylist(playlist)
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
-    private suspend fun createPlaylist(): Playlist {
-        return playlistRepository.create(
-            auth = sessionManager.getAuthorizationHeader(),
-            userId = sessionManager.getUser().id,
-            playlist = Playlist(name = playlistName.value)
-        )
+    private fun createRuleForPlaylist(playlist: Playlist) {
+        createRule
+            .execute(
+                playlist = playlist,
+                optionality = optionality.value,
+                autoUpdate = autoUpdate.value,
+                tags = tags
+            )
+            .onEach { dataState ->
+                loading.value = dataState.loading
+
+                dataState.data?.let { rule ->
+                    applyRule(rule)
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
-    private suspend fun createRuleForPlaylist(playlist: Playlist): Rule {
-        val rule = Rule(
-            playlist = playlist,
-            optionality = optionality.value,
-            autoUpdate = autoUpdate.value,
-            tags = tags
-        )
-        ruleRepository.createNewRule(rule)
-        return rule
-    }
+    private fun applyRule(rule: Rule) {
+        applyNewRule
+            .execute(
+                rule = rule,
+                auth = sessionManager.getAuthorizationHeader()
+            )
+            .onEach { dataState ->
+                loading.value = dataState.loading
 
-    private suspend fun applyRule(rule: Rule) {
-        val tracks = if (rule.optionality) tracksRepository.getTracksWithAnyOfTheTags(tags) else tracksRepository.getTracksWithAllOfTheTags(tags)
-        playlistRepository.addTracksToPlaylist(
-            auth = sessionManager.getAuthorizationHeader(),
-            playlist = rule.playlist,
-            tracks = tracks
-        )
+                dataState.data?.let {
+                    finishedRuleCreation.value = true
+                }
+
+                dataState.error?.let { error ->
+                    // TODO
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
 }

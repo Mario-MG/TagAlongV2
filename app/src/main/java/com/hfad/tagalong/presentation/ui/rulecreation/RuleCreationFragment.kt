@@ -55,8 +55,13 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                 val optionality = viewModel.optionality.value
                 val autoUpdate = viewModel.autoUpdate.value
                 val allTags = viewModel.allTags
+                val finishedRuleCreation = viewModel.finishedRuleCreation.value
 
                 val navController = findNavController()
+
+                if (finishedRuleCreation) {
+                    navController.popBackStack()
+                }
 
                 AppScaffold(
                     displayProgressBar = loading,
@@ -169,11 +174,9 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                             ) {
                                 Button(
                                     onClick = {
-                                        viewModel.onTriggerEvent(CreateRuleEvent {
-                                            navController.popBackStack()
-                                        })
+                                        viewModel.onTriggerEvent(CreateRuleEvent)
                                     },
-                                    enabled = tags.isNotEmpty() && playlistName.isNotBlank()
+                                    enabled = viewModel.isValidRule
                                 ) {
                                     Text(stringResource(R.string.create_rule))
                                 }

@@ -51,7 +51,7 @@ class SingleTrackFragment : BaseLoggedInFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.getParcelable<Track>(BUNDLE_KEY_TRACK)?.let { track ->
-            viewModel.onTriggerEvent(LoadTrackDetailsEvent(track))
+            viewModel.onTriggerEvent(InitTrackEvent(track))
         }
     }
 

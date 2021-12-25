@@ -10,6 +10,13 @@ abstract class RuleDao {
     @Query("SELECT * FROM $RULE_TABLE")
     abstract suspend fun getAll(): List<RuleEntityPoko>
 
+    @Transaction
+    @Query("""
+        SELECT * FROM $RULE_TABLE
+        WHERE $RULE_ID = :ruleId
+    """)
+    abstract suspend fun getById(ruleId: Long): RuleEntityPoko
+
     suspend fun getRulesFulfilledByTagIds(newTagId: Long, vararg originalTagsIds: Long): List<RuleEntityPoko> {
         return if (originalTagsIds.isNotEmpty()) {
             _getRulesFulfilledByTagIds(newTagId = newTagId, originalTagsIds = originalTagsIds)
@@ -57,7 +64,7 @@ abstract class RuleDao {
     """)
     internal abstract suspend fun _getRulesFulfilledByTagIds(newTagId: Long): List<RuleEntityPoko>
 
-    suspend fun insert(rulePoko: RuleEntityPoko) {
+    suspend fun insert(rulePoko: RuleEntityPoko): Long {
         val ruleId = _insert(rulePoko.rule)
         _insert(
             RulePlaylistCrossRef(
@@ -71,6 +78,7 @@ abstract class RuleDao {
                 tagId = tag.id
             )
         }.toTypedArray())
+        return ruleId
     }
 
     @Insert

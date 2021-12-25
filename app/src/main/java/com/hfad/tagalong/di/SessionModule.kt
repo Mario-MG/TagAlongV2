@@ -1,8 +1,8 @@
 package com.hfad.tagalong.di
 
+import android.content.SharedPreferences
+import com.hfad.tagalong.interactors.login.SaveSessionInfo
 import com.hfad.tagalong.presentation.session.SessionManager
-import com.hfad.tagalong.repository.AuthRepository
-import com.hfad.tagalong.repository.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,17 +14,24 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object SessionModule {
 
+    @Provides
+    @Singleton
+    fun provideSaveSessionInfo(
+        @Named("authSharedPreferences")
+        sharedPreferences: SharedPreferences
+    ): SaveSessionInfo {
+        return SaveSessionInfo(
+            sharedPreferences = sharedPreferences
+        )
+    }
+
     @Singleton
     @Provides
-    fun provideSession(
-        authRepository: AuthRepository,
-        @Named(APP_CLIENT_ID) clientId: String,
-        userRepository: UserRepository
+    fun provideSessionManager(
+        saveSessionInfo: SaveSessionInfo
     ): SessionManager {
         return SessionManager(
-            authRepository = authRepository,
-            clientId = clientId,
-            userRepository = userRepository
+            saveSessionInfo = saveSessionInfo
         )
     }
 
