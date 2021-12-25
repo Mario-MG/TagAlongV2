@@ -22,7 +22,7 @@ class PlaylistsViewModel
 constructor(
     private val loadFirstPlaylistsPage: LoadFirstPlaylistsPage,
     private val loadNextPlaylistsPage: LoadNextPlaylistsPage,
-    private val sessionManager: SessionManager // TODO: Think about moving this dependency down to the use cases
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     val playlists = mutableStateListOf<Playlist>()
