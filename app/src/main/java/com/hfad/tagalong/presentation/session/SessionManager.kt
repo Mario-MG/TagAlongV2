@@ -1,12 +1,10 @@
 package com.hfad.tagalong.presentation.session
 
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.hfad.tagalong.domain.model.Token
 import com.hfad.tagalong.domain.model.User
 import com.hfad.tagalong.interactors.login.SaveSessionInfo
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
