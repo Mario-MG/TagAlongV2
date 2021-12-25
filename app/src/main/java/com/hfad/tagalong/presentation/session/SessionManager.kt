@@ -63,18 +63,18 @@ class SessionManager(
         return "Bearer ${sessionState.token.accessToken}"
     }
 
-    fun addLoginSuccessObserver(owner: LifecycleOwner, onLoginSuccess: () -> Unit) {
+    fun addLoginObserver(owner: LifecycleOwner, onLogIn: () -> Unit) {
         sessionState.observe(owner, { sessionState ->
             if (sessionState is SessionState.LoggedIn) {
-                onLoginSuccess()
+                onLogIn()
             }
         })
     }
 
-    fun addLoginSuccessObserver(onLoginSuccess: () -> Unit) {
+    fun addLoginObserver(onLogIn: () -> Unit) {
         sessionState.observeForever { sessionState ->
             if (sessionState is SessionState.LoggedIn) {
-                onLoginSuccess()
+                onLogIn()
             }
         }
     }

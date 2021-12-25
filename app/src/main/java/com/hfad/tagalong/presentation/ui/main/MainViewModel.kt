@@ -1,12 +1,13 @@
 package com.hfad.tagalong.presentation.ui.main
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.domain.model.Token
-import com.hfad.tagalong.interactors.login.LoadSessionInfo
 import com.hfad.tagalong.interactors.login.GetTokenFromRefreshToken
+import com.hfad.tagalong.interactors.login.LoadSessionInfo
 import com.hfad.tagalong.interactors.login.LoadUser
 import com.hfad.tagalong.interactors.login.SaveSessionInfo
 import com.hfad.tagalong.presentation.session.SessionManager
@@ -19,7 +20,7 @@ import javax.inject.Named
 @HiltViewModel
 class MainViewModel
 @Inject
-constructor (
+constructor(
     private val loadSessionInfo: LoadSessionInfo,
     private val getTokenFromRefreshToken: GetTokenFromRefreshToken,
     private val loadUser: LoadUser,
@@ -28,7 +29,15 @@ constructor (
     @Named(APP_CLIENT_ID) private val clientId: String
 ) : ViewModel() {
 
+    val isLoggedIn = mutableStateOf(false)
+
     init {
+        sessionManager.addLoginObserver {
+            isLoggedIn.value = true
+        }
+        sessionManager.addLogoutObserver {
+            isLoggedIn.value = false
+        }
         loadSessionInfo()
     }
 
@@ -99,7 +108,7 @@ constructor (
     }
 
     fun addLoginSuccessObserver(owner: LifecycleOwner, onLoginSuccess: () -> Unit) {
-        sessionManager.addLoginSuccessObserver(owner, {
+        sessionManager.addLoginObserver(owner, {
             onLoginSuccess()
         })
     }

@@ -33,8 +33,6 @@ class PlaylistsFragment : BaseLoggedInFragment() {
 
     private val viewModel: PlaylistsViewModel by viewModels()
 
-    private var isLoggedIn = false
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,6 +42,7 @@ class PlaylistsFragment : BaseLoggedInFragment() {
             setContent {
                 val playlists = viewModel.playlists
                 val loading = viewModel.loading.value
+                val isLoggedIn = mainViewModel.isLoggedIn.value
 
                 val navController = findNavController()
 
@@ -86,11 +85,6 @@ class PlaylistsFragment : BaseLoggedInFragment() {
 
         mainViewModel.addLoginSuccessObserver(viewLifecycleOwner, {
             viewModel.onTriggerEvent(FirstPageEvent)
-            isLoggedIn = true
-        })
-
-        mainViewModel.addLogoutObserver(viewLifecycleOwner, {
-            isLoggedIn = false
         })
 
         // Source: https://youtu.be/09qjn706ITA?t=284
