@@ -3,8 +3,9 @@ package com.hfad.tagalong.interactors.rulecreation
 import com.google.gson.JsonObject
 import com.hfad.tagalong.cache.dao.PlaylistDao
 import com.hfad.tagalong.cache.model.PlaylistEntityMapper
-import com.hfad.tagalong.domain.data.DataState
 import com.hfad.tagalong.domain.model.Playlist
+import com.hfad.tagalong.interactors.data.DataState
+import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.network.RetrofitPlaylistService
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import kotlinx.coroutines.flow.Flow
@@ -13,8 +14,10 @@ import kotlinx.coroutines.flow.flow
 class CreatePlaylist(
     private val playlistService: RetrofitPlaylistService,
     private val playlistDtoMapper: PlaylistDtoMapper,
+    private val networkErrorHandler: ErrorHandler,
     private val playlistDao: PlaylistDao,
-    private val playlistEntityMapper: PlaylistEntityMapper
+    private val playlistEntityMapper: PlaylistEntityMapper,
+    private val cacheErrorHandler: ErrorHandler
 ) {
 
     fun execute(
@@ -31,9 +34,16 @@ class CreatePlaylist(
                 playlistName = playlistName
             )
 
-            emit(DataState.Success(playlist))
+            try {
+                cachePlaylist(playlist)
+
+                emit(DataState.Success(playlist))
+            } catch (e: Exception) {
+                emit(DataState.Error(cacheErrorHandler.parseError(e)))
+            }
+
         } catch (e: Exception) {
-            emit(DataState.Error(e.message ?: "Unknown error"))
+            emit(DataState.Error(networkErrorHandler.parseError(e)))
         }
     }
 
@@ -47,15 +57,17 @@ class CreatePlaylist(
         userId: String,
         playlistName: String
     ): Playlist {
-        val newPlaylist = playlistDtoMapper.mapToDomainModel(
+        return playlistDtoMapper.mapToDomainModel(
             playlistService.create(
                 auth = auth,
                 userId = userId,
                 body = JsonObject().apply { addProperty("name", playlistName) }
             )
         )
-        playlistDao.insert(playlistEntityMapper.mapFromDomainModel(newPlaylist))
-        return newPlaylist
+    }
+
+    private suspend fun cachePlaylist(playlist: Playlist) {
+        playlistDao.insert(playlistEntityMapper.mapFromDomainModel(playlist))
     }
 
 }

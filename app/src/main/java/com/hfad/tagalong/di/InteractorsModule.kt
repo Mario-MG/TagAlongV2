@@ -6,6 +6,7 @@ import com.hfad.tagalong.cache.model.PlaylistEntityMapper
 import com.hfad.tagalong.cache.model.RuleEntityMapper
 import com.hfad.tagalong.cache.model.TagEntityMapper
 import com.hfad.tagalong.cache.model.TrackEntityMapper
+import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.interactors.login.GetTokenFromCode
 import com.hfad.tagalong.interactors.login.GetTokenFromRefreshToken
 import com.hfad.tagalong.interactors.login.LoadSessionInfo
@@ -47,11 +48,13 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideLoadFirstPlaylistsPage(
         playlistService: RetrofitPlaylistService,
-        playlistDtoMapper: PlaylistDtoMapper
+        playlistDtoMapper: PlaylistDtoMapper,
+        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
     ): LoadFirstPlaylistsPage {
         return LoadFirstPlaylistsPage(
             playlistService = playlistService,
-            playlistDtoMapper = playlistDtoMapper
+            playlistDtoMapper = playlistDtoMapper,
+            networkErrorHandler = networkErrorHandler
         )
     }
 
@@ -59,11 +62,13 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideLoadNextPlaylistsPage(
         playlistService: RetrofitPlaylistService,
-        playlistDtoMapper: PlaylistDtoMapper
+        playlistDtoMapper: PlaylistDtoMapper,
+        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
     ): LoadNextPlaylistsPage {
         return LoadNextPlaylistsPage(
             playlistService = playlistService,
-            playlistDtoMapper = playlistDtoMapper
+            playlistDtoMapper = playlistDtoMapper,
+            networkErrorHandler = networkErrorHandler
         )
     }
 
@@ -71,11 +76,13 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideLoadFirstPlaylistTracksPage(
         trackService: RetrofitTrackService,
-        trackDtoMapper: TrackDtoMapper
+        trackDtoMapper: TrackDtoMapper,
+        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
     ): LoadFirstPlaylistTracksPage {
         return LoadFirstPlaylistTracksPage(
             trackService = trackService,
-            trackDtoMapper = trackDtoMapper
+            trackDtoMapper = trackDtoMapper,
+            networkErrorHandler = networkErrorHandler
         )
     }
 
@@ -83,11 +90,13 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideLoadNextPlaylistTracksPage(
         trackService: RetrofitTrackService,
-        trackDtoMapper: TrackDtoMapper
+        trackDtoMapper: TrackDtoMapper,
+        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
     ): LoadNextPlaylistTracksPage {
         return LoadNextPlaylistTracksPage(
             trackService = trackService,
-            trackDtoMapper = trackDtoMapper
+            trackDtoMapper = trackDtoMapper,
+            networkErrorHandler = networkErrorHandler
         )
     }
 
@@ -95,11 +104,13 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideLoadAllTags( // TODO: What if an interactor is shared between several viewmodels??
         tagDao: TagDao,
-        tagEntityMapper: TagEntityMapper
+        tagEntityMapper: TagEntityMapper,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): LoadAllTags {
         return LoadAllTags(
             tagDao = tagDao,
-            tagEntityMapper = tagEntityMapper
+            tagEntityMapper = tagEntityMapper,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 
@@ -107,11 +118,13 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideLoadAllTagTracks(
         trackDao: TrackDao,
-        trackEntityMapper: TrackEntityMapper
+        trackEntityMapper: TrackEntityMapper,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): LoadAllTagTracks {
         return LoadAllTagTracks(
             trackDao = trackDao,
-            trackEntityMapper = trackEntityMapper
+            trackEntityMapper = trackEntityMapper,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 
@@ -119,11 +132,13 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideLoadTrackTags(
         tagDao: TagDao,
-        tagEntityMapper: TagEntityMapper
+        tagEntityMapper: TagEntityMapper,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): LoadTrackTags {
         return LoadTrackTags(
             tagDao = tagDao,
-            tagEntityMapper = tagEntityMapper
+            tagEntityMapper = tagEntityMapper,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 
@@ -131,11 +146,13 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideCreateTag(
         tagDao: TagDao,
-        tagEntityMapper: TagEntityMapper
+        tagEntityMapper: TagEntityMapper,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): CreateTag {
         return CreateTag(
             tagDao = tagDao,
-            tagEntityMapper = tagEntityMapper
+            tagEntityMapper = tagEntityMapper,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 
@@ -144,11 +161,13 @@ object InteractorsModule {
     fun provideAddTagToTrack(
         trackDao: TrackDao,
         trackEntityMapper: TrackEntityMapper,
-        trackTagCrossRefDao: TrackTagCrossRefDao
+        trackTagCrossRefDao: TrackTagCrossRefDao,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): AddTagToTrack {
         return AddTagToTrack(
             trackDao = trackDao,
             trackEntityMapper = trackEntityMapper,
+            cacheErrorHandler = cacheErrorHandler,
             trackTagCrossRefDao = trackTagCrossRefDao,
         )
     }
@@ -158,12 +177,16 @@ object InteractorsModule {
     fun provideApplyExistingRules(
         ruleDao: RuleDao,
         ruleEntityMapper: RuleEntityMapper,
-        playlistService: RetrofitPlaylistService
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler,
+        playlistService: RetrofitPlaylistService,
+        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
     ): ApplyExistingRules {
         return ApplyExistingRules(
             ruleDao = ruleDao,
             ruleEntityMapper = ruleEntityMapper,
-            playlistService = playlistService
+            cacheErrorHandler = cacheErrorHandler,
+            playlistService = playlistService,
+            networkErrorHandler = networkErrorHandler
         )
     }
 
@@ -171,9 +194,11 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideDeleteTagFromTrack(
         trackTagCrossRefDao: TrackTagCrossRefDao,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): DeleteTagFromTrack {
         return DeleteTagFromTrack(
             trackTagCrossRefDao = trackTagCrossRefDao,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 
@@ -181,11 +206,13 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideLoadAllRules(
         ruleDao: RuleDao,
-        ruleEntityMapper: RuleEntityMapper
+        ruleEntityMapper: RuleEntityMapper,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): LoadAllRules {
         return LoadAllRules(
             ruleDao = ruleDao,
-            ruleEntityMapper = ruleEntityMapper
+            ruleEntityMapper = ruleEntityMapper,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 
@@ -194,14 +221,18 @@ object InteractorsModule {
     fun provideCreatePlaylist(
         playlistService: RetrofitPlaylistService,
         playlistDtoMapper: PlaylistDtoMapper,
+        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler,
         playlistDao: PlaylistDao,
-        playlistEntityMapper: PlaylistEntityMapper
+        playlistEntityMapper: PlaylistEntityMapper,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): CreatePlaylist {
         return CreatePlaylist(
             playlistService = playlistService,
             playlistDtoMapper = playlistDtoMapper,
+            networkErrorHandler = networkErrorHandler,
             playlistDao = playlistDao,
-            playlistEntityMapper = playlistEntityMapper
+            playlistEntityMapper = playlistEntityMapper,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 
@@ -209,11 +240,13 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideCreateRule(
         ruleDao: RuleDao,
-        ruleEntityMapper: RuleEntityMapper
+        ruleEntityMapper: RuleEntityMapper,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): CreateRule {
         return CreateRule(
             ruleDao = ruleDao,
-            ruleEntityMapper = ruleEntityMapper
+            ruleEntityMapper = ruleEntityMapper,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 
@@ -222,12 +255,16 @@ object InteractorsModule {
     fun provideApplyNewRule(
         trackDao: TrackDao,
         trackEntityMapper: TrackEntityMapper,
-        playlistService: RetrofitPlaylistService
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler,
+        playlistService: RetrofitPlaylistService,
+        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
     ): ApplyNewRule {
         return ApplyNewRule(
             trackDao = trackDao,
             trackEntityMapper = trackEntityMapper,
-            playlistService = playlistService
+            cacheErrorHandler = cacheErrorHandler,
+            playlistService = playlistService,
+            networkErrorHandler = networkErrorHandler
         )
     }
 
@@ -235,11 +272,13 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideGetTokenFromCode(
         authService: RetrofitAuthService,
-        tokenDtoMapper: TokenDtoMapper
+        tokenDtoMapper: TokenDtoMapper,
+        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
     ): GetTokenFromCode {
         return GetTokenFromCode(
             authService = authService,
-            tokenDtoMapper = tokenDtoMapper
+            tokenDtoMapper = tokenDtoMapper,
+            networkErrorHandler = networkErrorHandler
         )
     }
 
@@ -247,11 +286,13 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideGetTokenFromRefreshToken(
         authService: RetrofitAuthService,
-        tokenDtoMapper: TokenDtoMapper
+        tokenDtoMapper: TokenDtoMapper,
+        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
     ): GetTokenFromRefreshToken {
         return GetTokenFromRefreshToken(
             authService = authService,
-            tokenDtoMapper = tokenDtoMapper
+            tokenDtoMapper = tokenDtoMapper,
+            networkErrorHandler = networkErrorHandler
         )
     }
 
@@ -259,55 +300,61 @@ object InteractorsModule {
     @ViewModelScoped
     fun provideLoadUser(
         userService: RetrofitUserService,
-        userDtoMapper: UserDtoMapper
+        userDtoMapper: UserDtoMapper,
+        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
     ): LoadUser {
         return LoadUser(
             userService = userService,
-            userDtoMapper = userDtoMapper
+            userDtoMapper = userDtoMapper,
+            networkErrorHandler = networkErrorHandler
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideLoadSessionInfo(
-        @Named("authSharedPreferences")
-        sharedPreferences: SharedPreferences
+        @Named("authSharedPreferences") sharedPreferences: SharedPreferences,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): LoadSessionInfo {
         return LoadSessionInfo(
-            sharedPreferences = sharedPreferences
+            sharedPreferences = sharedPreferences,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideLoadStayLoggedIn(
-        @Named("defaultSharedPreferences")
-        sharedPreferences: SharedPreferences
+        @Named("defaultSharedPreferences") sharedPreferences: SharedPreferences,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): LoadStayLoggedIn {
         return LoadStayLoggedIn(
-            sharedPreferences = sharedPreferences
+            sharedPreferences = sharedPreferences,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideSaveStayLoggedIn(
-        @Named("defaultSharedPreferences")
-        sharedPreferences: SharedPreferences
+        @Named("defaultSharedPreferences") sharedPreferences: SharedPreferences,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): SaveStayLoggedIn {
         return SaveStayLoggedIn(
-            sharedPreferences = sharedPreferences
+            sharedPreferences = sharedPreferences,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideDeleteSessionInfo(
-        @Named("authSharedPreferences")
-        sharedPreferences: SharedPreferences
+        @Named("authSharedPreferences") sharedPreferences: SharedPreferences,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): DeleteSessionInfo {
         return DeleteSessionInfo(
-            sharedPreferences = sharedPreferences
+            sharedPreferences = sharedPreferences,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 

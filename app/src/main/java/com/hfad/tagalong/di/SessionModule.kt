@@ -1,6 +1,7 @@
 package com.hfad.tagalong.di
 
 import android.content.SharedPreferences
+import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.interactors.login.SaveSessionInfo
 import com.hfad.tagalong.presentation.session.SessionManager
 import dagger.Module
@@ -17,11 +18,12 @@ object SessionModule {
     @Provides
     @Singleton
     fun provideSaveSessionInfo(
-        @Named("authSharedPreferences")
-        sharedPreferences: SharedPreferences
+        @Named("authSharedPreferences") sharedPreferences: SharedPreferences,
+        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
     ): SaveSessionInfo {
         return SaveSessionInfo(
-            sharedPreferences = sharedPreferences
+            sharedPreferences = sharedPreferences,
+            cacheErrorHandler = cacheErrorHandler
         )
     }
 
