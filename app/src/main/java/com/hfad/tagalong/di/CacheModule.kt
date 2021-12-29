@@ -5,12 +5,14 @@ import androidx.preference.PreferenceManager
 import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.hfad.tagalong.cache.CacheErrorHandler
 import com.hfad.tagalong.cache.dao.*
 import com.hfad.tagalong.cache.database.MainDatabase
 import com.hfad.tagalong.cache.model.PlaylistEntityMapper
 import com.hfad.tagalong.cache.model.RuleEntityMapper
 import com.hfad.tagalong.cache.model.TagEntityMapper
 import com.hfad.tagalong.cache.model.TrackEntityMapper
+import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.presentation.BaseApplication
 import dagger.Module
 import dagger.Provides
@@ -24,8 +26,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object CacheModule {
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideMainDatabase(app: BaseApplication): MainDatabase {
         return Room
             .databaseBuilder(
@@ -38,44 +40,44 @@ object CacheModule {
             .build()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideTagDao(db: MainDatabase): TagDao {
         return db.tagDao()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideTagEntityMapper(): TagEntityMapper {
         return TagEntityMapper()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideTrackDao(db: MainDatabase): TrackDao {
         return db.trackDao()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideTrackEntityMapper(): TrackEntityMapper {
         return TrackEntityMapper()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideTrackTagCrossRefDao(db: MainDatabase): TrackTagCrossRefDao {
         return db.trackTagCrossRefDao()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideRuleDao(db: MainDatabase): RuleDao {
         return db.ruleDao()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideRuleEntityMapper(
         playlistEntityMapper: PlaylistEntityMapper,
         tagEntityMapper: TagEntityMapper
@@ -86,20 +88,20 @@ object CacheModule {
         )
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun providePlaylistDao(db: MainDatabase): PlaylistDao {
         return db.playlistDao()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun providePlaylistEntityMapper(): PlaylistEntityMapper {
         return PlaylistEntityMapper()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     @Named("defaultSharedPreferences")
     fun provideDefaultSharedPreferences(
         application: BaseApplication
@@ -107,8 +109,8 @@ object CacheModule {
         return PreferenceManager.getDefaultSharedPreferences(application)
     }
 
-    @Singleton
     @Provides
+    @Singleton
     @Named("authSharedPreferences")
     fun provideAuthSharedPreferences(
         application: BaseApplication
@@ -124,6 +126,13 @@ object CacheModule {
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+    }
+
+    @Provides
+    @Singleton
+    @Named("cacheErrorHandler")
+    fun provideCacheErrorHandler(): ErrorHandler {
+        return CacheErrorHandler()
     }
 
 }

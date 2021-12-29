@@ -1,8 +1,9 @@
 package com.hfad.tagalong.interactors.playlisttracks
 
-import com.hfad.tagalong.domain.data.DataState
+import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Track
+import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.network.RetrofitTrackService
 import com.hfad.tagalong.network.model.TrackDtoMapper
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +11,8 @@ import kotlinx.coroutines.flow.flow
 
 class LoadNextPlaylistTracksPage(
     private val trackService: RetrofitTrackService,
-    private val trackDtoMapper: TrackDtoMapper
+    private val trackDtoMapper: TrackDtoMapper,
+    private val networkErrorHandler: ErrorHandler
 ) {
 
     fun execute(
@@ -29,7 +31,7 @@ class LoadNextPlaylistTracksPage(
 
             emit(DataState.Success(tracks))
         } catch (e: Exception) {
-            emit(DataState.Error(e.message ?: "Unknown error"))
+            emit(DataState.Error(networkErrorHandler.parseError(e)))
         }
     }
 

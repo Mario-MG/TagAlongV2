@@ -1,12 +1,14 @@
 package com.hfad.tagalong.interactors.login
 
 import android.content.SharedPreferences
-import com.hfad.tagalong.domain.data.DataState
+import com.hfad.tagalong.interactors.data.DataState
+import com.hfad.tagalong.interactors.data.ErrorHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class LoadSessionInfo(
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val cacheErrorHandler: ErrorHandler
 ) {
 
     fun execute(): Flow<DataState<String>> = flow {
@@ -17,7 +19,7 @@ class LoadSessionInfo(
 
             emit(DataState.Success(refreshToken))
         } catch (e: Exception) {
-            emit(DataState.Error(e.message ?: "Unknown error"))
+            emit(DataState.Error(cacheErrorHandler.parseError(e)))
         }
     }
 

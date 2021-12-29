@@ -4,7 +4,8 @@ import com.hfad.tagalong.cache.dao.TrackDao
 import com.hfad.tagalong.cache.dao.TrackTagCrossRefDao
 import com.hfad.tagalong.cache.model.TrackEntityMapper
 import com.hfad.tagalong.cache.model.TrackTagCrossRef
-import com.hfad.tagalong.domain.data.DataState
+import com.hfad.tagalong.interactors.data.DataState
+import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +14,8 @@ import kotlinx.coroutines.flow.flow
 class AddTagToTrack(
     private val trackDao: TrackDao,
     private val trackEntityMapper: TrackEntityMapper,
-    private val trackTagCrossRefDao: TrackTagCrossRefDao
+    private val trackTagCrossRefDao: TrackTagCrossRefDao,
+    private val cacheErrorHandler: ErrorHandler
 ) {
 
     fun execute(tag: Tag, track: Track): Flow<DataState<Unit>> = flow {
@@ -25,7 +27,7 @@ class AddTagToTrack(
 
             emit(DataState.Success(Unit))
         } catch (e: Exception) {
-            emit(DataState.Error(e.message ?: "Unknown error"))
+            emit(DataState.Error(cacheErrorHandler.parseError(e)))
         }
     }
 

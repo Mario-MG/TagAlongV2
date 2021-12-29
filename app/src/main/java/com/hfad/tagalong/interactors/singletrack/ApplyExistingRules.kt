@@ -2,11 +2,12 @@ package com.hfad.tagalong.interactors.singletrack
 
 import com.hfad.tagalong.cache.dao.RuleDao
 import com.hfad.tagalong.cache.model.RuleEntityMapper
-import com.hfad.tagalong.domain.data.DataState
+import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
+import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.network.RetrofitPlaylistService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,7 +15,9 @@ import kotlinx.coroutines.flow.flow
 class ApplyExistingRules(
     private val ruleDao: RuleDao,
     private val ruleEntityMapper: RuleEntityMapper,
-    private val playlistService: RetrofitPlaylistService
+    private val cacheErrorHandler: ErrorHandler,
+    private val playlistService: RetrofitPlaylistService,
+    private val networkErrorHandler: ErrorHandler
 ) {
 
     fun execute(
@@ -27,13 +30,19 @@ class ApplyExistingRules(
             emit(DataState.Loading)
 
             val rules = getRulesFulfilledByTags(newTag = newTag, originalTags = originalTags)
-            for (rule in rules) {
-                addTrackToPlaylist(auth = auth, track = track, playlist = rule.playlist)
+
+            try {
+                for (rule in rules) {
+                    addTrackToPlaylist(auth = auth, track = track, playlist = rule.playlist)
+                }
+
+                emit(DataState.Success(Unit))
+            } catch (e: Exception) {
+                emit(DataState.Error(networkErrorHandler.parseError(e)))
             }
 
-            emit(DataState.Success(Unit))
         } catch (e: Exception) {
-            emit(DataState.Error(e.message ?: "Unknown error"))
+            emit(DataState.Error(cacheErrorHandler.parseError(e)))
         }
     }
 
