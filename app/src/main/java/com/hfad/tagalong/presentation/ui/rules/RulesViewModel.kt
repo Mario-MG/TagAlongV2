@@ -2,11 +2,12 @@ package com.hfad.tagalong.presentation.ui.rules
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.interactors.rules.LoadAllRules
+import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.rules.RulesEvent.LoadRulesEvent
+import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -18,11 +19,13 @@ class RulesViewModel
 @Inject
 constructor(
     private val loadAllRules: LoadAllRules
-) : ViewModel() {
+) : BaseViewModel() {
 
     val loading = mutableStateOf(false)
 
     val rules = mutableStateListOf<Rule>()
+
+    override val dialogQueue = DialogQueue()
 
     init {
         onTriggerEvent(LoadRulesEvent)
@@ -49,9 +52,7 @@ constructor(
                     this.rules.addAll(rules)
                 }
 
-                dataState.error?.let { error ->
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue)
             }
             .launchIn(viewModelScope)
     }

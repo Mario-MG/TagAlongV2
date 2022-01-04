@@ -5,6 +5,12 @@
     <string name="stay_logged_in">Mantener sesión abierta</string>
     <string name="login_button_icon_description">Icono del botón para iniciar sesión</string>
     <string name="spotify_auth_uri_lang_path">es</string>
+    <string name="access_denied_error_title">Acceso Denegado</string>
+    <string name="access_denied_error_description">Lo siento, la aplicación está aún en desarrollo,
+        por lo que, para usarla, el desarrollador debe incluirte en la lista de usuarios permitidos.
+        Puedes contactar conmigo en mmaringomez.mmg@gmail.com para más información.</string>
+    <string name="session_unsaved_error_description">Lo siento, tu sesión no ha podido guardarse
+        así que es posible que tengas que iniciar una nueva sesión la próxima vez que uses la app.</string>
 
     <!--  NAVIGATION BAR  -->
     <string name="playlists_screen_label">Playlists</string>
@@ -27,6 +33,7 @@
     <!--  SINGLE TRACK  -->
     <string name="track_image_description">Imagen de la canción</string>
     <string name="single_track_help">Añade tus propias etiquetas para esta canción.</string>
+    <string name="duplicate_tag_info">Esta canción ya tiene esa etiqueta</string>
 
     <!--  TAGS  -->
     <string name="no_tags">No hay tags para mostrar</string>
@@ -76,4 +83,8 @@
     <string name="back_arrow_description">Ir atrás</string>
     <string name="help_button_description">Ayuda</string>
     <string name="help_dialog_ok">Entendido</string>
+    <string name="snackbar_ok">OK</string>
+    <string name="generic_spotify_error">Lo siento, ha habido un problema de conexión con Spotify. Por favor, inténtalo de nuevo más tarde.</string>
+    <string name="generic_cache_error">Lo siento, ha habido un problema al guardar o recuperar los datos. Por favor, inténtalo de nuevo más tarde.</string>
+    <string name="generic_error_dialog_ok">OK</string>
 </resources>

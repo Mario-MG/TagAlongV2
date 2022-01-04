@@ -38,29 +38,35 @@ abstract class TracksFragment : BaseLoggedInFragment() {
                 val loading = viewModel.loading.value
                 val screenTitle = viewModel.screenTitle.value
 
-                AppScaffold(
-                    displayProgressBar = loading,
-                    progressBarAlignment = if (tracks.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter,
-                    navController = findNavController(),
-                    screenTitle = screenTitle,
-                    showBackButtonInTopBar = true,
-                    helpContent = { Text(stringResource(R.string.tracks_help)) }
-                ) {
-                    if (tracks.isNotEmpty()) {
-                        TrackItemList(
-                            tracks = tracks,
-                            loading = loading,
-                            onTriggerNextPage = {
-                                onTriggerNextPage()
-                            },
-                            onNavigateToTrackDetail = { track ->
-                                navigateToTrackDetail(track)
-                            }
-                        )
-                    } else if (!loading) {
-                        EmptyListPlaceholderText(text = stringResource(R.string.no_tracks))
+                val dialogQueue = viewModel.dialogQueue
+
+                AppScaffold(navController = findNavController())
+                    .withProgressBar(
+                        displayProgressBar = loading,
+                        progressBarAlignment = if (tracks.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
+                    )
+                    .withTopBar(
+                        screenTitle = screenTitle,
+                        showBackButton = true,
+                        helpContent = { Text(stringResource(R.string.tracks_help)) }
+                    )
+                    .withDialog(dialogQueue.currentDialog.value)
+                    .setContent {
+                        if (tracks.isNotEmpty()) {
+                            TrackItemList(
+                                tracks = tracks,
+                                loading = loading,
+                                onTriggerNextPage = {
+                                    onTriggerNextPage()
+                                },
+                                onNavigateToTrackDetail = { track ->
+                                    navigateToTrackDetail(track)
+                                }
+                            )
+                        } else if (!loading) {
+                            EmptyListPlaceholderText(text = stringResource(R.string.no_tracks))
+                        }
                     }
-                }
             }
         }
     }

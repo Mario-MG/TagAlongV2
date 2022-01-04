@@ -8,6 +8,7 @@ import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.presentation.ui.playlisttracks.PlaylistTracksEvent.*
 import com.hfad.tagalong.presentation.ui.tracks.TracksViewModel
+import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -26,6 +27,8 @@ constructor(
     val playlist = mutableStateOf<Playlist?>(null)
 
     override val screenTitle = mutableStateOf("")
+
+    override val dialogQueue = DialogQueue()
 
     private var firstPageLoaded = false // TODO: Find out a way to improve this
 
@@ -69,9 +72,7 @@ constructor(
                     firstPageLoaded = true
                 }
 
-                dataState.error?.let {
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue)
             }
             .launchIn(viewModelScope)
     }
@@ -95,9 +96,7 @@ constructor(
                     }
                 }
 
-                dataState.error?.let {
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue) // FIXME: event is triggered endlessly
             }
             .launchIn(viewModelScope)
     }

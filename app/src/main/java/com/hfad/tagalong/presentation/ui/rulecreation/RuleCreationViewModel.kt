@@ -2,7 +2,6 @@ package com.hfad.tagalong.presentation.ui.rulecreation
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.session.SessionManager
@@ -14,7 +13,9 @@ import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors.tags.LoadAllTags
 import com.hfad.tagalong.presentation.BaseApplication
+import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
+import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -30,7 +31,7 @@ constructor(
     private val createRule: CreateRule,
     private val applyNewRule: ApplyNewRule,
     private val sessionManager: SessionManager
-) : ViewModel() {
+) : BaseViewModel() {
 
     val loading = mutableStateOf(false)
 
@@ -50,6 +51,8 @@ constructor(
         get() {
             return tags.isNotEmpty() && playlistName.value.isNotBlank()
         }
+
+    override val dialogQueue = DialogQueue()
 
     init {
         onTriggerEvent(InitRuleCreationEvent)
@@ -94,9 +97,7 @@ constructor(
                     this.allTags.addAll(tags)
                 }
 
-                dataState.error?.let { error ->
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue)
             }
             .launchIn(viewModelScope)
     }
@@ -141,9 +142,7 @@ constructor(
                     createRuleForPlaylist(playlist)
                 }
 
-                dataState.error?.let { error ->
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue)
             }
             .launchIn(viewModelScope)
     }
@@ -163,9 +162,7 @@ constructor(
                     applyRule(rule)
                 }
 
-                dataState.error?.let { error ->
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue) // TODO: Remove newly created playlist
             }
             .launchIn(viewModelScope)
     }
@@ -183,9 +180,7 @@ constructor(
                     finishedRuleCreation.value = true
                 }
 
-                dataState.error?.let { error ->
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue) // TODO: Undo rule and playlist creation?
             }
             .launchIn(viewModelScope)
     }
