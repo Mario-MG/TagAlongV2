@@ -1,14 +1,16 @@
 package com.hfad.tagalong.presentation.ui.settings
 
 import androidx.lifecycle.viewModelScope
+import com.hfad.tagalong.R
+import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
+import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.settings.SettingsEvent.LogOutEvent
 import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,15 +37,10 @@ constructor(
     private fun logOut() {
         deleteSessionInfo
             .execute()
-            .onEach { dataState ->
-                dataState.data?.let {
-                    sessionManager.logOut()
-                }
-
-                dataState.error?.let { error ->
-                    // TODO
-                }
-            }
+            .on(
+                success = { sessionManager.logOut() },
+                error = { dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.logout_error_description)) }
+            )
             .launchIn(viewModelScope)
 
     }

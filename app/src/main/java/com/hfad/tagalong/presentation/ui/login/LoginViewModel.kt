@@ -4,7 +4,9 @@ import android.content.Context
 import android.net.Uri
 import android.util.Base64
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.session.SessionManager
@@ -12,6 +14,7 @@ import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.di.APP_REDIRECT_URI
 import com.hfad.tagalong.domain.model.Token
 import com.hfad.tagalong.interactors.data.ErrorType.NetworkError.AccessDeniedError
+import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.login.GetTokenFromCode
 import com.hfad.tagalong.interactors.login.LoadUser
 import com.hfad.tagalong.interactors.login.SaveSessionInfo
@@ -23,7 +26,6 @@ import com.hfad.tagalong.presentation.ui.login.LoginEvent.*
 import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.nio.charset.Charset
 import java.security.MessageDigest
@@ -45,7 +47,8 @@ constructor(
     @Named(APP_REDIRECT_URI) private val redirectUri: String
 ) : BaseViewModel() {
 
-    val stayLoggedIn = mutableStateOf(true)
+    var stayLoggedIn by mutableStateOf(true)
+        private set
 
     override val dialogQueue = DialogQueue()
 
@@ -60,13 +63,12 @@ constructor(
     private fun loadStayLoggedIn() {
         loadStayLoggedIn
             .execute()
-            .onEach { dataState ->
-                dataState.data?.let { stayLoggedIn ->
-                    this.stayLoggedIn.value = stayLoggedIn
-                }
-
-                dataState.error?.let(::appendGenericErrorToQueue)
-            }
+            .on(
+                success = { stayLoggedIn ->
+                    this.stayLoggedIn = stayLoggedIn
+                },
+                error = ::appendGenericErrorToQueue
+            )
             .launchIn(viewModelScope)
     }
 
@@ -104,16 +106,13 @@ constructor(
     }
 
     private fun changeStayLoggedInOption() {
-        val newStayLoggedInValue = !stayLoggedIn.value
+        val newStayLoggedInValue = !stayLoggedIn
         saveStayLoggedIn
             .execute(stayLoggedIn = newStayLoggedInValue)
-            .onEach { dataState ->
-                dataState.data?.let {
-                    stayLoggedIn.value = newStayLoggedInValue
-                }
-
-                dataState.error?.let(::appendGenericErrorToQueue)
-            }
+            .on(
+                success = { stayLoggedIn = newStayLoggedInValue },
+                error = ::appendGenericErrorToQueue
+            )
             .launchIn(viewModelScope)
     }
 
@@ -149,34 +148,32 @@ constructor(
                     codeVerifier = codeVerifier,
                     redirectUri = redirectUri
                 )
-                .onEach { dataState ->
-                    dataState.data?.let { token ->
+                .on(
+                    success = { token ->
                         loadUser(token = token)
-                        if (stayLoggedIn.value) {
+                        if (stayLoggedIn) {
                             saveSessionInfo(token)
                         }
-                    }
-
-                    dataState.error?.let(::appendGenericErrorToQueue)
-                }
+                    },
+                    error = ::appendGenericErrorToQueue
+                )
                 .launchIn(viewModelScope)
         } ?: run {
-            // TODO
+            dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.generic_spotify_error))
         }
     }
 
     private fun loadUser(token: Token) {
         loadUser
             .execute(token = token)
-            .onEach { dataState ->
-                dataState.data?.let { user ->
+            .on(
+                success = { user ->
                     sessionManager.login(
                         token = token,
                         user = user
                     )
-                }
-
-                dataState.error?.let { error ->
+                },
+                error = { error ->
                     when (error) {
                         is AccessDeniedError -> dialogQueue.appendErrorDialog(
                             title = BaseApplication.getContext().getString(R.string.access_denied_error_title),
@@ -185,18 +182,16 @@ constructor(
                         else -> appendGenericErrorToQueue(error)
                     }
                 }
-            }
+            )
             .launchIn(viewModelScope)
     }
 
     private fun saveSessionInfo(token: Token) {
         saveSessionInfo
             .execute(token = token)
-            .onEach { dataState ->
-                dataState.error?.let {
-                    dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.session_unsaved_error_description))
-                }
-            }
+            .on(
+                error = { dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.session_unsaved_error_description)) }
+            )
             .launchIn(viewModelScope)
     }
 

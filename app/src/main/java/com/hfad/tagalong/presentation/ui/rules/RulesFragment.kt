@@ -40,7 +40,7 @@ class RulesFragment : BaseLoggedInFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val rules = viewModel.rules
-                val loading = viewModel.loading.value
+                val loading = viewModel.loading
 
                 val dialogQueue = viewModel.dialogQueue
 

@@ -59,9 +59,9 @@ class SingleTrackFragment : BaseLoggedInFragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val track = viewModel.track.value
+                val track = viewModel.track
                 val tags = viewModel.tagsForTrack
-                val loading = viewModel.loading.value
+                val loading = viewModel.loading
                 val allTags = viewModel.allTags
 
                 val dialogQueue = viewModel.dialogQueue

@@ -71,6 +71,8 @@
 
     <!--  SETTINGS  -->
     <string name="log_out">Cerrar sesión</string>
+    <string name="logout_error_description">Lo siento, ha habido un problema cerrando la sesión.
+        Por favor, inténtalo de nuevo más tarde.</string>
 
     <!--  COMMON  -->
     <string name="item_image_description">Imagen del elemento</string>

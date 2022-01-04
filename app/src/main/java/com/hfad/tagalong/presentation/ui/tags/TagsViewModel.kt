@@ -1,9 +1,12 @@
 package com.hfad.tagalong.presentation.ui.tags
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.tags.LoadAllTags
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.tags.TagsEvent.LoadTagsEvent
@@ -23,7 +26,8 @@ constructor (
 
     val tags = mutableStateListOf<Tag>()
 
-    val loading = mutableStateOf(false)
+    var loading by mutableStateOf(false)
+        private set
 
     override val dialogQueue = DialogQueue()
 
@@ -40,16 +44,14 @@ constructor (
     private fun loadAllTags() {
         loadAllTags
             .execute()
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let { tags ->
+            .on(
+                loadingStateChange = ::loading::set,
+                success = { tags ->
                     this.tags.clear()
                     this.tags.addAll(tags)
-                }
-
-                dataState.error?.let(::appendGenericErrorToQueue)
-            }
+                },
+                error = ::appendGenericErrorToQueue
+            )
             .launchIn(viewModelScope)
     }
 

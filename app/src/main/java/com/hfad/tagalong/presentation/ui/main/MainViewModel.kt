@@ -1,11 +1,14 @@
 package com.hfad.tagalong.presentation.ui.main
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.domain.model.Token
+import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.login.GetTokenFromRefreshToken
 import com.hfad.tagalong.interactors.login.LoadSessionInfo
 import com.hfad.tagalong.interactors.login.LoadUser
@@ -13,7 +16,6 @@ import com.hfad.tagalong.interactors.login.SaveSessionInfo
 import com.hfad.tagalong.presentation.session.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -29,14 +31,15 @@ constructor(
     @Named(APP_CLIENT_ID) private val clientId: String
 ) : ViewModel() {
 
-    val isLoggedIn = mutableStateOf(false)
+    var isLoggedIn by mutableStateOf(false)
+        private set
 
     init {
         sessionManager.addLoginObserver {
-            isLoggedIn.value = true
+            isLoggedIn = true
         }
         sessionManager.addLogoutObserver {
-            isLoggedIn.value = false
+            isLoggedIn = false
         }
         loadSessionInfo()
     }
@@ -44,19 +47,16 @@ constructor(
     private fun loadSessionInfo() {
         loadSessionInfo
             .execute()
-            .onEach { dataState ->
-                dataState.data?.let { refreshToken ->
-                    if (refreshToken.isNotBlank()) {
+            .on(
+                success = { refreshToken ->
+                    if (refreshToken != null) {
                         getTokenFromRefreshToken(refreshToken)
                     } else {
                         sessionManager.logOut()
                     }
-                }
-
-                dataState.error?.let { error ->
-                    // TODO
-                }
-            }
+                },
+                error = { /* TODO */ }
+            )
             .launchIn(viewModelScope)
     }
 
@@ -66,60 +66,46 @@ constructor(
                 clientId = clientId,
                 refreshToken = refreshToken
             )
-            .onEach { dataState ->
-                dataState.data?.let { token ->
+            .on(
+                success = { token ->
                     loadUser(token)
                     saveSessionInfo(token)
-                }
-
-                dataState.error?.let { error ->
-                    // TODO
-                    sessionManager.logOut()
-                }
-            }
+                },
+                error = { sessionManager.logOut() } // TODO
+            )
             .launchIn(viewModelScope)
     }
 
     private fun loadUser(token: Token) {
         loadUser
             .execute(token = token)
-            .onEach { dataState ->
-                dataState.data?.let { user ->
+            .on(
+                success = { user ->
                     sessionManager.login(
                         token = token,
                         user = user
                     )
-                }
-
-                dataState.error?.let { error ->
-                    // TODO
-                    sessionManager.logOut()
-                }
-            }
+                },
+                error  = { sessionManager.logOut() } // TODO
+            )
             .launchIn(viewModelScope)
     }
 
     private fun saveSessionInfo(token: Token) {
         saveSessionInfo
             .execute(token = token)
-            .onEach { dataState ->
-                dataState.error?.let { error ->
-                    //  TODO
-                }
-            }
+            .on(
+                error = { /* TODO */ }
+            )
             .launchIn(viewModelScope)
     }
 
     fun addLoginSuccessObserver(owner: LifecycleOwner, onLoginSuccess: () -> Unit) {
-        sessionManager.addLoginObserver(owner, {
-            onLoginSuccess()
-        })
+        sessionManager.addLoginObserver(owner, onLoginSuccess)
     }
 
     fun addLogoutObserver(owner: LifecycleOwner, onLogOut: () -> Unit) {
-        sessionManager.addLogoutObserver(owner, {
-            onLogOut()
-        })
+        sessionManager.addLogoutObserver(owner, onLogOut)
     }
 
 }

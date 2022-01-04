@@ -1,8 +1,13 @@
 package com.hfad.tagalong.presentation.ui.playlisttracks
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.domain.model.Playlist
+import com.hfad.tagalong.domain.model.Track
+import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
 import com.hfad.tagalong.presentation.session.SessionManager
@@ -11,7 +16,6 @@ import com.hfad.tagalong.presentation.ui.tracks.TracksViewModel
 import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,9 +28,14 @@ constructor(
     private val sessionManager: SessionManager
 ) : TracksViewModel() {
 
-    val playlist = mutableStateOf<Playlist?>(null)
+    override var loading by mutableStateOf(false)
 
-    override val screenTitle = mutableStateOf("")
+    override val tracks = mutableStateListOf<Track>()
+
+    var playlist by mutableStateOf<Playlist?>(null)
+        private set
+
+    override var screenTitle by mutableStateOf("")
 
     override val dialogQueue = DialogQueue()
 
@@ -53,27 +62,25 @@ constructor(
     }
 
     private fun init(playlist: Playlist) {
-        this.playlist.value = playlist
-        this.screenTitle.value = playlist.name
+        this.playlist = playlist
+        this.screenTitle = playlist.name
     }
 
     private fun loadFirstPage() {
         loadFirstPlaylistTracksPage
             .execute(
                 auth = sessionManager.getAuthorizationHeader(),
-                playlist = this.playlist.value!!
+                playlist = this.playlist!!
             )
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let { tracks ->
+            .on(
+                loadingStateChange = { loading = it },
+                success = { tracks ->
                     this.tracks.clear()
                     this.tracks.addAll(tracks)
                     firstPageLoaded = true
-                }
-
-                dataState.error?.let(::appendGenericErrorToQueue)
-            }
+                },
+                error = ::appendGenericErrorToQueue
+            )
             .launchIn(viewModelScope)
     }
 
@@ -82,22 +89,23 @@ constructor(
         loadNextPlaylistTracksPage
             .execute(
                 auth = sessionManager.getAuthorizationHeader(),
-                playlist = this.playlist.value!!,
+                playlist = this.playlist!!,
                 offset = currentListSize
             )
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let { tracks ->
+            .on(
+                loadingStateChange = { loading = it },
+                success = { tracks ->
                     if (tracks.isEmpty()) {
                         allTracksLoaded = true
                     } else {
                         this.tracks.addAll(tracks)
                     }
+                },
+                error = { error ->
+                    allTracksLoaded = true // TODO: Improve this (its only purpose is to avoid the event being triggered in an infinite loop)
+                    appendGenericErrorToQueue(error)
                 }
-
-                dataState.error?.let(::appendGenericErrorToQueue) // FIXME: event is triggered endlessly
-            }
+            )
             .launchIn(viewModelScope)
     }
 

@@ -45,7 +45,7 @@ class LoginFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val stayLoggedIn = viewModel.stayLoggedIn.value
+                val stayLoggedIn = viewModel.stayLoggedIn
 
                 val dialogQueue = viewModel.dialogQueue
 
