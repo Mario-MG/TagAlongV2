@@ -1,7 +1,7 @@
 package com.hfad.tagalong.presentation.theme
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -12,16 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.hfad.tagalong.R
-import com.hfad.tagalong.presentation.components.AppNavigationBar
-import com.hfad.tagalong.presentation.components.AppTopBar
-import com.hfad.tagalong.presentation.components.HelpDialog
+import com.hfad.tagalong.presentation.components.*
+import com.hfad.tagalong.presentation.util.DialogData
+import com.hfad.tagalong.presentation.util.DialogData.ErrorDialog
+import com.hfad.tagalong.presentation.util.DialogData.InfoDialog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun AppTheme(
@@ -41,19 +40,108 @@ fun AppTheme(
     }
 }
 
+class AppScaffold(
+    private val navController: NavController,
+    private val scaffoldState: ScaffoldState? = null
+) {
+
+    private var displayProgressBar = false
+    private var progressBarAlignment = Alignment.TopCenter
+
+    private var displayNavBar = false
+
+    private var displayTopBar = false
+    private var screenTitle: String? = null
+    private var pinnedTopBar = false
+    private var showBackButton = false
+    private var helpContent: @Composable (() -> Unit)? = null
+
+    private var floatingActionButton: @Composable () -> Unit = {}
+
+    private var currentDialog: DialogData? = null
+
+    fun withProgressBar(
+        displayProgressBar: Boolean,
+        progressBarAlignment: Alignment = Alignment.TopCenter
+    ): AppScaffold {
+        this.displayProgressBar = displayProgressBar
+        this.progressBarAlignment = progressBarAlignment
+        return this
+    }
+
+    fun withNavBar(): AppScaffold {
+        this.displayNavBar = true
+        return this
+    }
+
+    fun withTopBar(
+        screenTitle: String? = null,
+        pinned: Boolean = false,
+        showBackButton: Boolean = false,
+        helpContent: @Composable (() -> Unit)? = null
+    ): AppScaffold {
+        this.displayTopBar = true
+        this.screenTitle = screenTitle
+        this.pinnedTopBar = pinned
+        this.showBackButton = showBackButton
+        this.helpContent = helpContent
+        return this
+    }
+
+    fun withFloatingActionButton(
+        floatingActionButton: @Composable () -> Unit
+    ): AppScaffold {
+        this.floatingActionButton = floatingActionButton
+        return this
+    }
+
+    fun withDialog(
+        currentDialog: DialogData?
+    ): AppScaffold {
+        this.currentDialog = currentDialog
+        return this
+    }
+
+    @SuppressLint("ComposableNaming")
+    @ExperimentalMaterial3Api
+    @Composable
+    fun setContent(
+        content: @Composable (BoxScope.() -> Unit)
+    ) = AppScaffold(
+        scaffoldState = this.scaffoldState ?: rememberScaffoldState(),
+        navController = this.navController,
+        displayProgressBar = this.displayProgressBar,
+        progressBarAlignment = this.progressBarAlignment,
+        displayNavBar = this.displayNavBar,
+        displayTopBar = this.displayTopBar,
+        screenTitle = this.screenTitle ?: stringResource(R.string.app_name),
+        pinnedTopBar = this.pinnedTopBar,
+        showBackButtonInTopBar = this.showBackButton,
+        helpContent = this.helpContent,
+        floatingActionButton = this.floatingActionButton,
+        currentDialog = this.currentDialog
+    ) {
+        content()
+    }
+
+}
+
 @ExperimentalMaterial3Api
 @Composable
-fun AppScaffold(
+private fun AppScaffold(
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    navController: NavController,
     displayProgressBar: Boolean = false,
     progressBarAlignment: Alignment = Alignment.TopCenter,
     displayNavBar: Boolean = false,
-    navController: NavController,
-    floatingActionButton: @Composable () -> Unit = {},
+    displayTopBar: Boolean = true,
     screenTitle: String = stringResource(R.string.app_name),
     pinnedTopBar: Boolean = false,
     showBackButtonInTopBar: Boolean = false,
     helpContent: @Composable (() -> Unit)? = null,
-    content: @Composable BoxScope.() -> Unit
+    floatingActionButton: @Composable () -> Unit = {},
+    currentDialog: DialogData? = null,
+    content: @Composable (BoxScope.() -> Unit)
 ) {
     AppTheme {
         val scrollBehavior = remember {
@@ -65,13 +153,15 @@ fun AppScaffold(
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                AppTopBar(
-                    title = screenTitle,
-                    navController = navController,
-                    showBackButton = showBackButtonInTopBar,
-                    scrollBehavior = scrollBehavior,
-                    onClickHelp = onClickHelp
-                )
+                if (displayTopBar) {
+                    AppTopBar(
+                        title = screenTitle,
+                        navController = navController,
+                        showBackButton = showBackButtonInTopBar,
+                        scrollBehavior = scrollBehavior,
+                        onClickHelp = onClickHelp
+                    )
+                }
             },
             bottomBar = {
                 if (displayNavBar) {
@@ -100,8 +190,51 @@ fun AppScaffold(
                         helpContent!!()
                     }
                 }
+                DefaultSnackbar(
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    snackbarHostState = scaffoldState.snackbarHostState
+                )
+                ProcessDialog(
+                    currentDialog = currentDialog,
+                    snackbarHostState = scaffoldState.snackbarHostState
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun ProcessDialog(
+    currentDialog: DialogData?,
+    snackbarHostState: SnackbarHostState
+) {
+    currentDialog?.let { dialog ->
+        when (dialog) {
+            is InfoDialog -> showInfoSnackbar(
+                message = dialog.description,
+                actionLabel = stringResource(R.string.snackbar_ok),
+                snackbarHostState = snackbarHostState,
+                scope = rememberCoroutineScope(),
+                onDismiss = dialog.onDismiss
+            )
+            is ErrorDialog -> GenericErrorDialog(dialog)
+        }
+    }
+}
+
+private fun showInfoSnackbar(
+    message: String,
+    actionLabel: String? = null,
+    snackbarHostState: SnackbarHostState,
+    scope: CoroutineScope,
+    onDismiss: () -> Unit
+) {
+    scope.launch {
+        snackbarHostState.showSnackbar(
+            message = message,
+            actionLabel = actionLabel
+        )
+        onDismiss()
     }
 }
 

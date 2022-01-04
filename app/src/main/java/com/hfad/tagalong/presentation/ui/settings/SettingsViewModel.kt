@@ -1,10 +1,11 @@
 package com.hfad.tagalong.presentation.ui.settings
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
 import com.hfad.tagalong.presentation.session.SessionManager
+import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.settings.SettingsEvent.LogOutEvent
+import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -17,25 +18,26 @@ class SettingsViewModel
 constructor(
     private val deleteSessionInfo: DeleteSessionInfo,
     private val sessionManager: SessionManager
-) : ViewModel() {
+) : BaseViewModel() {
+
+    override val dialogQueue = DialogQueue()
 
     fun onTriggerEvent(event: SettingsEvent) {
         viewModelScope.launch {
             when (event) {
                 is LogOutEvent -> {
-                    logOut(event.callback)
+                    logOut()
                 }
             }
         }
     }
 
-    private fun logOut(callback: () -> Unit) {
+    private fun logOut() {
         deleteSessionInfo
             .execute()
             .onEach { dataState ->
                 dataState.data?.let {
                     sessionManager.logOut()
-                    callback()
                 }
 
                 dataState.error?.let { error ->

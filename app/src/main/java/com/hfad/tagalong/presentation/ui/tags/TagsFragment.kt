@@ -41,27 +41,31 @@ class TagsFragment : BaseLoggedInFragment() {
                 val tags = viewModel.tags
                 val loading = viewModel.loading.value
 
-                val navController = findNavController()
+                val dialogQueue = viewModel.dialogQueue
 
-                AppScaffold(
-                    displayProgressBar = loading,
-                    progressBarAlignment = if (tags.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter,
-                    navController = navController,
-                    displayNavBar = true,
-                    screenTitle = Screen.Tags.getLabel(),
-                    helpContent = { Text(stringResource(R.string.tags_help)) }
-                ) {
-                    if (tags.isNotEmpty()) {
-                        TagItemList(
-                            tags = tags,
-                            onClickTagItem = { tag ->
-                                navigateToTrackList(tag)
-                            }
-                        )
-                    } else if (!loading) {
-                        EmptyListPlaceholderText(text = stringResource(R.string.no_tags))
+                AppScaffold(navController = findNavController())
+                    .withProgressBar(
+                        displayProgressBar = loading,
+                        progressBarAlignment = if (tags.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
+                    )
+                    .withNavBar()
+                    .withTopBar(
+                        screenTitle = Screen.Tags.getLabel(),
+                        helpContent = { Text(stringResource(R.string.tags_help)) }
+                    )
+                    .withDialog(dialogQueue.currentDialog.value)
+                    .setContent {
+                        if (tags.isNotEmpty()) {
+                            TagItemList(
+                                tags = tags,
+                                onClickTagItem = { tag ->
+                                    navigateToTrackList(tag)
+                                }
+                            )
+                        } else if (!loading) {
+                            EmptyListPlaceholderText(text = stringResource(R.string.no_tags))
+                        }
                     }
-                }
             }
         }
     }

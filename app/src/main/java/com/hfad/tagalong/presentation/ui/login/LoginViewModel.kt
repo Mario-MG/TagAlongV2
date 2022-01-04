@@ -5,20 +5,22 @@ import android.net.Uri
 import android.util.Base64
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.di.APP_REDIRECT_URI
 import com.hfad.tagalong.domain.model.Token
+import com.hfad.tagalong.interactors.data.ErrorType.NetworkError.AccessDeniedError
 import com.hfad.tagalong.interactors.login.GetTokenFromCode
 import com.hfad.tagalong.interactors.login.LoadUser
 import com.hfad.tagalong.interactors.login.SaveSessionInfo
 import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
 import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
 import com.hfad.tagalong.presentation.BaseApplication
+import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.*
+import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -41,9 +43,11 @@ constructor(
     private val sessionManager: SessionManager,
     @Named(APP_CLIENT_ID) private val clientId: String,
     @Named(APP_REDIRECT_URI) private val redirectUri: String
-) : ViewModel() {
+) : BaseViewModel() {
 
     val stayLoggedIn = mutableStateOf(true)
+
+    override val dialogQueue = DialogQueue()
 
     private lateinit var codeVerifier: String
 
@@ -61,9 +65,7 @@ constructor(
                     this.stayLoggedIn.value = stayLoggedIn
                 }
 
-                dataState.error?.let { error ->
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue)
             }
             .launchIn(viewModelScope)
     }
@@ -110,9 +112,7 @@ constructor(
                     stayLoggedIn.value = newStayLoggedInValue
                 }
 
-                dataState.error?.let { error ->
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue)
             }
             .launchIn(viewModelScope)
     }
@@ -157,12 +157,10 @@ constructor(
                         }
                     }
 
-                    dataState.error?.let { error ->
-                        // TODO
-                    }
+                    dataState.error?.let(::appendGenericErrorToQueue)
                 }
                 .launchIn(viewModelScope)
-        } ?: {
+        } ?: run {
             // TODO
         }
     }
@@ -179,7 +177,13 @@ constructor(
                 }
 
                 dataState.error?.let { error ->
-                    // TODO
+                    when (error) {
+                        is AccessDeniedError -> dialogQueue.appendErrorDialog(
+                            title = BaseApplication.getContext().getString(R.string.access_denied_error_title),
+                            description = BaseApplication.getContext().getString(R.string.access_denied_error_description)
+                        )
+                        else -> appendGenericErrorToQueue(error)
+                    }
                 }
             }
             .launchIn(viewModelScope)
@@ -189,8 +193,8 @@ constructor(
         saveSessionInfo
             .execute(token = token)
             .onEach { dataState ->
-                dataState.error?.let { error ->
-                    //  TODO
+                dataState.error?.let {
+                    dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.session_unsaved_error_description))
                 }
             }
             .launchIn(viewModelScope)

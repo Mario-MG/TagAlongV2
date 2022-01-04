@@ -22,6 +22,4 @@ sealed class ErrorType(open val message: String) {
 
     }
 
-    object UnknownError : ErrorType("Unknown Error")
-
 }

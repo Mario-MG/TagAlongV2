@@ -7,6 +7,7 @@ import com.hfad.tagalong.interactors.tagtracks.LoadAllTagTracks
 import com.hfad.tagalong.presentation.ui.tagtracks.TagTracksEvent.InitTagTracksEvent
 import com.hfad.tagalong.presentation.ui.tagtracks.TagTracksEvent.LoadTagTracksEvent
 import com.hfad.tagalong.presentation.ui.tracks.TracksViewModel
+import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -23,6 +24,8 @@ constructor(
     val tag = mutableStateOf<Tag?>(null)
 
     override val screenTitle = mutableStateOf("")
+
+    override val dialogQueue = DialogQueue()
 
     fun onTriggerEvent(event: TagTracksEvent) {
         viewModelScope.launch {
@@ -53,9 +56,7 @@ constructor(
                     this.tracks.addAll(tracks)
                 }
 
-                dataState.error?.let {
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue)
             }
             .launchIn(viewModelScope)
     }

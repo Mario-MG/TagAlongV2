@@ -3,6 +3,7 @@ package com.hfad.tagalong.presentation.ui.main
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelStoreOwner
@@ -13,6 +14,7 @@ import com.hfad.tagalong.presentation.ui.login.LoginFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalMaterial3Api
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ViewModelStoreOwner {

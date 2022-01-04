@@ -2,14 +2,18 @@ package com.hfad.tagalong.presentation.ui.singletrack
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hfad.tagalong.presentation.session.SessionManager
+import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
+import com.hfad.tagalong.interactors.data.ErrorType.CacheError.DuplicateError
 import com.hfad.tagalong.interactors.singletrack.*
 import com.hfad.tagalong.interactors.tags.LoadAllTags
+import com.hfad.tagalong.presentation.BaseApplication
+import com.hfad.tagalong.presentation.session.SessionManager
+import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.singletrack.SingleTrackEvent.*
+import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -27,7 +31,7 @@ constructor(
     private val applyExistingRules: ApplyExistingRules,
     private val deleteTagFromTrack: DeleteTagFromTrack,
     private val sessionManager: SessionManager
-) : ViewModel() {
+) : BaseViewModel() {
 
     val track = mutableStateOf<Track?>(null)
 
@@ -36,6 +40,8 @@ constructor(
     val allTags = mutableStateListOf<Tag>()
 
     val loading = mutableStateOf(false)
+
+    override val dialogQueue = DialogQueue()
 
     fun onTriggerEvent(event: SingleTrackEvent) {
         viewModelScope.launch {
@@ -68,9 +74,7 @@ constructor(
                     addTagToTrack(tag = tag)
                 }
 
-                dataState.error?.let { error ->
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue)
             }
             .launchIn(viewModelScope)
     }
@@ -82,11 +86,17 @@ constructor(
                 loading.value = dataState.loading
 
                 dataState.data?.let {
+                    refreshTags()
                     applyRules(newTag = tag)
                 }
 
                 dataState.error?.let { error ->
-                    // TODO
+                    when (error) {
+                        is DuplicateError -> dialogQueue.appendInfoDialog(
+                            BaseApplication.getContext().getString(R.string.duplicate_tag_info)
+                        )
+                        else -> appendGenericErrorToQueue(error)
+                    }
                 }
             }
             .launchIn(viewModelScope)
@@ -103,13 +113,7 @@ constructor(
             .onEach { dataState ->
                 loading.value = dataState.loading
 
-                dataState.data?.let {
-                    refreshTags()
-                }
-
-                dataState.error?.let { error ->
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue) // TODO: Undo add tag to track??
             }
             .launchIn(viewModelScope)
     }
@@ -128,9 +132,7 @@ constructor(
                     refreshTags()
                 }
 
-                dataState.error?.let { error ->
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue)
             }
             .launchIn(viewModelScope)
     }
@@ -151,9 +153,7 @@ constructor(
                     this.tagsForTrack.addAll(tagsForTrack)
                 }
 
-                dataState.error?.let { error ->
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue)
             }
             .launchIn(viewModelScope)
     }
@@ -169,9 +169,7 @@ constructor(
                     this.allTags.addAll(allTags)
                 }
 
-                dataState.error?.let { error ->
-                    // TODO
-                }
+                dataState.error?.let(::appendGenericErrorToQueue)
             }
             .launchIn(viewModelScope)
     }

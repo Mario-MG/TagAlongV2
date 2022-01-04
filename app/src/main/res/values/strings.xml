@@ -10,6 +10,12 @@
     <string name="stay_logged_in">Stay logged in</string>
     <string name="login_button_icon_description">Login button icon</string>
     <string name="spotify_auth_uri_lang_path">en</string>
+    <string name="access_denied_error_title">Access Denied</string>
+    <string name="access_denied_error_description">Sorry, the application is still in development,
+        so in order to use it, access must be explicitly granted by the developer.
+        You can contact me at mmaringomez.mmg@gmail.com for more info.</string>
+    <string name="session_unsaved_error_description">Sorry, your session data could not be
+        successfully stored, so you may have to log in again next time you use the app.</string>
 
     <!--  NAVIGATION BAR  -->
     <string name="playlists_screen_label">Playlists</string>
@@ -32,6 +38,7 @@
     <!--  SINGLE TRACK  -->
     <string name="track_image_description">Track image</string>
     <string name="single_track_help">Add your custom tags for this song.</string>
+    <string name="duplicate_tag_info">This track already has that tag</string>
 
     <!--  TAGS  -->
     <string name="no_tags">There are no tags to show</string>
@@ -81,4 +88,8 @@
     <string name="back_arrow_description">Back arrow</string>
     <string name="help_button_description">Help</string>
     <string name="help_dialog_ok">Got it!</string>
+    <string name="snackbar_ok">OK</string>
+    <string name="generic_spotify_error">Sorry, there was a problem connecting with Spotify. Please try again later.</string>
+    <string name="generic_cache_error">Sorry, there was a problem saving or retrieving your data. Please try again later.</string>
+    <string name="generic_error_dialog_ok">OK</string>
 </resources>

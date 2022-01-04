@@ -3,10 +3,10 @@ package com.hfad.tagalong.presentation.ui.tracks
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import com.hfad.tagalong.domain.model.Track
+import com.hfad.tagalong.presentation.ui.BaseViewModel
 
-abstract class TracksViewModel : ViewModel() {
+abstract class TracksViewModel : BaseViewModel() {
 
     val tracks = mutableStateListOf<Track>()
 
