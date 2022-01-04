@@ -1,13 +1,16 @@
 package com.hfad.tagalong.presentation.ui.rulecreation
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.rulecreation.ApplyNewRule
 import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
@@ -18,7 +21,6 @@ import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
 import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,23 +35,28 @@ constructor(
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
-    val loading = mutableStateOf(false)
+    var loading by mutableStateOf(false)
+        private set
 
-    val playlistName = mutableStateOf(BaseApplication.getContext().getString(R.string.new_tagalong_playlist))
+    var playlistName by mutableStateOf(BaseApplication.getContext().getString(R.string.new_tagalong_playlist))
+        private set
 
     val tags = mutableStateListOf<Tag>()
 
-    val optionality = mutableStateOf(false)
+    var optionality by mutableStateOf(false)
+        private set
 
-    val autoUpdate = mutableStateOf(true)
+    var autoUpdate by mutableStateOf(true)
+        private set
 
     val allTags = mutableStateListOf<Tag>()
 
-    val finishedRuleCreation = mutableStateOf(false)
+    var finishedRuleCreation by mutableStateOf(false)
+        private set
 
     val isValidRule: Boolean
         get() {
-            return tags.isNotEmpty() && playlistName.value.isNotBlank()
+            return tags.isNotEmpty() && playlistName.isNotBlank()
         }
 
     override val dialogQueue = DialogQueue()
@@ -89,21 +96,19 @@ constructor(
     private fun getAllTags() {
         loadAllTags
             .execute()
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let { tags ->
+            .on(
+                loadingStateChange = ::loading::set,
+                success = { tags ->
                     this.allTags.clear()
                     this.allTags.addAll(tags)
-                }
-
-                dataState.error?.let(::appendGenericErrorToQueue)
-            }
+                },
+                error = ::appendGenericErrorToQueue
+            )
             .launchIn(viewModelScope)
     }
 
     private fun changePlaylistName(playlistName: String) {
-        this.playlistName.value = playlistName
+        this.playlistName = playlistName
     }
 
     private fun addTag(tagName: String) {
@@ -121,11 +126,11 @@ constructor(
     }
 
     private fun switchOptionality() {
-        this.optionality.value = !this.optionality.value
+        this.optionality = !this.optionality
     }
 
     private fun switchAutoUpdate() {
-        this.autoUpdate.value = !this.autoUpdate.value
+        this.autoUpdate = !this.autoUpdate
     }
 
     private fun createPlaylistAndRule() {
@@ -133,17 +138,13 @@ constructor(
             .execute(
                 auth = sessionManager.getAuthorizationHeader(),
                 userId = sessionManager.user.id,
-                playlistName = playlistName.value
+                playlistName = playlistName
             )
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let { playlist ->
-                    createRuleForPlaylist(playlist)
-                }
-
-                dataState.error?.let(::appendGenericErrorToQueue)
-            }
+            .on(
+                loadingStateChange = ::loading::set,
+                success = ::createRuleForPlaylist,
+                error = ::appendGenericErrorToQueue
+            )
             .launchIn(viewModelScope)
     }
 
@@ -151,19 +152,15 @@ constructor(
         createRule
             .execute(
                 playlist = playlist,
-                optionality = optionality.value,
-                autoUpdate = autoUpdate.value,
+                optionality = optionality,
+                autoUpdate = autoUpdate,
                 tags = tags
             )
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let { rule ->
-                    applyRule(rule)
-                }
-
-                dataState.error?.let(::appendGenericErrorToQueue) // TODO: Remove newly created playlist
-            }
+            .on(
+                loadingStateChange = ::loading::set,
+                success = ::applyRule,
+                error = ::appendGenericErrorToQueue // TODO: Remove newly created playlist
+            )
             .launchIn(viewModelScope)
     }
 
@@ -173,15 +170,11 @@ constructor(
                 rule = rule,
                 auth = sessionManager.getAuthorizationHeader()
             )
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let {
-                    finishedRuleCreation.value = true
-                }
-
-                dataState.error?.let(::appendGenericErrorToQueue) // TODO: Undo rule and playlist creation?
-            }
+            .on(
+                loadingStateChange = ::loading::set,
+                success = { finishedRuleCreation = true },
+                error = ::appendGenericErrorToQueue
+            )
             .launchIn(viewModelScope)
     }
 

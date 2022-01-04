@@ -39,7 +39,7 @@ class TagsFragment : BaseLoggedInFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val tags = viewModel.tags
-                val loading = viewModel.loading.value
+                val loading = viewModel.loading
 
                 val dialogQueue = viewModel.dialogQueue
 

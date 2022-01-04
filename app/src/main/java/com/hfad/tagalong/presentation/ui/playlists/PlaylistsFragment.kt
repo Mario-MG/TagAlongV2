@@ -41,8 +41,8 @@ class PlaylistsFragment : BaseLoggedInFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val playlists = viewModel.playlists
-                val loading = viewModel.loading.value
-                val isLoggedIn = mainViewModel.isLoggedIn.value
+                val loading = viewModel.loading
+                val isLoggedIn = mainViewModel.isLoggedIn
                 val dialogQueue = viewModel.dialogQueue
 
                 if (isLoggedIn) {

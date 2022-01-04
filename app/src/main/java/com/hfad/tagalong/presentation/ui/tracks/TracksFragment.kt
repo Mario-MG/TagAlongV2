@@ -35,8 +35,8 @@ abstract class TracksFragment : BaseLoggedInFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val tracks = viewModel.tracks
-                val loading = viewModel.loading.value
-                val screenTitle = viewModel.screenTitle.value
+                val loading = viewModel.loading
+                val screenTitle = viewModel.screenTitle
 
                 val dialogQueue = viewModel.dialogQueue
 

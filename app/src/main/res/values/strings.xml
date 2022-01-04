@@ -76,6 +76,8 @@
 
     <!--  SETTINGS  -->
     <string name="log_out">Log out</string>
+    <string name="logout_error_description">Sorry, there was a problem logging you out.
+        Please try again later.</string>
 
     <!--  COMMON  -->
     <string name="item_image_description">Item image</string>

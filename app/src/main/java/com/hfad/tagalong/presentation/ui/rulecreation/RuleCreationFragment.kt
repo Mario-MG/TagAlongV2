@@ -48,13 +48,13 @@ class RuleCreationFragment : BaseLoggedInFragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val loading = viewModel.loading.value
-                val playlistName = viewModel.playlistName.value
+                val loading = viewModel.loading
+                val playlistName = viewModel.playlistName
                 val tags = viewModel.tags
-                val optionality = viewModel.optionality.value
-                val autoUpdate = viewModel.autoUpdate.value
+                val optionality = viewModel.optionality
+                val autoUpdate = viewModel.autoUpdate
                 val allTags = viewModel.allTags
-                val finishedRuleCreation = viewModel.finishedRuleCreation.value
+                val finishedRuleCreation = viewModel.finishedRuleCreation
 
                 val dialogQueue = viewModel.dialogQueue
 

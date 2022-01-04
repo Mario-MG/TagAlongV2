@@ -1,10 +1,13 @@
 package com.hfad.tagalong.presentation.ui.playlists
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.domain.model.Playlist
+import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
 import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
 import com.hfad.tagalong.presentation.ui.BaseViewModel
@@ -13,7 +16,6 @@ import com.hfad.tagalong.presentation.ui.playlists.PlaylistsEvent.NextPageEvent
 import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,7 +30,8 @@ constructor(
 
     val playlists = mutableStateListOf<Playlist>()
 
-    val loading = mutableStateOf(false)
+    var loading by mutableStateOf(false)
+        private set
 
     override val dialogQueue = DialogQueue()
 
@@ -56,17 +59,15 @@ constructor(
     private fun loadFirstPage() {
         loadFirstPlaylistsPage
             .execute(auth = sessionManager.getAuthorizationHeader())
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let { playlists ->
+            .on(
+                loadingStateChange = ::loading::set,
+                success = { playlists ->
                     this.playlists.clear()
                     this.playlists.addAll(playlists)
                     firstPageLoaded = true
-                }
-
-                dataState.error?.let(::appendGenericErrorToQueue)
-            }
+                },
+                error = ::appendGenericErrorToQueue
+            )
             .launchIn(viewModelScope)
     }
 
@@ -77,19 +78,20 @@ constructor(
                 auth = sessionManager.getAuthorizationHeader(),
                 offset = currentListSize
             )
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let { playlists ->
+            .on(
+                loadingStateChange = ::loading::set,
+                success = { playlists ->
                     if (playlists.isEmpty()) {
                         allPlaylistsLoaded = true
                     } else {
                         this.playlists.addAll(playlists)
                     }
+                },
+                error = { error ->
+                    allPlaylistsLoaded = true // TODO: Improve this (its only purpose is to avoid the event being triggered in an infinite loop)
+                    appendGenericErrorToQueue(error)
                 }
-
-                dataState.error?.let(::appendGenericErrorToQueue) // FIXME: event is triggered endlessly
-            }
+            )
             .launchIn(viewModelScope)
     }
 
