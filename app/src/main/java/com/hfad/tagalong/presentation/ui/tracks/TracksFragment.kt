@@ -50,7 +50,7 @@ abstract class TracksFragment : BaseLoggedInFragment() {
                         showBackButton = true,
                         helpContent = { Text(stringResource(R.string.tracks_help)) }
                     )
-                    .withDialog(dialogQueue.currentDialog.value)
+                    .withDialog(dialogQueue.currentDialog)
                     .setContent {
                         if (tracks.isNotEmpty()) {
                             TrackItemList(

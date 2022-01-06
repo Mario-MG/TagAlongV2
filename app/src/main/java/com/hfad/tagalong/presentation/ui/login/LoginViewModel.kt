@@ -64,9 +64,7 @@ constructor(
         loadStayLoggedIn
             .execute()
             .on(
-                success = { stayLoggedIn ->
-                    this.stayLoggedIn = stayLoggedIn
-                },
+                success = ::stayLoggedIn::set,
                 error = ::appendGenericErrorToQueue
             )
             .launchIn(viewModelScope)

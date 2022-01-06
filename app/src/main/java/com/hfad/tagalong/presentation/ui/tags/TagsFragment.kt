@@ -53,7 +53,7 @@ class TagsFragment : BaseLoggedInFragment() {
                         screenTitle = Screen.Tags.getLabel(),
                         helpContent = { Text(stringResource(R.string.tags_help)) }
                     )
-                    .withDialog(dialogQueue.currentDialog.value)
+                    .withDialog(dialogQueue.currentDialog)
                     .setContent {
                         if (tags.isNotEmpty()) {
                             TagItemList(

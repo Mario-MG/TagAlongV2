@@ -72,7 +72,7 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                         showBackButton = true,
                         helpContent = { Text(stringResource(R.string.rule_creation_help)) }
                     )
-                    .withDialog(currentDialog = dialogQueue.currentDialog.value)
+                    .withDialog(currentDialog = dialogQueue.currentDialog)
                     .setContent {
                         Surface(
                             modifier = Modifier

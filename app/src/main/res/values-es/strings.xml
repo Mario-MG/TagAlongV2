@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--  LOGIN  -->
-    <string name="log_in_with_spotify">Iniciar sesión con Spotify</string>
-    <string name="stay_logged_in">Mantener sesión abierta</string>
-    <string name="login_button_icon_description">Icono del botón para iniciar sesión</string>
-    <string name="spotify_auth_uri_lang_path">es</string>
+    <!--  MAIN -->
+    <string name="load_session_error_description">Lo siento, ha habido un problema al cargar tus
+        datos. Por favor, inicia sesión de nuevo.</string>
     <string name="access_denied_error_title">Acceso Denegado</string>
     <string name="access_denied_error_description">Lo siento, la aplicación está aún en desarrollo,
         por lo que, para usarla, el desarrollador debe incluirte en la lista de usuarios permitidos.
         Puedes contactar conmigo en mmaringomez.mmg@gmail.com para más información.</string>
     <string name="session_unsaved_error_description">Lo siento, tu sesión no ha podido guardarse
         así que es posible que tengas que iniciar una nueva sesión la próxima vez que uses la app.</string>
+
+    <!--  LOGIN  -->
+    <string name="log_in_with_spotify">Iniciar sesión con Spotify</string>
+    <string name="stay_logged_in">Mantener sesión abierta</string>
+    <string name="login_button_icon_description">Icono del botón para iniciar sesión</string>
+    <string name="spotify_auth_uri_lang_path">es</string>
 
     <!--  NAVIGATION BAR  -->
     <string name="playlists_screen_label">Playlists</string>
