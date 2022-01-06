@@ -5,17 +5,21 @@
     <string name="app_deep_link_schema" translatable="false">appscheme</string>
     <string name="app_deep_link_url" translatable="false">tagalong-app.com</string>
 
-    <!--  LOGIN  -->
-    <string name="log_in_with_spotify">Log in with Spotify</string>
-    <string name="stay_logged_in">Stay logged in</string>
-    <string name="login_button_icon_description">Login button icon</string>
-    <string name="spotify_auth_uri_lang_path">en</string>
+    <!--  MAIN -->
+    <string name="load_session_error_description">Sorry, there was a problem loading your data.
+        Please log in again.</string>
     <string name="access_denied_error_title">Access Denied</string>
     <string name="access_denied_error_description">Sorry, the application is still in development,
         so in order to use it, access must be explicitly granted by the developer.
         You can contact me at mmaringomez.mmg@gmail.com for more info.</string>
     <string name="session_unsaved_error_description">Sorry, your session data could not be
         successfully stored, so you may have to log in again next time you use the app.</string>
+
+    <!--  LOGIN  -->
+    <string name="log_in_with_spotify">Log in with Spotify</string>
+    <string name="stay_logged_in">Stay logged in</string>
+    <string name="login_button_icon_description">Login button icon</string>
+    <string name="spotify_auth_uri_lang_path">en</string>
 
     <!--  NAVIGATION BAR  -->
     <string name="playlists_screen_label">Playlists</string>

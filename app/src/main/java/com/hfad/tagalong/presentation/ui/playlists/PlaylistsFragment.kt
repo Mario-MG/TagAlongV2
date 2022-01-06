@@ -56,7 +56,7 @@ class PlaylistsFragment : BaseLoggedInFragment() {
                             displayProgressBar = loading,
                             progressBarAlignment = if (playlists.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
                         )
-                        .withDialog(currentDialog = dialogQueue.currentDialog.value)
+                        .withDialog(currentDialog = dialogQueue.currentDialog)
                         .setContent {
                             if (playlists.isNotEmpty()) {
                                 PlaylistItemList(

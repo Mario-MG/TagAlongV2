@@ -66,7 +66,7 @@ class RulesFragment : BaseLoggedInFragment() {
                             Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_rule_icon_description))
                         }
                     }
-                    .withDialog(dialogQueue.currentDialog.value)
+                    .withDialog(dialogQueue.currentDialog)
                     .setContent {
                         if (rules.isNotEmpty()) {
                             RuleItemList(

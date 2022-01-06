@@ -4,16 +4,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hfad.tagalong.R
 import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.domain.model.Token
+import com.hfad.tagalong.interactors.data.ErrorType.NetworkError.AccessDeniedError
 import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.login.GetTokenFromRefreshToken
 import com.hfad.tagalong.interactors.login.LoadSessionInfo
 import com.hfad.tagalong.interactors.login.LoadUser
 import com.hfad.tagalong.interactors.login.SaveSessionInfo
+import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.session.SessionManager
+import com.hfad.tagalong.presentation.ui.BaseViewModel
+import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
@@ -29,10 +33,12 @@ constructor(
     private val saveSessionInfo: SaveSessionInfo,
     private val sessionManager: SessionManager,
     @Named(APP_CLIENT_ID) private val clientId: String
-) : ViewModel() {
+) : BaseViewModel() {
 
     var isLoggedIn by mutableStateOf(false)
         private set
+
+    override val dialogQueue = DialogQueue()
 
     init {
         sessionManager.addLoginObserver {
@@ -55,7 +61,10 @@ constructor(
                         sessionManager.logOut()
                     }
                 },
-                error = { /* TODO */ }
+                error = {
+                    sessionManager.logOut()
+                    dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.load_session_error_description))
+                }
             )
             .launchIn(viewModelScope)
     }
@@ -71,7 +80,10 @@ constructor(
                     loadUser(token)
                     saveSessionInfo(token)
                 },
-                error = { sessionManager.logOut() } // TODO
+                error = { error ->
+                    sessionManager.logOut()
+                    appendGenericErrorToQueue(error)
+                }
             )
             .launchIn(viewModelScope)
     }
@@ -86,7 +98,16 @@ constructor(
                         user = user
                     )
                 },
-                error  = { sessionManager.logOut() } // TODO
+                error  = { error ->
+                    sessionManager.logOut()
+                    when (error) {
+                        is AccessDeniedError -> dialogQueue.appendErrorDialog(
+                            title = BaseApplication.getContext().getString(R.string.access_denied_error_title),
+                            description = BaseApplication.getContext().getString(R.string.access_denied_error_description)
+                        )
+                        else -> appendGenericErrorToQueue(error)
+                    }
+                }
             )
             .launchIn(viewModelScope)
     }
@@ -95,7 +116,9 @@ constructor(
         saveSessionInfo
             .execute(token = token)
             .on(
-                error = { /* TODO */ }
+                error = {
+                    dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.session_unsaved_error_description))
+                }
             )
             .launchIn(viewModelScope)
     }

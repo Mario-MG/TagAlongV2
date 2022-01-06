@@ -74,7 +74,7 @@ class SingleTrackFragment : BaseLoggedInFragment() {
                         showBackButton = true,
                         helpContent = { Text(stringResource(R.string.single_track_help)) }
                     )
-                    .withDialog(dialogQueue.currentDialog.value)
+                    .withDialog(dialogQueue.currentDialog)
                     .setContent {
                         Surface(
                             modifier = Modifier.verticalScroll(rememberScrollState())

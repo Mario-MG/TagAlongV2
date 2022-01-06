@@ -1,13 +1,16 @@
 package com.hfad.tagalong.presentation.util
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.hfad.tagalong.presentation.util.DialogData.ErrorDialog
 import com.hfad.tagalong.presentation.util.DialogData.InfoDialog
 import java.util.*
 
 class DialogQueue {
 
-    val currentDialog = mutableStateOf<DialogData?>(null)
+    var currentDialog by mutableStateOf<DialogData?>(null)
+        private set
 
     private val queue = LinkedList<DialogData>()
 
@@ -33,7 +36,7 @@ class DialogQueue {
 
     private fun append(dialogData: DialogData) {
         queue.offer(dialogData)
-        if (currentDialog.value == null) {
+        if (currentDialog == null) {
             updateCurrentValue()
         }
     }
@@ -44,7 +47,7 @@ class DialogQueue {
     }
 
     private fun updateCurrentValue() {
-        currentDialog.value = queue.peek()
+        currentDialog = queue.peek()
     }
 
 }

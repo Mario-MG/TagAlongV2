@@ -47,10 +47,11 @@ class LoginFragment : Fragment() {
             setContent {
                 val stayLoggedIn = viewModel.stayLoggedIn
 
+                val mainDialogQueue = mainViewModel.dialogQueue
                 val dialogQueue = viewModel.dialogQueue
 
                 AppScaffold(navController = findNavController())
-                    .withDialog(dialogQueue.currentDialog.value)
+                    .withDialog(mainDialogQueue.currentDialog ?: dialogQueue.currentDialog)
                     .setContent {
                         Column(
                             modifier = Modifier.fillMaxSize(),

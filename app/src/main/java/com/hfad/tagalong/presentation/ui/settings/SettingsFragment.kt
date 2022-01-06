@@ -50,7 +50,7 @@ class SettingsFragment : Fragment() {
                         screenTitle = Screen.Settings.getLabel(),
                         pinned = true
                     )
-                    .withDialog(dialogQueue.currentDialog.value)
+                    .withDialog(dialogQueue.currentDialog)
                     .setContent {
                         Column(
                             modifier = Modifier
