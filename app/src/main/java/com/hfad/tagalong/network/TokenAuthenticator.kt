@@ -9,6 +9,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
 import retrofit2.HttpException
+import java.io.IOException
 
 // Source: https://www.simplifiedcoding.net/retrofit-authenticator-refresh-token/
 class TokenAuthenticator(
@@ -29,12 +30,17 @@ class TokenAuthenticator(
     }
 
     private suspend fun getNewToken(): Token {
-        return tokenDtoMapper.mapToDomainModel(
-            authService.refreshToken(
-                clientId = clientId,
-                refreshToken = sessionManager.refreshToken
+        try {
+            return tokenDtoMapper.mapToDomainModel(
+                authService.refreshToken(
+                    clientId = clientId,
+                    refreshToken = sessionManager.refreshToken
+                )
             )
-        ) // TODO: Handle unsuccessful refresh
+        } catch (e: Exception) {
+            sessionManager.logOut() // FIXME: Does not delete session info from cache
+            throw IOException("Re-authorization unsuccessful") // TODO: Find a more specific child of IOException (it must be an IOException)
+        }
     }
 
 }
