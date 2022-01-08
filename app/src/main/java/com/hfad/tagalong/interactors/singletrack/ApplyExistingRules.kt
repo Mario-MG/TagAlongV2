@@ -27,7 +27,7 @@ class ApplyExistingRules(
         auth: String
     ): Flow<DataState<Unit>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val rules = getRulesFulfilledByTags(newTag = newTag, originalTags = originalTags)
 
@@ -43,6 +43,8 @@ class ApplyExistingRules(
 
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

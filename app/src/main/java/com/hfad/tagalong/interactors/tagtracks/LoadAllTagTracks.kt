@@ -18,13 +18,15 @@ class LoadAllTagTracks(
 
     fun execute(tag: Tag): Flow<DataState<List<Track>>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val tracks = getAllTracksForTag(tag)
 
             emit(DataState.Success(tracks))
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

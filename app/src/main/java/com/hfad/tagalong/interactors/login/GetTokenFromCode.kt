@@ -21,7 +21,7 @@ class GetTokenFromCode(
         redirectUri: String
     ): Flow<DataState<Token>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val token = getNewToken(
                 clientId = clientId,
@@ -33,6 +33,8 @@ class GetTokenFromCode(
             emit(DataState.Success(token))
         } catch (e: Exception) {
             emit(DataState.Error(networkErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

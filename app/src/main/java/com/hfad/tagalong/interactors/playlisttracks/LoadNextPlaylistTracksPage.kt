@@ -21,7 +21,7 @@ class LoadNextPlaylistTracksPage(
         offset: Int
     ): Flow<DataState<List<Track>>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val tracks = getNextTracksPageFromNetwork(
                 auth = auth,
@@ -32,6 +32,8 @@ class LoadNextPlaylistTracksPage(
             emit(DataState.Success(tracks))
         } catch (e: Exception) {
             emit(DataState.Error(networkErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

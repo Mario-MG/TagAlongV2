@@ -23,7 +23,7 @@ class CreateRule(
         tags: List<Tag>
     ): Flow<DataState<Rule>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val rule = createNewRule(
                 playlist = playlist,
@@ -35,6 +35,8 @@ class CreateRule(
             emit(DataState.Success(rule))
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

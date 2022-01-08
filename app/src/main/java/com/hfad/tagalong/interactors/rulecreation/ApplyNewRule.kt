@@ -25,7 +25,7 @@ class ApplyNewRule(
         auth: String
     ): Flow<DataState<Unit>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val tracksForRule = getTracksForRule(rule)
 
@@ -43,6 +43,8 @@ class ApplyNewRule(
 
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

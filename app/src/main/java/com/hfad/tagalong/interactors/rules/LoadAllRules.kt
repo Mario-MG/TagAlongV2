@@ -17,13 +17,15 @@ class LoadAllRules(
 
     fun execute(): Flow<DataState<List<Rule>>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val rules = getAllRules()
 
             emit(DataState.Success(rules))
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

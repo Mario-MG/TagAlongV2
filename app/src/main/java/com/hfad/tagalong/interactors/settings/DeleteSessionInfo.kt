@@ -13,13 +13,15 @@ class DeleteSessionInfo(
 
     fun execute(): Flow<DataState<Unit>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             deleteRefreshToken()
 
             emit(DataState.Success(Unit))
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

@@ -16,13 +16,15 @@ class DeleteTagFromTrack(
 
     fun execute(tag: Tag, track: Track): Flow<DataState<Unit>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             deleteTagFromTrack(tag = tag, track = track)
 
             emit(DataState.Success(Unit))
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

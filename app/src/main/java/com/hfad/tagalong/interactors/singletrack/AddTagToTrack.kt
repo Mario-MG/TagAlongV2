@@ -20,7 +20,7 @@ class AddTagToTrack(
 
     fun execute(tag: Tag, track: Track): Flow<DataState<Unit>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             saveTrack(track = track)
             addTagToTrack(tag = tag, track = track)
@@ -28,6 +28,8 @@ class AddTagToTrack(
             emit(DataState.Success(Unit))
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

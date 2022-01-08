@@ -20,7 +20,7 @@ class LoadFirstPlaylistTracksPage(
         playlist: Playlist
     ): Flow<DataState<List<Track>>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val tracks = getFirstTracksPageFromNetwork(
                 auth = auth,
@@ -30,6 +30,8 @@ class LoadFirstPlaylistTracksPage(
             emit(DataState.Success(tracks))
         } catch (e: Exception) {
             emit(DataState.Error(networkErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

@@ -16,7 +16,7 @@ class GetTokenFromRefreshToken(
 
     fun execute(clientId: String, refreshToken: String): Flow<DataState<Token>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val token = refreshToken(
                 clientId = clientId,
@@ -26,6 +26,8 @@ class GetTokenFromRefreshToken(
             emit(DataState.Success(token))
         } catch (e: Exception) {
             emit(DataState.Error(networkErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

@@ -13,13 +13,15 @@ class LoadSessionInfo(
 
     fun execute(): Flow<DataState<String?>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val refreshToken = loadRefreshToken()
 
             emit(DataState.Success(refreshToken))
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

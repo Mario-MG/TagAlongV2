@@ -72,7 +72,7 @@ constructor(
         createTag
             .execute(tagName = tagName)
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = ::addTagToTrack,
                 error = ::appendGenericErrorToQueue
             )
@@ -83,7 +83,7 @@ constructor(
         addTagToTrack
             .execute(tag = tag, track = track!!)
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = {
                     refreshTags()
                     applyRules(newTag = tag)
@@ -109,7 +109,7 @@ constructor(
                 auth = sessionManager.getAuthorizationHeader()
             )
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 error = ::appendGenericErrorToQueue // TODO: Undo add tag to track??
             )
             .launchIn(viewModelScope)
@@ -122,7 +122,7 @@ constructor(
                 track = track!!
             )
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = { refreshTags() }, // TODO: Delete track from playlists where it doesn't fulfill the rules anymore
                 error = ::appendGenericErrorToQueue
             )
@@ -138,7 +138,7 @@ constructor(
         loadTrackTags
             .execute(track = track!!)
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = { tagsForTrack ->
                     this.tagsForTrack.clear()
                     this.tagsForTrack.addAll(tagsForTrack)
@@ -152,7 +152,7 @@ constructor(
         loadAllTags
             .execute()
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = { allTags ->
                     this.allTags.clear()
                     this.allTags.addAll(allTags)

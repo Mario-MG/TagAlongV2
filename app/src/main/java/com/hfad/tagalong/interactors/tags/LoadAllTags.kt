@@ -16,13 +16,15 @@ class LoadAllTags( // TODO: Interactor shared between several viewmodels??
 
     fun execute(): Flow<DataState<List<Tag>>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val tags = getAllTags()
 
             emit(DataState.Success(tags))
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

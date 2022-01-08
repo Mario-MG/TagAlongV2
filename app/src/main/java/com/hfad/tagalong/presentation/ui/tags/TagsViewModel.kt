@@ -44,7 +44,7 @@ constructor (
         loadAllTags
             .execute()
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = { tags ->
                     this.tags.clear()
                     this.tags.addAll(tags)
