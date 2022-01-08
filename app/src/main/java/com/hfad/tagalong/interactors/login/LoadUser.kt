@@ -17,13 +17,15 @@ class LoadUser(
 
     fun execute(token: Token): Flow<DataState<User>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val user = getUser(auth = getAuthorizationHeader(token))
 
             emit(DataState.Success(user))
         } catch (e: Exception) {
             emit(DataState.Error(networkErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

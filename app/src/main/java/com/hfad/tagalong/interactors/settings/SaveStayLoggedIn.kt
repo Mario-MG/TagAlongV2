@@ -13,13 +13,15 @@ class SaveStayLoggedIn(
 
     fun execute(stayLoggedIn: Boolean): Flow<DataState<Unit>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             saveStayLoggedIn(stayLoggedIn)
 
             emit(DataState.Success(Unit))
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

@@ -60,7 +60,7 @@ constructor(
         loadFirstPlaylistsPage
             .execute(auth = sessionManager.getAuthorizationHeader())
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = { playlists ->
                     this.playlists.clear()
                     this.playlists.addAll(playlists)
@@ -79,7 +79,7 @@ constructor(
                 offset = currentListSize
             )
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = { playlists ->
                     if (playlists.isEmpty()) {
                         allPlaylistsLoaded = true

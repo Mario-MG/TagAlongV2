@@ -16,13 +16,15 @@ class LoadFirstPlaylistsPage(
 
     fun execute(auth: String): Flow<DataState<List<Playlist>>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val playlists = getFirstPlaylistsPageFromNetwork(auth)
 
             emit(DataState.Success(playlists))
         } catch (e: Exception) {
             emit(DataState.Error(networkErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

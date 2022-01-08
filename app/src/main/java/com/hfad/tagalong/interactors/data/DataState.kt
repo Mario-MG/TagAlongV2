@@ -1,14 +1,11 @@
 package com.hfad.tagalong.interactors.data
 
-sealed class DataState<out T> private constructor(
-    open val data: T? = null,
-    open val error: ErrorType? = null
-) {
+sealed class DataState<out T> {
 
-    object Loading : DataState<Nothing>()
+    data class Loading(val loading: Boolean) : DataState<Nothing>()
 
-    data class Success<T>(override val data: T) : DataState<T>(data = data)
+    data class Success<T>(val data: T) : DataState<T>()
 
-    data class Error(override val error: ErrorType) : DataState<Nothing>(error = error)
+    data class Error(val error: ErrorType) : DataState<Nothing>()
 
 }

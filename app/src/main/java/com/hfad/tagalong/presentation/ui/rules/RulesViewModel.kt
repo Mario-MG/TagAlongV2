@@ -48,7 +48,7 @@ constructor(
         loadAllRules
             .execute()
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = { rules ->
                     this.rules.clear()
                     this.rules.addAll(rules)

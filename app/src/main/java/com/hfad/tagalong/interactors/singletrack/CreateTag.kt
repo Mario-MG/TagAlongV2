@@ -17,7 +17,7 @@ class CreateTag(
 
     fun execute(tagName: String): Flow<DataState<Tag>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val allTags = getAllTags() // TODO: Create function to find by name
 
@@ -30,6 +30,8 @@ class CreateTag(
             }
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

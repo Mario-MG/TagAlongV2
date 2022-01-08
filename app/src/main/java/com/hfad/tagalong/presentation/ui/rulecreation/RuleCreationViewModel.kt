@@ -97,7 +97,7 @@ constructor(
         loadAllTags
             .execute()
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = { tags ->
                     this.allTags.clear()
                     this.allTags.addAll(tags)
@@ -141,7 +141,7 @@ constructor(
                 playlistName = playlistName
             )
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = ::createRuleForPlaylist,
                 error = ::appendGenericErrorToQueue
             )
@@ -157,7 +157,7 @@ constructor(
                 tags = tags
             )
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = ::applyRule,
                 error = ::appendGenericErrorToQueue // TODO: Remove newly created playlist
             )
@@ -171,7 +171,7 @@ constructor(
                 auth = sessionManager.getAuthorizationHeader()
             )
             .on(
-                loadingStateChange = ::loading::set,
+                loading = ::loading::set,
                 success = { finishedRuleCreation = true },
                 error = ::appendGenericErrorToQueue
             )

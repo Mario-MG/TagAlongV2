@@ -26,7 +26,7 @@ class CreatePlaylist(
         playlistName: String
     ): Flow<DataState<Playlist>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val playlist = createNewPlaylist(
                 auth = auth,
@@ -44,6 +44,8 @@ class CreatePlaylist(
 
         } catch (e: Exception) {
             emit(DataState.Error(networkErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

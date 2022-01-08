@@ -73,7 +73,7 @@ constructor(
                 playlist = this.playlist!!
             )
             .on(
-                loadingStateChange = { loading = it },
+                loading = { loading = it },
                 success = { tracks ->
                     this.tracks.clear()
                     this.tracks.addAll(tracks)
@@ -93,7 +93,7 @@ constructor(
                 offset = currentListSize
             )
             .on(
-                loadingStateChange = { loading = it },
+                loading = { loading = it },
                 success = { tracks ->
                     if (tracks.isEmpty()) {
                         allTracksLoaded = true

@@ -57,7 +57,7 @@ constructor(
         loadAllTagTracks
             .execute(tag = this.tag.value!!)
             .on(
-                loadingStateChange = { loading = it },
+                loading = { loading = it },
                 success = { tracks ->
                     this.tracks.clear()
                     this.tracks.addAll(tracks)

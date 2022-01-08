@@ -13,13 +13,15 @@ class LoadStayLoggedIn(
 
     fun execute(): Flow<DataState<Boolean>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val stayLoggedIn = loadStayLoggedIn()
 
             emit(DataState.Success(stayLoggedIn))
         } catch (e: Exception) {
             emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 
