@@ -2,11 +2,11 @@ package com.hfad.tagalong.interactors.singletrack
 
 import com.hfad.tagalong.cache.dao.RuleDao
 import com.hfad.tagalong.cache.model.RuleEntityMapper
-import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
+import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.network.RetrofitPlaylistService
 import kotlinx.coroutines.flow.Flow

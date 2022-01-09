@@ -1,8 +1,8 @@
 package com.hfad.tagalong.interactors.login
 
 import android.content.SharedPreferences
-import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.domain.model.Token
+import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.interactors.data.ErrorHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

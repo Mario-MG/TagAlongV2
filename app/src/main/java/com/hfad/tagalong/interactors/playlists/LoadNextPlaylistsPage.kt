@@ -1,7 +1,7 @@
 package com.hfad.tagalong.interactors.playlists
 
-import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.domain.model.Playlist
+import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.network.RetrofitPlaylistService
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
