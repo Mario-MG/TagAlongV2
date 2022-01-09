@@ -4,10 +4,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.hfad.tagalong.domain.model.Token
 import com.hfad.tagalong.domain.model.User
+import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.login.SaveSessionInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import java.lang.IllegalStateException
 
@@ -42,11 +42,9 @@ class SessionManager(
             sessionState.value = SessionState.LoggedIn(token = token, user = user)
             saveSessionInfo
                 .execute(token = token)
-                .onEach { dataState ->
-                    dataState.error?.let { error ->
-                        // TODO
-                    }
-                }
+                .on(
+                    error = { /* TODO */ }
+                )
                 .launchIn(this)
         }
     }

@@ -1,7 +1,8 @@
 package com.hfad.tagalong.interactors.login
 
-import com.hfad.tagalong.domain.data.DataState
 import com.hfad.tagalong.domain.model.Token
+import com.hfad.tagalong.interactors.data.DataState
+import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.network.RetrofitAuthService
 import com.hfad.tagalong.network.model.TokenDtoMapper
 import kotlinx.coroutines.flow.Flow
@@ -9,7 +10,8 @@ import kotlinx.coroutines.flow.flow
 
 class GetTokenFromCode(
     private val authService: RetrofitAuthService,
-    private val tokenDtoMapper: TokenDtoMapper
+    private val tokenDtoMapper: TokenDtoMapper,
+    private val networkErrorHandler: ErrorHandler
 ) {
 
     fun execute(
@@ -19,7 +21,7 @@ class GetTokenFromCode(
         redirectUri: String
     ): Flow<DataState<Token>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val token = getNewToken(
                 clientId = clientId,
@@ -30,7 +32,9 @@ class GetTokenFromCode(
 
             emit(DataState.Success(token))
         } catch (e: Exception) {
-            emit(DataState.Error(e.message ?: "Unknown error"))
+            emit(DataState.Error(networkErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 

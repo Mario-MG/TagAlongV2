@@ -2,11 +2,12 @@ package com.hfad.tagalong.interactors.rulecreation
 
 import com.hfad.tagalong.cache.dao.TrackDao
 import com.hfad.tagalong.cache.model.TrackEntityMapper
-import com.hfad.tagalong.domain.data.DataState
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
+import com.hfad.tagalong.interactors.data.DataState
+import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.network.RetrofitPlaylistService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,7 +15,9 @@ import kotlinx.coroutines.flow.flow
 class ApplyNewRule(
     private val trackDao: TrackDao,
     private val trackEntityMapper: TrackEntityMapper,
-    private val playlistService: RetrofitPlaylistService
+    private val cacheErrorHandler: ErrorHandler,
+    private val playlistService: RetrofitPlaylistService,
+    private val networkErrorHandler: ErrorHandler
 ) {
 
     fun execute(
@@ -22,18 +25,26 @@ class ApplyNewRule(
         auth: String
     ): Flow<DataState<Unit>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val tracksForRule = getTracksForRule(rule)
-            addTracksToPlaylist(
-                tracks = tracksForRule,
-                playlist = rule.playlist,
-                auth = auth
-            )
 
-            emit(DataState.Success(Unit))
+            try {
+                addTracksToPlaylist(
+                    tracks = tracksForRule,
+                    playlist = rule.playlist,
+                    auth = auth
+                )
+
+                emit(DataState.Success(Unit))
+            } catch (e: Exception) {
+                emit(DataState.Error(networkErrorHandler.parseError(e)))
+            }
+
         } catch (e: Exception) {
-            emit(DataState.Error(e.message ?: "Unknown error"))
+            emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 
