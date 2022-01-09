@@ -41,35 +41,38 @@ class PlaylistsFragment : BaseLoggedInFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val playlists = viewModel.playlists
-                val loading = viewModel.loading.value
-                val isLoggedIn = mainViewModel.isLoggedIn.value
-
-                val navController = findNavController()
+                val loading = viewModel.loading
+                val isLoggedIn = mainViewModel.isLoggedIn
+                val dialogQueue = viewModel.dialogQueue
 
                 if (isLoggedIn) {
-                    AppScaffold(
-                        displayProgressBar = loading,
-                        progressBarAlignment = if (playlists.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter,
-                        displayNavBar = true,
-                        navController = navController,
-                        screenTitle = Screen.Playlists.getLabel(),
-                        helpContent = { Text(stringResource(R.string.playlists_help)) }
-                    ) {
-                        if (playlists.isNotEmpty()) {
-                            PlaylistItemList(
-                                playlists = playlists,
-                                loading = loading,
-                                onTriggerNextPage = {
-                                    viewModel.onTriggerEvent(NextPageEvent)
-                                },
-                                onClickPlaylistItem = { playlist ->
-                                    navigateToTrackList(playlist)
-                                }
-                            )
-                        } else if (!loading) {
-                            EmptyListPlaceholderText(text = stringResource(R.string.no_playlists))
+                    AppScaffold(navController = findNavController())
+                        .withNavBar()
+                        .withTopBar(
+                            screenTitle = Screen.Playlists.getLabel(),
+                            helpContent = { Text(stringResource(R.string.playlists_help)) }
+                        )
+                        .withProgressBar(
+                            displayProgressBar = loading,
+                            progressBarAlignment = if (playlists.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
+                        )
+                        .withDialog(currentDialog = dialogQueue.currentDialog)
+                        .setContent {
+                            if (playlists.isNotEmpty()) {
+                                PlaylistItemList(
+                                    playlists = playlists,
+                                    loading = loading,
+                                    onTriggerNextPage = {
+                                        viewModel.onTriggerEvent(NextPageEvent)
+                                    },
+                                    onClickPlaylistItem = { playlist ->
+                                        navigateToTrackList(playlist)
+                                    }
+                                )
+                            } else if (!loading) {
+                                EmptyListPlaceholderText(text = stringResource(R.string.no_playlists))
+                            }
                         }
-                    }
                 }
             }
         }
@@ -83,9 +86,9 @@ class PlaylistsFragment : BaseLoggedInFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainViewModel.addLoginSuccessObserver(viewLifecycleOwner, {
+        mainViewModel.addLoginSuccessObserver(viewLifecycleOwner) {
             viewModel.onTriggerEvent(FirstPageEvent)
-        })
+        }
 
         // Source: https://youtu.be/09qjn706ITA?t=284
         val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle

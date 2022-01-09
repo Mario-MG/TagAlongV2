@@ -6,10 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,17 +40,23 @@ class RulesFragment : BaseLoggedInFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val rules = viewModel.rules
-                val loading = viewModel.loading.value
+                val loading = viewModel.loading
+
+                val dialogQueue = viewModel.dialogQueue
 
                 val navController = findNavController()
 
-                AppScaffold(
-                    displayProgressBar = loading,
-                    progressBarAlignment = if (rules.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter,
-                    navController = navController,
-                    displayNavBar = true,
-                    screenTitle = Screen.Rules.getLabel(),
-                    floatingActionButton = {
+                AppScaffold(navController = navController)
+                    .withProgressBar(
+                        displayProgressBar = loading,
+                        progressBarAlignment = if (rules.isEmpty()) Alignment.TopCenter else Alignment.BottomCenter
+                    )
+                    .withNavBar()
+                    .withTopBar(
+                        screenTitle = Screen.Rules.getLabel(),
+                        helpContent = { Text(stringResource(R.string.rules_help)) }
+                    )
+                    .withFloatingActionButton {
                         FloatingActionButton(
                             onClick = {
                                 navController.navigate(R.id.createRule)
@@ -62,18 +65,18 @@ class RulesFragment : BaseLoggedInFragment() {
                         ) {
                             Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_rule_icon_description))
                         }
-                    },
-                    helpContent = { Text(stringResource(R.string.rules_help)) }
-                ) {
-                    if (rules.isNotEmpty()) {
-                        RuleItemList(
-                            rules = rules,
-                            onClickRuleItem = {}
-                        )
-                    } else if (!loading) {
-                        EmptyListPlaceholderText(text = stringResource(R.string.no_rules))
                     }
-                }
+                    .withDialog(dialogQueue.currentDialog)
+                    .setContent {
+                        if (rules.isNotEmpty()) {
+                            RuleItemList(
+                                rules = rules,
+                                onClickRuleItem = {}
+                            )
+                        } else if (!loading) {
+                            EmptyListPlaceholderText(text = stringResource(R.string.no_rules))
+                        }
+                    }
             }
         }
     }

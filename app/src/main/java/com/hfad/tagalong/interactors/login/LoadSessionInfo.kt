@@ -1,28 +1,32 @@
 package com.hfad.tagalong.interactors.login
 
 import android.content.SharedPreferences
-import com.hfad.tagalong.domain.data.DataState
+import com.hfad.tagalong.interactors.data.DataState
+import com.hfad.tagalong.interactors.data.ErrorHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class LoadSessionInfo(
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val cacheErrorHandler: ErrorHandler
 ) {
 
-    fun execute(): Flow<DataState<String>> = flow {
+    fun execute(): Flow<DataState<String?>> = flow {
         try {
-            emit(DataState.Loading)
+            emit(DataState.Loading(true))
 
             val refreshToken = loadRefreshToken()
 
             emit(DataState.Success(refreshToken))
         } catch (e: Exception) {
-            emit(DataState.Error(e.message ?: "Unknown error"))
+            emit(DataState.Error(cacheErrorHandler.parseError(e)))
+        } finally {
+            emit(DataState.Loading(false))
         }
     }
 
-    private fun loadRefreshToken(): String {
-        return sharedPreferences.getString("refreshToken", "") ?: "" // TODO: Extract String to Constants
+    private fun loadRefreshToken(): String? {
+        return sharedPreferences.getString("refreshToken", null) // TODO: Extract String to Constants
     }
 
 }

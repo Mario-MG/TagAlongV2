@@ -5,6 +5,16 @@
     <string name="app_deep_link_schema" translatable="false">appscheme</string>
     <string name="app_deep_link_url" translatable="false">tagalong-app.com</string>
 
+    <!--  MAIN -->
+    <string name="load_session_error_description">Sorry, there was a problem loading your data.
+        Please log in again.</string>
+    <string name="access_denied_error_title">Access Denied</string>
+    <string name="access_denied_error_description">Sorry, the application is still in development,
+        so in order to use it, access must be explicitly granted by the developer.
+        You can contact me at mmaringomez.mmg@gmail.com for more info.</string>
+    <string name="session_unsaved_error_description">Sorry, your session data could not be
+        successfully stored, so you may have to log in again next time you use the app.</string>
+
     <!--  LOGIN  -->
     <string name="log_in_with_spotify">Log in with Spotify</string>
     <string name="stay_logged_in">Stay logged in</string>
@@ -32,6 +42,7 @@
     <!--  SINGLE TRACK  -->
     <string name="track_image_description">Track image</string>
     <string name="single_track_help">Add your custom tags for this song.</string>
+    <string name="duplicate_tag_info">This track already has that tag</string>
 
     <!--  TAGS  -->
     <string name="no_tags">There are no tags to show</string>
@@ -69,6 +80,8 @@
 
     <!--  SETTINGS  -->
     <string name="log_out">Log out</string>
+    <string name="logout_error_description">Sorry, there was a problem logging you out.
+        Please try again later.</string>
 
     <!--  COMMON  -->
     <string name="item_image_description">Item image</string>
@@ -81,4 +94,8 @@
     <string name="back_arrow_description">Back arrow</string>
     <string name="help_button_description">Help</string>
     <string name="help_dialog_ok">Got it!</string>
+    <string name="snackbar_ok">OK</string>
+    <string name="generic_spotify_error">Sorry, there was a problem connecting with Spotify. Please try again later.</string>
+    <string name="generic_cache_error">Sorry, there was a problem saving or retrieving your data. Please try again later.</string>
+    <string name="generic_error_dialog_ok">OK</string>
 </resources>

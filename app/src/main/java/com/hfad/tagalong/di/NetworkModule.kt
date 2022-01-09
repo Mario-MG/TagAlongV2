@@ -2,6 +2,7 @@ package com.hfad.tagalong.di
 
 import com.google.gson.GsonBuilder
 import com.hfad.tagalong.BuildConfig
+import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.network.*
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
@@ -24,8 +25,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideAuthService(): RetrofitAuthService {
         return Retrofit.Builder()
             .baseUrl(NETWORK_SPOTIFY_AUTH_API_BASE_URL)
@@ -43,14 +44,14 @@ object NetworkModule {
             .create(RetrofitAuthService::class.java)
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideTokenMapper(): TokenDtoMapper {
         return TokenDtoMapper()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideAuthenticator(
         sessionManager: SessionManager,
         authService: RetrofitAuthService,
@@ -65,8 +66,8 @@ object NetworkModule {
         )
     }
 
-    @Singleton
     @Provides
+    @Singleton
     // Source: https://www.simplifiedcoding.net/retrofit-authenticator-refresh-token/
     fun provideRefrofitClient(
         authenticator: Authenticator
@@ -81,8 +82,8 @@ object NetworkModule {
             }.build()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun providePlaylistService(
         retrofitClient: OkHttpClient
     ): RetrofitPlaylistService {
@@ -94,14 +95,14 @@ object NetworkModule {
             .create(RetrofitPlaylistService::class.java)
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun providePlaylistMapper(): PlaylistDtoMapper {
         return PlaylistDtoMapper()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideTrackService(
         retrofitClient: OkHttpClient
     ): RetrofitTrackService {
@@ -113,14 +114,14 @@ object NetworkModule {
             .create(RetrofitTrackService::class.java)
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideTrackMapper(): TrackDtoMapper {
         return TrackDtoMapper()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideUserService(): RetrofitUserService {
         return Retrofit.Builder()
             .baseUrl(NETWORK_SPOTIFY_API_BASE_URL)
@@ -136,10 +137,17 @@ object NetworkModule {
             .create(RetrofitUserService::class.java)
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideUserMapper(): UserDtoMapper {
         return UserDtoMapper()
+    }
+
+    @Provides
+    @Singleton
+    @Named("networkErrorHandler")
+    fun provideNetworkErrorHandler(): ErrorHandler {
+        return NetworkErrorHandler()
     }
 
 }

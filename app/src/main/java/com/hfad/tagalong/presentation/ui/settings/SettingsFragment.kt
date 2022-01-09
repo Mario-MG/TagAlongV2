@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -41,29 +42,29 @@ class SettingsFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val navController = findNavController()
+                val dialogQueue = viewModel.dialogQueue
 
-                AppScaffold(
-                    navController = navController,
-                    displayNavBar = true,
-                    screenTitle = Screen.Settings.getLabel(),
-                    pinnedTopBar = true
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        ItemCard(
-                            title = stringResource(R.string.log_out),
-                            onClick = {
-                                viewModel.onTriggerEvent(LogOutEvent {
-                                    findNavController().navigate(R.id.logOut)
-                                })
-                            },
-                            cardHeight = 60.dp
-                        )
+                AppScaffold(navController = findNavController())
+                    .withNavBar()
+                    .withTopBar(
+                        screenTitle = Screen.Settings.getLabel(),
+                        pinned = true
+                    )
+                    .withDialog(dialogQueue.currentDialog)
+                    .setContent {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ) {
+                            ItemCard(
+                                title = stringResource(R.string.log_out),
+                                onClick = {
+                                    viewModel.onTriggerEvent(LogOutEvent)
+                                },
+                                cardHeight = 60.dp
+                            )
+                        }
                     }
-                }
             }
         }
     }
@@ -75,6 +76,8 @@ class SettingsFragment : Fragment() {
                 R.id.playlistsFragment,
                 null,
                 NavOptions.Builder()
+                    .setPopUpTo(R.id.settingsFragment, true)
+                    .setLaunchSingleTop(true)
                     .setEnterAnim(R.anim.slide_in_up)
                     .setPopExitAnim(R.anim.slide_out_up)
                     .build()

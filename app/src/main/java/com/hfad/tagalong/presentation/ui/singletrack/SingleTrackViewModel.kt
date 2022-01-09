@@ -1,18 +1,24 @@
 package com.hfad.tagalong.presentation.ui.singletrack
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import com.hfad.tagalong.presentation.session.SessionManager
+import com.hfad.tagalong.R
 import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
+import com.hfad.tagalong.interactors.data.ErrorType.CacheError.DuplicateError
+import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.singletrack.*
 import com.hfad.tagalong.interactors.tags.LoadAllTags
+import com.hfad.tagalong.presentation.BaseApplication
+import com.hfad.tagalong.presentation.session.SessionManager
+import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.singletrack.SingleTrackEvent.*
+import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,15 +33,19 @@ constructor(
     private val applyExistingRules: ApplyExistingRules,
     private val deleteTagFromTrack: DeleteTagFromTrack,
     private val sessionManager: SessionManager
-) : ViewModel() {
+) : BaseViewModel() {
 
-    val track = mutableStateOf<Track?>(null)
+    var track by mutableStateOf<Track?>(null)
+        private set
 
     val tagsForTrack = mutableStateListOf<Tag>()
 
     val allTags = mutableStateListOf<Tag>()
 
-    val loading = mutableStateOf(false)
+    var loading by mutableStateOf(false)
+        private set
+
+    override val dialogQueue = DialogQueue()
 
     fun onTriggerEvent(event: SingleTrackEvent) {
         viewModelScope.launch {
@@ -55,40 +65,38 @@ constructor(
     }
 
     private fun init(track: Track) {
-        this.track.value = track
+        this.track = track
     }
 
     private fun addTagByName(tagName: String) {
         createTag
             .execute(tagName = tagName)
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let { tag ->
-                    addTagToTrack(tag = tag)
-                }
-
-                dataState.error?.let { error ->
-                    // TODO
-                }
-            }
+            .on(
+                loading = ::loading::set,
+                success = ::addTagToTrack,
+                error = ::appendGenericErrorToQueue
+            )
             .launchIn(viewModelScope)
     }
 
     private fun addTagToTrack(tag: Tag) {
         addTagToTrack
-            .execute(tag = tag, track = track.value!!)
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let {
+            .execute(tag = tag, track = track!!)
+            .on(
+                loading = ::loading::set,
+                success = {
+                    refreshTags()
                     applyRules(newTag = tag)
+                },
+                error = { error ->
+                    when (error) {
+                        is DuplicateError -> dialogQueue.appendInfoDialog(
+                            BaseApplication.getContext().getString(R.string.duplicate_tag_info)
+                        )
+                        else -> appendGenericErrorToQueue(error)
+                    }
                 }
-
-                dataState.error?.let { error ->
-                    // TODO
-                }
-            }
+            )
             .launchIn(viewModelScope)
     }
 
@@ -97,20 +105,13 @@ constructor(
             .execute(
                 newTag = newTag,
                 originalTags = tagsForTrack,
-                track = track.value!!,
+                track = track!!,
                 auth = sessionManager.getAuthorizationHeader()
             )
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let {
-                    refreshTags()
-                }
-
-                dataState.error?.let { error ->
-                    // TODO
-                }
-            }
+            .on(
+                loading = ::loading::set,
+                error = ::appendGenericErrorToQueue // TODO: Undo add tag to track??
+            )
             .launchIn(viewModelScope)
     }
 
@@ -118,20 +119,13 @@ constructor(
         deleteTagFromTrack
             .execute(
                 tag = tag,
-                track = track.value!!
+                track = track!!
             )
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let {
-                    // TODO: Delete track from playlists where it doesn't fulfill the rules anymore
-                    refreshTags()
-                }
-
-                dataState.error?.let { error ->
-                    // TODO
-                }
-            }
+            .on(
+                loading = ::loading::set,
+                success = { refreshTags() }, // TODO: Delete track from playlists where it doesn't fulfill the rules anymore
+                error = ::appendGenericErrorToQueue
+            )
             .launchIn(viewModelScope)
     }
 
@@ -142,37 +136,29 @@ constructor(
 
     private fun loadTagsForTrack() {
         loadTrackTags
-            .execute(track = track.value!!)
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let { tagsForTrack ->
+            .execute(track = track!!)
+            .on(
+                loading = ::loading::set,
+                success = { tagsForTrack ->
                     this.tagsForTrack.clear()
                     this.tagsForTrack.addAll(tagsForTrack)
-                }
-
-                dataState.error?.let { error ->
-                    // TODO
-                }
-            }
+                },
+                error = ::appendGenericErrorToQueue
+            )
             .launchIn(viewModelScope)
     }
 
     private fun loadAllTags() {
         loadAllTags
             .execute()
-            .onEach { dataState ->
-                loading.value = dataState.loading
-
-                dataState.data?.let { allTags ->
+            .on(
+                loading = ::loading::set,
+                success = { allTags ->
                     this.allTags.clear()
                     this.allTags.addAll(allTags)
-                }
-
-                dataState.error?.let { error ->
-                    // TODO
-                }
-            }
+                },
+                error = ::appendGenericErrorToQueue
+            )
             .launchIn(viewModelScope)
     }
 

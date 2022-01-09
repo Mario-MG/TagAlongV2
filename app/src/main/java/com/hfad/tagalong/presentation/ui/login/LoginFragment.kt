@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -22,12 +23,13 @@ import com.hfad.tagalong.R
 import com.hfad.tagalong.presentation.BUNDLE_KEY_URI
 import com.hfad.tagalong.presentation.LOGIN_SUCCESSFUL
 import com.hfad.tagalong.presentation.components.LoginButton
-import com.hfad.tagalong.presentation.theme.AppTheme
+import com.hfad.tagalong.presentation.theme.AppScaffold
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.*
 import com.hfad.tagalong.presentation.ui.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalMaterial3Api
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -43,37 +45,42 @@ class LoginFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val stayLoggedIn = viewModel.stayLoggedIn.value
+                val stayLoggedIn = viewModel.stayLoggedIn
 
-                AppTheme {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        LoginButton(
-                            iconDrawable = R.drawable.ic_spotify_icon_green,
-                            text = stringResource(R.string.log_in_with_spotify),
-                            onClick = {
-                                viewModel.onTriggerEvent(ClickLoginButtonEvent(requireActivity()))
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(36.dp))
-                        Row {
-                            Checkbox(
-                                checked = stayLoggedIn,
-                                onCheckedChange = {
-                                    viewModel.onTriggerEvent(ChangeStayLoggedInOptionEvent)
+                val mainDialogQueue = mainViewModel.dialogQueue
+                val dialogQueue = viewModel.dialogQueue
+
+                AppScaffold(navController = findNavController())
+                    .withDialog(mainDialogQueue.currentDialog ?: dialogQueue.currentDialog)
+                    .setContent {
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            LoginButton(
+                                iconDrawable = R.drawable.ic_spotify_icon_green,
+                                text = stringResource(R.string.log_in_with_spotify),
+                                onClick = {
+                                    viewModel.onTriggerEvent(ClickLoginButtonEvent(requireActivity()))
                                 }
                             )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = stringResource(R.string.stay_logged_in),
-                                color = MaterialTheme.colors.onBackground
-                            )
+                            Spacer(modifier = Modifier.height(36.dp))
+                            Row {
+                                Checkbox(
+                                    checked = stayLoggedIn,
+                                    onCheckedChange = {
+                                        viewModel.onTriggerEvent(ChangeStayLoggedInOptionEvent)
+                                    }
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = stringResource(R.string.stay_logged_in),
+                                    color = MaterialTheme.colors.onBackground
+                                )
+                            }
                         }
                     }
-                }
             }
         }
     }
