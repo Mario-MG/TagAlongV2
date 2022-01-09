@@ -1,8 +1,8 @@
 package com.hfad.tagalong.interactors.login
 
-import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.domain.model.Token
 import com.hfad.tagalong.domain.model.User
+import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.network.RetrofitUserService
 import com.hfad.tagalong.network.model.UserDtoMapper

@@ -2,12 +2,11 @@ package com.hfad.tagalong.interactors.singletrack
 
 import com.hfad.tagalong.cache.dao.TagDao
 import com.hfad.tagalong.cache.model.TagEntityMapper
-import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.interactors.data.ErrorHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.lang.Exception
 
 class CreateTag(
     private val tagDao: TagDao,
