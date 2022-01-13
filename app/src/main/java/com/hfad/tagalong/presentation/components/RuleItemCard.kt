@@ -97,8 +97,8 @@ fun RuleItemCard(
                 )
             )
             Spacer(modifier = Modifier.height(8.dp))
-            FlowKeywordList(
-                keywordObjects = rule.tags
+            FlowTagList(
+                tags = rule.tags
             )
         }
     }
