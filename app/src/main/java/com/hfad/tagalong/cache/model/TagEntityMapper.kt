@@ -1,7 +1,7 @@
 package com.hfad.tagalong.cache.model
 
-import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.util.DomainMapper
+import com.hfad.tagalong.tag_domain.Tag
 
 class TagEntityMapper : DomainMapper<TagEntityPoko, Tag> {
 

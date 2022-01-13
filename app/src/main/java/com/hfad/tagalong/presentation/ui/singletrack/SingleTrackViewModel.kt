@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
-import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.interactors.data.ErrorType.CacheError.DuplicateError
 import com.hfad.tagalong.interactors.data.on
@@ -17,6 +16,7 @@ import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.singletrack.SingleTrackEvent.*
 import com.hfad.tagalong.presentation.util.DialogQueue
+import com.hfad.tagalong.tag_domain.Tag
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch

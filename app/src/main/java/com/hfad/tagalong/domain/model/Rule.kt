@@ -1,5 +1,7 @@
 package com.hfad.tagalong.domain.model
 
+import com.hfad.tagalong.tag_domain.Tag
+
 data class Rule(
     val id: Long,
     val playlist: Playlist,

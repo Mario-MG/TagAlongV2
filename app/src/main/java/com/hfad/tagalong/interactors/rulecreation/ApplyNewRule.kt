@@ -4,11 +4,11 @@ import com.hfad.tagalong.cache.dao.TrackDao
 import com.hfad.tagalong.cache.model.TrackEntityMapper
 import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
-import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.network.RetrofitPlaylistService
+import com.hfad.tagalong.tag_domain.Tag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
