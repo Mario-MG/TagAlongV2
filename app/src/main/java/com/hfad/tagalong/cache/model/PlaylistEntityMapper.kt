@@ -1,7 +1,7 @@
 package com.hfad.tagalong.cache.model
 
-import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.util.DomainMapper
+import com.hfad.tagalong.playlist_domain.Playlist
 
 class PlaylistEntityMapper : DomainMapper<PlaylistEntity, Playlist> {
 
