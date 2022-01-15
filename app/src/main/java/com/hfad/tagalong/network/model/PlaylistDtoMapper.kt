@@ -1,9 +1,9 @@
 package com.hfad.tagalong.network.model
 
-import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.util.DomainMapper
+import com.hfad.tagalong.playlist_domain.Playlist
 
-class PlaylistDtoMapper: DomainMapper<PlaylistDto, Playlist> {
+class PlaylistDtoMapper : DomainMapper<PlaylistDto, Playlist> {
 
     override fun mapToDomainModel(model: PlaylistDto): Playlist {
         return Playlist(

@@ -6,13 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
-import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.rulecreation.ApplyNewRule
 import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors.tags.LoadAllTags
+import com.hfad.tagalong.playlist_domain.Playlist
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.presentation.ui.BaseViewModel

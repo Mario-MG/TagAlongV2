@@ -5,13 +5,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
+import com.hfad.tagalong.playlist_domain.Playlist
 import com.hfad.tagalong.presentation.session.SessionManager
-import com.hfad.tagalong.presentation.ui.playlisttracks.PlaylistTracksEvent.*
+import com.hfad.tagalong.presentation.ui.playlisttracks.PlaylistTracksEvent.InitPlaylistTracksEvent
+import com.hfad.tagalong.presentation.ui.playlisttracks.PlaylistTracksEvent.NextPageEvent
 import com.hfad.tagalong.presentation.ui.tracks.TracksViewModel
 import com.hfad.tagalong.presentation.util.DialogQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -102,7 +103,8 @@ constructor(
                     }
                 },
                 error = { error ->
-                    allTracksLoaded = true // TODO: Improve this (its only purpose is to avoid the event being triggered in an infinite loop)
+                    allTracksLoaded =
+                        true // TODO: Improve this (its only purpose is to avoid the event being triggered in an infinite loop)
                     appendGenericErrorToQueue(error)
                 }
             )

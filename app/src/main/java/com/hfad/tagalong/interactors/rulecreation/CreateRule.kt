@@ -2,10 +2,10 @@ package com.hfad.tagalong.interactors.rulecreation
 
 import com.hfad.tagalong.cache.dao.RuleDao
 import com.hfad.tagalong.cache.model.RuleEntityMapper
-import com.hfad.tagalong.domain.model.Playlist
 import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.interactors.data.ErrorHandler
+import com.hfad.tagalong.playlist_domain.Playlist
 import com.hfad.tagalong.tag_domain.Tag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

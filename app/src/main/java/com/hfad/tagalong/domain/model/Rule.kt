@@ -1,5 +1,6 @@
 package com.hfad.tagalong.domain.model
 
+import com.hfad.tagalong.playlist_domain.Playlist
 import com.hfad.tagalong.tag_domain.Tag
 
 data class Rule(
