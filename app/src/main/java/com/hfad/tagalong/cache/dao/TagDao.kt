@@ -24,8 +24,11 @@ abstract class TagDao {
     @Query("""
         SELECT t.$TAG_ID, t.$TAG_NAME, COUNT(cr.$TAG_ID) as $TAG_SIZE FROM $TAG_TABLE t
         LEFT JOIN $TRACK_TAG_CROSS_REF_TABLE cr ON t.$TAG_ID = cr.$TAG_ID
-        WHERE cr.$TRACK_ID = :trackId
         GROUP BY t.$TAG_ID, t.$TAG_NAME
+        HAVING t.$TAG_ID IN (
+            SELECT $TAG_ID FROM $TRACK_TAG_CROSS_REF_TABLE
+            WHERE $TRACK_ID = :trackId
+        )
     """)
     abstract suspend fun getTagsForTrackById(trackId: String): List<TagEntityPoko>
 
