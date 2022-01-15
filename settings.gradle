@@ -10,3 +10,4 @@ rootProject.name = "TagAlong"
 include ':app'
 include ':domain:tag-domain'
 include ':domain:playlist-domain'
+include ':domain:track-domain'

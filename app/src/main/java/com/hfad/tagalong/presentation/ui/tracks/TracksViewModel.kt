@@ -1,7 +1,7 @@
 package com.hfad.tagalong.presentation.ui.tracks
 
-import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.presentation.ui.BaseViewModel
+import com.hfad.tagalong.track_domain.Track
 
 abstract class TracksViewModel : BaseViewModel() {
 
