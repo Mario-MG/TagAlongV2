@@ -1,7 +1,7 @@
 package com.hfad.tagalong.cache.model
 
-import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.util.DomainMapper
+import com.hfad.tagalong.rule_domain.Rule
 
 class RuleEntityMapper(
     private val playlistEntityMapper: PlaylistEntityMapper,
@@ -14,7 +14,12 @@ class RuleEntityMapper(
             playlist = playlistEntityMapper.mapToDomainModel(model.playlist),
             optionality = model.rule.optionality,
             autoUpdate = model.rule.autoUpdate,
-            tags = tagEntityMapper.toDomainList(model.tags.map { tag -> TagEntityPoko(tag, 0) }) // TODO: Improve this
+            tags = tagEntityMapper.toDomainList(model.tags.map { tag ->
+                TagEntityPoko(
+                    tag,
+                    0
+                )
+            }) // TODO: Improve this
         )
     }
 
@@ -26,7 +31,8 @@ class RuleEntityMapper(
                 autoUpdate = domainModel.autoUpdate
             ),
             playlist = playlistEntityMapper.mapFromDomainModel(domainModel.playlist),
-            tags = tagEntityMapper.fromDomainList(domainModel.tags).map { it.tagEntity } // TODO: Improve this
+            tags = tagEntityMapper.fromDomainList(domainModel.tags)
+                .map { it.tagEntity } // TODO: Improve this
         )
     }
 

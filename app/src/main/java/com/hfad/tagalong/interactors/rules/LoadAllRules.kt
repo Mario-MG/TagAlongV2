@@ -2,9 +2,9 @@ package com.hfad.tagalong.interactors.rules
 
 import com.hfad.tagalong.cache.dao.RuleDao
 import com.hfad.tagalong.cache.model.RuleEntityMapper
-import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.interactors.data.ErrorHandler
+import com.hfad.tagalong.rule_domain.Rule
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
