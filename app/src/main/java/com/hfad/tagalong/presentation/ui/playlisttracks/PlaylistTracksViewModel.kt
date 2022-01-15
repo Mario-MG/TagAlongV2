@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
 import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
@@ -15,6 +14,7 @@ import com.hfad.tagalong.presentation.ui.playlisttracks.PlaylistTracksEvent.Init
 import com.hfad.tagalong.presentation.ui.playlisttracks.PlaylistTracksEvent.NextPageEvent
 import com.hfad.tagalong.presentation.ui.tracks.TracksViewModel
 import com.hfad.tagalong.presentation.util.DialogQueue
+import com.hfad.tagalong.track_domain.Track
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
