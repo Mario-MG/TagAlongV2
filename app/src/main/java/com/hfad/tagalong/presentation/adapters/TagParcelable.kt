@@ -2,16 +2,11 @@ package com.hfad.tagalong.presentation.adapters
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.hfad.tagalong.presentation.components.Keyword
 import com.hfad.tagalong.tag_domain.Tag
 
-data class TagAdapter(
+data class TagParcelable(
     val tag: Tag
-) : Parcelable, Keyword {
-
-    override fun keyword(): String {
-        return tag.name
-    }
+) : Parcelable {
 
     override fun describeContents(): Int = 0
 
