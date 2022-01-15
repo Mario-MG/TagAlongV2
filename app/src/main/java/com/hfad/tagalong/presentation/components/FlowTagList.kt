@@ -8,7 +8,7 @@ import androidx.compose.material.icons.filled.Tag
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.hfad.tagalong.R
-import com.hfad.tagalong.presentation.adapters.TagAdapter
+import com.hfad.tagalong.presentation.adapters.TagKeyword
 import com.hfad.tagalong.tag_domain.Tag
 
 @ExperimentalFoundationApi
@@ -27,13 +27,13 @@ fun FlowTagList(
     predictionFilter: (Tag, String) -> Boolean = { _, _ -> true }
 ) {
     FlowKeywordList(
-        keywordObjects = tags.map(::TagAdapter),
-        onClickDeleteIcon = onClickDeleteIcon?.let{{ tagAdapter -> onClickDeleteIcon(tagAdapter.tag) }},
+        keywordObjects = tags.map(::TagKeyword),
+        onClickDeleteIcon = onClickDeleteIcon?.let{{ tagKeyword -> onClickDeleteIcon(tagKeyword.tag) }},
         textFieldLabel = textFieldLabel,
         textFieldLeadingIcon = textFieldLeadingIcon,
         onAddNewKeyword = onAddNewKeyword,
         newKeywordValidation = newKeywordValidation,
-        predictions = predictions.map(::TagAdapter),
-        predictionFilter = { tagAdapter, currentKeyword ->  predictionFilter(tagAdapter.tag, currentKeyword) }
+        predictions = predictions.map(::TagKeyword),
+        predictionFilter = { tagKeyword, currentKeyword -> predictionFilter(tagKeyword.tag, currentKeyword) }
     )
 }
