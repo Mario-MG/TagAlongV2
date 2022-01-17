@@ -2,9 +2,9 @@ package com.hfad.tagalong.interactors.singletrack
 
 import com.hfad.tagalong.cache.dao.TagDao
 import com.hfad.tagalong.cache.model.TagEntityMapper
-import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.interactors.data.DataState
 import com.hfad.tagalong.interactors.data.ErrorHandler
+import com.hfad.tagalong.tag_domain.Tag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -39,7 +39,7 @@ class CreateTag(
     }
 
     private suspend fun createNewTag(tagName: String): Tag {
-        val newTagId = tagDao.insert(tagEntityMapper.mapFromDomainModel(Tag(name = tagName)))
+        val newTagId = tagDao.insert(tagEntityMapper.mapFromDomainModel(Tag(id = 0, name = tagName, size = 0))) // TODO: Refactor to new function taking only name
         return tagEntityMapper.mapToDomainModel(tagDao.getById(newTagId))
     }
 

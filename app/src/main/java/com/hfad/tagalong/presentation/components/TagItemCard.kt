@@ -5,7 +5,7 @@ import androidx.compose.material.icons.filled.Tag
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.hfad.tagalong.R
-import com.hfad.tagalong.domain.model.Tag
+import com.hfad.tagalong.tag_domain.Tag
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi

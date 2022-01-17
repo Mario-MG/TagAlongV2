@@ -13,14 +13,15 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
-import com.hfad.tagalong.domain.model.Tag
 import com.hfad.tagalong.presentation.BUNDLE_KEY_TAG
+import com.hfad.tagalong.presentation.adapters.TagParcelable
 import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.TagItemList
 import com.hfad.tagalong.presentation.theme.AppScaffold
 import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
 import com.hfad.tagalong.presentation.ui.Screen
 import com.hfad.tagalong.presentation.ui.tags.TagsEvent.LoadTagsEvent
+import com.hfad.tagalong.tag_domain.Tag
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -76,7 +77,7 @@ class TagsFragment : BaseLoggedInFragment() {
     }
 
     private fun navigateToTrackList(tag: Tag) {
-        val bundle = bundleOf(BUNDLE_KEY_TAG to tag)
+        val bundle = bundleOf(BUNDLE_KEY_TAG to TagParcelable(tag))
         findNavController().navigate(R.id.viewTagTracks, bundle)
     }
 }

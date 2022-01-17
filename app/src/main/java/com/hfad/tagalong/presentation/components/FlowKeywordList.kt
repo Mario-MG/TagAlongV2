@@ -101,7 +101,7 @@ fun <T : Keyword> FlowKeywordList( // TODO: Make TextField and/or Keywords custo
                         currentKeyword = ""
                     },
                     onItemClick = { clickedKeyword ->
-                        onNewKeyword(clickedKeyword.value())
+                        onNewKeyword(clickedKeyword.keyword())
                     },
                     itemContent = {
                         Keyword(keywordObject = it)
