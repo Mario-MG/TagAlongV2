@@ -5,14 +5,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import com.hfad.tagalong.domain.model.Tag
-import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.tagtracks.LoadAllTagTracks
 import com.hfad.tagalong.presentation.ui.tagtracks.TagTracksEvent.InitTagTracksEvent
 import com.hfad.tagalong.presentation.ui.tagtracks.TagTracksEvent.LoadTagTracksEvent
 import com.hfad.tagalong.presentation.ui.tracks.TracksViewModel
 import com.hfad.tagalong.presentation.util.DialogQueue
+import com.hfad.tagalong.tag_domain.Tag
+import com.hfad.tagalong.track_domain.Track
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch

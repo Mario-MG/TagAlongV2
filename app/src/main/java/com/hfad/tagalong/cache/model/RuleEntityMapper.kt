@@ -1,7 +1,7 @@
 package com.hfad.tagalong.cache.model
 
-import com.hfad.tagalong.domain.model.Rule
 import com.hfad.tagalong.domain.util.DomainMapper
+import com.hfad.tagalong.rule_domain.Rule
 
 class RuleEntityMapper(
     private val playlistEntityMapper: PlaylistEntityMapper,

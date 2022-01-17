@@ -1,7 +1,7 @@
 package com.hfad.tagalong.cache.model
 
-import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.domain.util.DomainMapper
+import com.hfad.tagalong.track_domain.Track
 
 class TrackEntityMapper : DomainMapper<TrackEntity, Track> {
 

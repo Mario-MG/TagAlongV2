@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.hfad.tagalong.R
-import com.hfad.tagalong.domain.model.Rule
+import com.hfad.tagalong.rule_domain.Rule
 
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
@@ -74,7 +74,7 @@ fun RuleItemCard(
                 text = buildAnnotatedString {
                     if (rule.optionality) {
                         append(stringResource(R.string.before_rule_optionality_any))
-                        withStyle(style = SpanStyle(
+                        withStyle(SpanStyle(
                             color = MaterialTheme.colors.onSurface.copy(0.8f),
                             fontWeight = FontWeight.Medium
                         )) {
@@ -83,7 +83,7 @@ fun RuleItemCard(
                         append(stringResource(R.string.after_rule_optionality_any))
                     } else {
                         append(stringResource(R.string.before_rule_optionality_all))
-                        withStyle(style = SpanStyle(
+                        withStyle(SpanStyle(
                             color = MaterialTheme.colors.onSurface.copy(0.8f),
                             fontWeight = FontWeight.Medium
                         )) {
@@ -97,8 +97,8 @@ fun RuleItemCard(
                 )
             )
             Spacer(modifier = Modifier.height(8.dp))
-            FlowKeywordList(
-                keywordObjects = rule.tags
+            FlowTagList(
+                tags = rule.tags
             )
         }
     }
