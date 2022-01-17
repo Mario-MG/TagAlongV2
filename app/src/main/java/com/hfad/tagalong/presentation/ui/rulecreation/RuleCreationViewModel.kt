@@ -38,9 +38,7 @@ constructor(
     var loading by mutableStateOf(false)
         private set
 
-    var playlistName by mutableStateOf(
-        BaseApplication.getContext().getString(R.string.new_tagalong_playlist)
-    )
+    var playlistName by mutableStateOf(BaseApplication.getContext().getString(R.string.new_tagalong_playlist))
         private set
 
     val tags = mutableStateListOf<Tag>()
