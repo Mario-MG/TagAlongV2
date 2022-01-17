@@ -103,8 +103,7 @@ constructor(
                     }
                 },
                 error = { error ->
-                    allTracksLoaded =
-                        true // TODO: Improve this (its only purpose is to avoid the event being triggered in an infinite loop)
+                    allTracksLoaded = true // TODO: Improve this (its only purpose is to avoid the event being triggered in an infinite loop)
                     appendGenericErrorToQueue(error)
                 }
             )

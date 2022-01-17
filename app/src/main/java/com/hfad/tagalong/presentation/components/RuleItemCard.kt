@@ -66,9 +66,7 @@ fun RuleItemCard(
                 Icon(
                     imageVector = Icons.Default.Autorenew,
                     contentDescription = stringResource(R.string.autoupdate_icon_description),
-                    tint = if (rule.autoUpdate) Color.Green else MaterialTheme.colors.onSurface.copy(
-                        0.2f
-                    )
+                    tint = if (rule.autoUpdate) Color.Green else MaterialTheme.colors.onSurface.copy(0.2f)
                 )
             }
             Spacer(modifier = Modifier.height(2.dp))
@@ -76,23 +74,19 @@ fun RuleItemCard(
                 text = buildAnnotatedString {
                     if (rule.optionality) {
                         append(stringResource(R.string.before_rule_optionality_any))
-                        withStyle(
-                            style = SpanStyle(
-                                color = MaterialTheme.colors.onSurface.copy(0.8f),
-                                fontWeight = FontWeight.Medium
-                            )
-                        ) {
+                        withStyle(SpanStyle(
+                            color = MaterialTheme.colors.onSurface.copy(0.8f),
+                            fontWeight = FontWeight.Medium
+                        )) {
                             append(stringResource(R.string.rule_optionality_any))
                         }
                         append(stringResource(R.string.after_rule_optionality_any))
                     } else {
                         append(stringResource(R.string.before_rule_optionality_all))
-                        withStyle(
-                            style = SpanStyle(
-                                color = MaterialTheme.colors.onSurface.copy(0.8f),
-                                fontWeight = FontWeight.Medium
-                            )
-                        ) {
+                        withStyle(SpanStyle(
+                            color = MaterialTheme.colors.onSurface.copy(0.8f),
+                            fontWeight = FontWeight.Medium
+                        )) {
                             append(stringResource(R.string.rule_optionality_all))
                         }
                         append(stringResource(R.string.after_rule_optionality_all))
