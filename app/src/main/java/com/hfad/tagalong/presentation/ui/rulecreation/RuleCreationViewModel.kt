@@ -10,7 +10,7 @@ import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.rulecreation.ApplyNewRule
 import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
-import com.hfad.tagalong.interactors.tags.LoadAllTags
+import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.playlist_domain.Playlist
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.session.SessionManager
@@ -19,6 +19,7 @@ import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
 import com.hfad.tagalong.presentation.util.DialogQueue
 import com.hfad.tagalong.rule_domain.Rule
 import com.hfad.tagalong.tag_domain.Tag
+import com.hfad.tagalong.tag_interactors.LoadAllTags
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch

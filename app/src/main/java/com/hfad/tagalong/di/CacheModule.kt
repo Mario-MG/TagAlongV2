@@ -6,14 +6,18 @@ import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.hfad.tagalong.cache.CacheErrorHandler
+import com.hfad.tagalong.cache.CacheErrorMapper
 import com.hfad.tagalong.cache.dao.*
 import com.hfad.tagalong.cache.database.MainDatabase
 import com.hfad.tagalong.cache.model.PlaylistEntityMapper
 import com.hfad.tagalong.cache.model.RuleEntityMapper
 import com.hfad.tagalong.cache.model.TagEntityMapper
 import com.hfad.tagalong.cache.model.TrackEntityMapper
+import com.hfad.tagalong.cache.repositories.TagCacheRepositoryImpl
 import com.hfad.tagalong.interactors.data.ErrorHandler
+import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.presentation.BaseApplication
+import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,6 +54,18 @@ object CacheModule {
     @Singleton
     fun provideTagEntityMapper(): TagEntityMapper {
         return TagEntityMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTagCacheRepository(
+        tagDao: TagDao,
+        tagEntityMapper: TagEntityMapper
+    ): TagCacheRepository {
+        return TagCacheRepositoryImpl(
+            tagDao = tagDao,
+            tagEntityMapper = tagEntityMapper
+        )
     }
 
     @Provides
@@ -133,6 +149,13 @@ object CacheModule {
     @Named("cacheErrorHandler")
     fun provideCacheErrorHandler(): ErrorHandler {
         return CacheErrorHandler()
+    }
+
+    @Provides
+    @Singleton
+    @Named("cacheErrorMapper")
+    fun provideCacheErrorMapper(): ErrorMapper {
+        return CacheErrorMapper()
     }
 
 }
