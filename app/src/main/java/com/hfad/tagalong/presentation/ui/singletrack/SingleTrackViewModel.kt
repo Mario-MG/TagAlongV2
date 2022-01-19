@@ -9,13 +9,14 @@ import com.hfad.tagalong.R
 import com.hfad.tagalong.interactors.data.ErrorType.CacheError.DuplicateError
 import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.singletrack.*
-import com.hfad.tagalong.interactors.tags.LoadAllTags
+import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.singletrack.SingleTrackEvent.*
 import com.hfad.tagalong.presentation.util.DialogQueue
 import com.hfad.tagalong.tag_domain.Tag
+import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.track_domain.Track
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn

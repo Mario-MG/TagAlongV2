@@ -23,8 +23,8 @@ import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
 import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
 import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
 import com.hfad.tagalong.interactors.singletrack.*
-import com.hfad.tagalong.interactors.tags.LoadAllTags
 import com.hfad.tagalong.interactors.tagtracks.LoadAllTagTracks
+import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.network.RetrofitAuthService
 import com.hfad.tagalong.network.RetrofitPlaylistService
 import com.hfad.tagalong.network.RetrofitTrackService
@@ -33,6 +33,8 @@ import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.TrackDtoMapper
 import com.hfad.tagalong.network.model.UserDtoMapper
+import com.hfad.tagalong.tag_interactors.LoadAllTags
+import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -103,14 +105,12 @@ object InteractorsModule {
     @Provides
     @ViewModelScoped
     fun provideLoadAllTags( // TODO: What if an interactor is shared between several viewmodels??
-        tagDao: TagDao,
-        tagEntityMapper: TagEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        tagCacheRepository: TagCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): LoadAllTags {
         return LoadAllTags(
-            tagDao = tagDao,
-            tagEntityMapper = tagEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+            tagCacheRepository = tagCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
