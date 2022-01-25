@@ -13,8 +13,6 @@ import com.hfad.tagalong.interactors.login.LoadSessionInfo
 import com.hfad.tagalong.interactors.login.LoadUser
 import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
 import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
-import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
-import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
 import com.hfad.tagalong.interactors.rulecreation.ApplyNewRule
 import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
@@ -27,15 +25,15 @@ import com.hfad.tagalong.interactors.tagtracks.LoadAllTagTracks
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.network.RetrofitAuthService
 import com.hfad.tagalong.network.RetrofitPlaylistService
-import com.hfad.tagalong.network.RetrofitTrackService
 import com.hfad.tagalong.network.RetrofitUserService
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
-import com.hfad.tagalong.network.model.TrackDtoMapper
 import com.hfad.tagalong.network.model.UserDtoMapper
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
+import com.hfad.tagalong.track_interactors.LoadPlaylistTracksPage
+import com.hfad.tagalong.track_interactors_core.repositories.TrackNetworkRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -77,29 +75,13 @@ object InteractorsModule {
 
     @Provides
     @ViewModelScoped
-    fun provideLoadFirstPlaylistTracksPage(
-        trackService: RetrofitTrackService,
-        trackDtoMapper: TrackDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): LoadFirstPlaylistTracksPage {
-        return LoadFirstPlaylistTracksPage(
-            trackService = trackService,
-            trackDtoMapper = trackDtoMapper,
-            networkErrorHandler = networkErrorHandler
-        )
-    }
-
-    @Provides
-    @ViewModelScoped
-    fun provideLoadNextPlaylistTracksPage(
-        trackService: RetrofitTrackService,
-        trackDtoMapper: TrackDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): LoadNextPlaylistTracksPage {
-        return LoadNextPlaylistTracksPage(
-            trackService = trackService,
-            trackDtoMapper = trackDtoMapper,
-            networkErrorHandler = networkErrorHandler
+    fun provideLoadPlaylistTracksPage(
+        trackNetworkRepository: TrackNetworkRepository,
+        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
+    ): LoadPlaylistTracksPage {
+        return LoadPlaylistTracksPage(
+            trackNetworkRepository = trackNetworkRepository,
+            networkErrorMapper = networkErrorMapper
         )
     }
 
