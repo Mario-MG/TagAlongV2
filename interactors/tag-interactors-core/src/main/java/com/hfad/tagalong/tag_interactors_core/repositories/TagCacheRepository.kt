@@ -6,4 +6,8 @@ interface TagCacheRepository {
 
     suspend fun getAll(): List<Tag>
 
+    suspend fun getTagByName(tagName: String): Tag?
+
+    suspend fun createNewTag(tagName: String): Tag
+
 }

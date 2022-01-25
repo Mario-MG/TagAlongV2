@@ -8,18 +8,21 @@ import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class LoadAllTags(
+class FindOrCreateTag(
     private val tagCacheRepository: TagCacheRepository,
     private val cacheErrorMapper: ErrorMapper
 ) {
 
-    fun execute(): Flow<DataState<List<Tag>>> = flow {
+    fun execute(tagName: String): Flow<DataState<Tag>> = flow {
         try {
             emit(Loading(true))
 
-            val tags = tagCacheRepository.getAll()
-
-            emit(Success(tags))
+            tagCacheRepository.getTagByName(tagName)?.let { existingTag ->
+                emit(Success(existingTag))
+            } ?: run {
+                val newTag = tagCacheRepository.createNewTag(tagName)
+                emit(Success(newTag))
+            }
         } catch (e: Exception) {
             emit(Error(cacheErrorMapper.parseError(e)))
         } finally {

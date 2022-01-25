@@ -33,6 +33,7 @@ import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.TrackDtoMapper
 import com.hfad.tagalong.network.model.UserDtoMapper
+import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
 import dagger.Module
@@ -144,15 +145,13 @@ object InteractorsModule {
 
     @Provides
     @ViewModelScoped
-    fun provideCreateTag(
-        tagDao: TagDao,
-        tagEntityMapper: TagEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
-    ): CreateTag {
-        return CreateTag(
-            tagDao = tagDao,
-            tagEntityMapper = tagEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+    fun provideFindOrCreateTag(
+        tagCacheRepository: TagCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): FindOrCreateTag {
+        return FindOrCreateTag(
+            tagCacheRepository = tagCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
