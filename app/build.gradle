@@ -63,8 +63,10 @@ dependencies {
     implementation project(':domain:rule-domain')
 
     implementation project(':interactors:interactors-core')
-    implementation project(':interactors:tag-interactors')
     implementation project(':interactors:tag-interactors-core')
+    implementation project(':interactors:track-interactors-core')
+    implementation project(':interactors:tag-interactors')
+    implementation project(':interactors:track-interactors')
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.3.1'
