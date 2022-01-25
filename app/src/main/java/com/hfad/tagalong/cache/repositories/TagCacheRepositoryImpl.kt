@@ -14,4 +14,14 @@ class TagCacheRepositoryImpl(
         return tagEntityMapper.toDomainList(tagDao.getAll())
     }
 
+    override suspend fun getTagByName(tagName: String): Tag? {
+        return tagDao.getByName(tagName)?.let(tagEntityMapper::mapToDomainModel)
+    }
+
+    override suspend fun createNewTag(tagName: String): Tag {
+        val newTagId = tagDao.insert(tagEntityMapper.mapFromDomainModel(Tag(id = 0, name = tagName, size = 0))) // TODO: Refactor to take TagInfo without id
+        return tagDao.getById(newTagId)?.let(tagEntityMapper::mapToDomainModel)
+            ?: throw IllegalStateException()
+    }
+
 }
