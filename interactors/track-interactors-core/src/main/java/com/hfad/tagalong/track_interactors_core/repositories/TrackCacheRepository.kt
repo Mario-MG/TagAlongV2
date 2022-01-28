@@ -7,4 +7,10 @@ interface TrackCacheRepository {
 
     suspend fun getAllTracksForTag(tag: Tag): List<Track>
 
+    suspend fun saveTrack(track: Track)
+
+    suspend fun addTagToTrack(tag: Tag, track: Track)
+
+    suspend fun deleteTagFromTrack(tag: Tag, track: Track)
+
 }
