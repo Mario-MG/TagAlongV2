@@ -4,4 +4,5 @@ apply {
 
 dependencies {
     "implementation"(project(":domain:tag-domain"))
+    "implementation"(project(":domain:track-domain"))
 }
