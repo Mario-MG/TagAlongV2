@@ -14,10 +14,12 @@ import com.hfad.tagalong.cache.model.RuleEntityMapper
 import com.hfad.tagalong.cache.model.TagEntityMapper
 import com.hfad.tagalong.cache.model.TrackEntityMapper
 import com.hfad.tagalong.cache.repositories.TagCacheRepositoryImpl
+import com.hfad.tagalong.cache.repositories.TrackCacheRepositoryImpl
 import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
+import com.hfad.tagalong.track_interactors_core.repositories.TrackCacheRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -78,6 +80,18 @@ object CacheModule {
     @Singleton
     fun provideTrackEntityMapper(): TrackEntityMapper {
         return TrackEntityMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrackCacheRepository(
+        trackDao: TrackDao,
+        trackEntityMapper: TrackEntityMapper
+    ): TrackCacheRepository {
+        return TrackCacheRepositoryImpl(
+            trackDao = trackDao,
+            trackEntityMapper = trackEntityMapper
+        )
     }
 
     @Provides

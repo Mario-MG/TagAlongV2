@@ -21,7 +21,6 @@ import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
 import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
 import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
 import com.hfad.tagalong.interactors.singletrack.*
-import com.hfad.tagalong.interactors.tagtracks.LoadAllTagTracks
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.network.RetrofitAuthService
 import com.hfad.tagalong.network.RetrofitPlaylistService
@@ -32,7 +31,9 @@ import com.hfad.tagalong.network.model.UserDtoMapper
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
+import com.hfad.tagalong.track_interactors.LoadAllTracksForTag
 import com.hfad.tagalong.track_interactors.LoadPlaylistTracksPage
+import com.hfad.tagalong.track_interactors_core.repositories.TrackCacheRepository
 import com.hfad.tagalong.track_interactors_core.repositories.TrackNetworkRepository
 import dagger.Module
 import dagger.Provides
@@ -99,15 +100,13 @@ object InteractorsModule {
 
     @Provides
     @ViewModelScoped
-    fun provideLoadAllTagTracks(
-        trackDao: TrackDao,
-        trackEntityMapper: TrackEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
-    ): LoadAllTagTracks {
-        return LoadAllTagTracks(
-            trackDao = trackDao,
-            trackEntityMapper = trackEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+    fun provideLoadAllTracksForTag(
+        trackCacheRepository: TrackCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): LoadAllTracksForTag {
+        return LoadAllTracksForTag(
+            trackCacheRepository = trackCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
