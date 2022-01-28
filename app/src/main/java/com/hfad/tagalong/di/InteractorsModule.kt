@@ -21,7 +21,6 @@ import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
 import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
 import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
 import com.hfad.tagalong.interactors.singletrack.ApplyExistingRules
-import com.hfad.tagalong.interactors.singletrack.LoadTrackTags
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.network.RetrofitAuthService
 import com.hfad.tagalong.network.RetrofitPlaylistService
@@ -31,6 +30,7 @@ import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.UserDtoMapper
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
+import com.hfad.tagalong.tag_interactors.LoadTagsForTrack
 import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
 import com.hfad.tagalong.track_interactors.AddTagToTrack
 import com.hfad.tagalong.track_interactors.DeleteTagFromTrack
@@ -115,15 +115,13 @@ object InteractorsModule {
 
     @Provides
     @ViewModelScoped
-    fun provideLoadTrackTags(
-        tagDao: TagDao,
-        tagEntityMapper: TagEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
-    ): LoadTrackTags {
-        return LoadTrackTags(
-            tagDao = tagDao,
-            tagEntityMapper = tagEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+    fun provideLoadTagsForTrack(
+        tagCacheRepository: TagCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): LoadTagsForTrack {
+        return LoadTagsForTrack(
+            tagCacheRepository = tagCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 

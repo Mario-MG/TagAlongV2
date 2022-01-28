@@ -4,6 +4,7 @@ apply {
 
 dependencies {
     "implementation"(project(":domain:tag-domain"))
+    "implementation"(project(":domain:track-domain"))
     "implementation"(project(":interactors:interactors-core"))
     "implementation"(project(":interactors:tag-interactors-core"))
 

@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
 import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.singletrack.ApplyExistingRules
-import com.hfad.tagalong.interactors.singletrack.LoadTrackTags
 import com.hfad.tagalong.interactors_core.data.ErrorType.CacheError.DuplicateError
 import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.presentation.BaseApplication
@@ -19,6 +18,7 @@ import com.hfad.tagalong.presentation.util.DialogQueue
 import com.hfad.tagalong.tag_domain.Tag
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
+import com.hfad.tagalong.tag_interactors.LoadTagsForTrack
 import com.hfad.tagalong.track_domain.Track
 import com.hfad.tagalong.track_interactors.AddTagToTrack
 import com.hfad.tagalong.track_interactors.DeleteTagFromTrack
@@ -32,7 +32,7 @@ class SingleTrackViewModel
 @Inject
 constructor(
     private val loadAllTags: LoadAllTags,
-    private val loadTrackTags: LoadTrackTags,
+    private val loadTagsForTrack: LoadTagsForTrack,
     private val findOrCreateTag: FindOrCreateTag,
     private val addTagToTrack: AddTagToTrack,
     private val applyExistingRules: ApplyExistingRules,
@@ -140,7 +140,7 @@ constructor(
     }
 
     private fun loadTagsForTrack() {
-        loadTrackTags
+        loadTagsForTrack
             .execute(track = track!!)
             .on(
                 loading = ::loading::set,
