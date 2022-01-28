@@ -20,7 +20,8 @@ import com.hfad.tagalong.interactors.rules.LoadAllRules
 import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
 import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
 import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
-import com.hfad.tagalong.interactors.singletrack.*
+import com.hfad.tagalong.interactors.singletrack.ApplyExistingRules
+import com.hfad.tagalong.interactors.singletrack.LoadTrackTags
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.network.RetrofitAuthService
 import com.hfad.tagalong.network.RetrofitPlaylistService
@@ -31,6 +32,8 @@ import com.hfad.tagalong.network.model.UserDtoMapper
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
+import com.hfad.tagalong.track_interactors.AddTagToTrack
+import com.hfad.tagalong.track_interactors.DeleteTagFromTrack
 import com.hfad.tagalong.track_interactors.LoadAllTracksForTag
 import com.hfad.tagalong.track_interactors.LoadPlaylistTracksPage
 import com.hfad.tagalong.track_interactors_core.repositories.TrackCacheRepository
@@ -139,16 +142,12 @@ object InteractorsModule {
     @Provides
     @ViewModelScoped
     fun provideAddTagToTrack(
-        trackDao: TrackDao,
-        trackEntityMapper: TrackEntityMapper,
-        trackTagCrossRefDao: TrackTagCrossRefDao,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        trackCacheRepository: TrackCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): AddTagToTrack {
         return AddTagToTrack(
-            trackDao = trackDao,
-            trackEntityMapper = trackEntityMapper,
-            cacheErrorHandler = cacheErrorHandler,
-            trackTagCrossRefDao = trackTagCrossRefDao,
+            trackCacheRepository = trackCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
@@ -173,12 +172,12 @@ object InteractorsModule {
     @Provides
     @ViewModelScoped
     fun provideDeleteTagFromTrack(
-        trackTagCrossRefDao: TrackTagCrossRefDao,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        trackCacheRepository: TrackCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): DeleteTagFromTrack {
         return DeleteTagFromTrack(
-            trackTagCrossRefDao = trackTagCrossRefDao,
-            cacheErrorHandler = cacheErrorHandler
+            trackCacheRepository = trackCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 

@@ -9,10 +9,7 @@ import com.hfad.tagalong.cache.CacheErrorHandler
 import com.hfad.tagalong.cache.CacheErrorMapper
 import com.hfad.tagalong.cache.dao.*
 import com.hfad.tagalong.cache.database.MainDatabase
-import com.hfad.tagalong.cache.model.PlaylistEntityMapper
-import com.hfad.tagalong.cache.model.RuleEntityMapper
-import com.hfad.tagalong.cache.model.TagEntityMapper
-import com.hfad.tagalong.cache.model.TrackEntityMapper
+import com.hfad.tagalong.cache.model.*
 import com.hfad.tagalong.cache.repositories.TagCacheRepositoryImpl
 import com.hfad.tagalong.cache.repositories.TrackCacheRepositoryImpl
 import com.hfad.tagalong.interactors.data.ErrorHandler
@@ -84,20 +81,30 @@ object CacheModule {
 
     @Provides
     @Singleton
-    fun provideTrackCacheRepository(
-        trackDao: TrackDao,
-        trackEntityMapper: TrackEntityMapper
-    ): TrackCacheRepository {
-        return TrackCacheRepositoryImpl(
-            trackDao = trackDao,
-            trackEntityMapper = trackEntityMapper
-        )
+    fun provideTrackTagCrossRefDao(db: MainDatabase): TrackTagCrossRefDao {
+        return db.trackTagCrossRefDao()
     }
 
     @Provides
     @Singleton
-    fun provideTrackTagCrossRefDao(db: MainDatabase): TrackTagCrossRefDao {
-        return db.trackTagCrossRefDao()
+    fun provideTrackTagCrossRefMapper(): TrackTagCrossRefMapper {
+        return TrackTagCrossRefMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrackCacheRepository(
+        trackDao: TrackDao,
+        trackEntityMapper: TrackEntityMapper,
+        trackTagCrossRefDao: TrackTagCrossRefDao,
+        trackTagCrossRefMapper: TrackTagCrossRefMapper
+    ): TrackCacheRepository {
+        return TrackCacheRepositoryImpl(
+            trackDao = trackDao,
+            trackEntityMapper = trackEntityMapper,
+            trackTagCrossRefDao = trackTagCrossRefDao,
+            trackTagCrossRefMapper = trackTagCrossRefMapper
+        )
     }
 
     @Provides

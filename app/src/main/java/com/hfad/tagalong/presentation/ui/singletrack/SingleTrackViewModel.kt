@@ -6,12 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
-import com.hfad.tagalong.interactors.data.ErrorType.CacheError.DuplicateError
 import com.hfad.tagalong.interactors.data.on
-import com.hfad.tagalong.interactors.singletrack.AddTagToTrack
 import com.hfad.tagalong.interactors.singletrack.ApplyExistingRules
-import com.hfad.tagalong.interactors.singletrack.DeleteTagFromTrack
 import com.hfad.tagalong.interactors.singletrack.LoadTrackTags
+import com.hfad.tagalong.interactors_core.data.ErrorType.CacheError.DuplicateError
 import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.session.SessionManager
@@ -22,6 +20,8 @@ import com.hfad.tagalong.tag_domain.Tag
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.track_domain.Track
+import com.hfad.tagalong.track_interactors.AddTagToTrack
+import com.hfad.tagalong.track_interactors.DeleteTagFromTrack
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
