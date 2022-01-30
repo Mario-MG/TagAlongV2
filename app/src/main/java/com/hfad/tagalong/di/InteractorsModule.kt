@@ -32,10 +32,7 @@ import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.tag_interactors.LoadTagsForTrack
 import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
-import com.hfad.tagalong.track_interactors.AddTagToTrack
-import com.hfad.tagalong.track_interactors.DeleteTagFromTrack
-import com.hfad.tagalong.track_interactors.LoadAllTracksForTag
-import com.hfad.tagalong.track_interactors.LoadPlaylistTracksPage
+import com.hfad.tagalong.track_interactors.*
 import com.hfad.tagalong.track_interactors_core.repositories.TrackCacheRepository
 import com.hfad.tagalong.track_interactors_core.repositories.TrackNetworkRepository
 import dagger.Module
@@ -242,6 +239,18 @@ object InteractorsModule {
             cacheErrorHandler = cacheErrorHandler,
             playlistService = playlistService,
             networkErrorHandler = networkErrorHandler
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideLoadTracksForRule(
+        trackCacheRepository: TrackCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): LoadTracksForRule {
+        return LoadTracksForRule(
+            trackCacheRepository = trackCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 

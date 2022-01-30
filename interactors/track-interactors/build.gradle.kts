@@ -6,6 +6,7 @@ dependencies {
     "implementation"(project(":domain:tag-domain"))
     "implementation"(project(":domain:track-domain"))
     "implementation"(project(":domain:playlist-domain"))
+    "implementation"(project(":domain:rule-domain"))
     "implementation"(project(":interactors:interactors-core"))
     "implementation"(project(":interactors:track-interactors-core"))
 

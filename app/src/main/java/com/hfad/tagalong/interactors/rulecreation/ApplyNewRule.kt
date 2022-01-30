@@ -12,6 +12,7 @@ import com.hfad.tagalong.track_domain.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+// TODO: UseCase "ApplyNewRule" will be broken down into "LoadTracksForRule" (track-interactors) and "AddTracksToPlaylist" (playlist-interactors)
 class ApplyNewRule(
     private val trackDao: TrackDao,
     private val trackEntityMapper: TrackEntityMapper,
