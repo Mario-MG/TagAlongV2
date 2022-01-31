@@ -7,11 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
 import com.hfad.tagalong.interactors.data.on
-import com.hfad.tagalong.interactors.rulecreation.ApplyNewRule
 import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.playlist_domain.Playlist
+import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylist
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.presentation.ui.BaseViewModel
@@ -20,6 +20,8 @@ import com.hfad.tagalong.presentation.util.DialogQueue
 import com.hfad.tagalong.rule_domain.Rule
 import com.hfad.tagalong.tag_domain.Tag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
+import com.hfad.tagalong.track_domain.Track
+import com.hfad.tagalong.track_interactors.LoadTracksForRule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
@@ -32,7 +34,8 @@ constructor(
     private val loadAllTags: LoadAllTags,
     private val createPlaylist: CreatePlaylist,
     private val createRule: CreateRule,
-    private val applyNewRule: ApplyNewRule,
+    private val loadTracksForRule: LoadTracksForRule,
+    private val addTracksToPlaylist: AddTracksToPlaylist,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
@@ -166,10 +169,21 @@ constructor(
     }
 
     private fun applyRule(rule: Rule) {
-        applyNewRule
+        loadTracksForRule
+            .execute(rule = rule)
+            .on(
+                loading = ::loading::set,
+                success = { tracks -> addTracksToPlaylist(tracks = tracks, playlist = rule.playlist) },
+                error = ::appendGenericErrorToQueue
+            )
+            .launchIn(viewModelScope)
+    }
+
+    private fun addTracksToPlaylist(tracks: List<Track>, playlist: Playlist) {
+        addTracksToPlaylist
             .execute(
-                rule = rule,
-                auth = sessionManager.getAuthorizationHeader()
+                tracks = tracks,
+                playlist = playlist
             )
             .on(
                 loading = ::loading::set,
