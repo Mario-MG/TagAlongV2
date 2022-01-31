@@ -13,7 +13,6 @@ import com.hfad.tagalong.interactors.login.LoadSessionInfo
 import com.hfad.tagalong.interactors.login.LoadUser
 import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
 import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
-import com.hfad.tagalong.interactors.rulecreation.ApplyNewRule
 import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors.rules.LoadAllRules
@@ -28,6 +27,8 @@ import com.hfad.tagalong.network.RetrofitUserService
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.UserDtoMapper
+import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylist
+import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.tag_interactors.LoadTagsForTrack
@@ -226,24 +227,6 @@ object InteractorsModule {
 
     @Provides
     @ViewModelScoped
-    fun provideApplyNewRule(
-        trackDao: TrackDao,
-        trackEntityMapper: TrackEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler,
-        playlistService: RetrofitPlaylistService,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): ApplyNewRule {
-        return ApplyNewRule(
-            trackDao = trackDao,
-            trackEntityMapper = trackEntityMapper,
-            cacheErrorHandler = cacheErrorHandler,
-            playlistService = playlistService,
-            networkErrorHandler = networkErrorHandler
-        )
-    }
-
-    @Provides
-    @ViewModelScoped
     fun provideLoadTracksForRule(
         trackCacheRepository: TrackCacheRepository,
         @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
@@ -251,6 +234,18 @@ object InteractorsModule {
         return LoadTracksForRule(
             trackCacheRepository = trackCacheRepository,
             cacheErrorMapper = cacheErrorMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideAddTracksToPlaylist(
+        playlistNetworkRepository: PlaylistNetworkRepository,
+        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
+    ): AddTracksToPlaylist {
+        return AddTracksToPlaylist(
+            playlistNetworkRepository = playlistNetworkRepository,
+            networkErrorMapper = networkErrorMapper
         )
     }
 

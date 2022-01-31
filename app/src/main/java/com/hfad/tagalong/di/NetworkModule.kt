@@ -10,8 +10,10 @@ import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.TrackDtoMapper
 import com.hfad.tagalong.network.model.UserDtoMapper
+import com.hfad.tagalong.network.repositories.PlaylistNetworkRepositoryImpl
 import com.hfad.tagalong.network.repositories.TrackNetworkRepositoryImpl
 import com.hfad.tagalong.network.util.AuthManager
+import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
 import com.hfad.tagalong.track_interactors_core.repositories.TrackNetworkRepository
 import dagger.Module
 import dagger.Provides
@@ -111,6 +113,20 @@ object NetworkModule {
     @Singleton
     fun providePlaylistMapper(): PlaylistDtoMapper {
         return PlaylistDtoMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun providePlaylistNetworkRepository(
+        playlistService: RetrofitPlaylistService,
+        playlistDtoMapper: PlaylistDtoMapper,
+        authManager: AuthManager
+    ): PlaylistNetworkRepository {
+        return PlaylistNetworkRepositoryImpl(
+            playlistService = playlistService,
+            playlistDtoMapper = playlistDtoMapper,
+            authManager = authManager
+        )
     }
 
     @Provides

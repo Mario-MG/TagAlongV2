@@ -9,7 +9,6 @@ import com.hfad.tagalong.track_interactors_core.repositories.TrackCacheRepositor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-// TODO: UseCase "ApplyNewRule" will be broken down into "LoadTracksForRule" (this one) and "AddTracksToPlaylist" (playlist-interactors)
 class LoadTracksForRule(
     private val trackCacheRepository: TrackCacheRepository,
     private val cacheErrorMapper: ErrorMapper
