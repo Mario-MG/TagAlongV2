@@ -13,6 +13,7 @@ import com.hfad.tagalong.network.model.UserDtoMapper
 import com.hfad.tagalong.network.repositories.PlaylistNetworkRepositoryImpl
 import com.hfad.tagalong.network.repositories.TrackNetworkRepositoryImpl
 import com.hfad.tagalong.network.util.AuthManager
+import com.hfad.tagalong.network.util.UserManager
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
 import com.hfad.tagalong.track_interactors_core.repositories.TrackNetworkRepository
 import dagger.Module
@@ -98,6 +99,14 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideUserManager(
+        sessionManager: SessionManager
+    ): UserManager {
+        return sessionManager
+    }
+
+    @Provides
+    @Singleton
     fun providePlaylistService(
         retrofitClient: OkHttpClient
     ): RetrofitPlaylistService {
@@ -120,12 +129,14 @@ object NetworkModule {
     fun providePlaylistNetworkRepository(
         playlistService: RetrofitPlaylistService,
         playlistDtoMapper: PlaylistDtoMapper,
-        authManager: AuthManager
+        authManager: AuthManager,
+        userManager: UserManager
     ): PlaylistNetworkRepository {
         return PlaylistNetworkRepositoryImpl(
             playlistService = playlistService,
             playlistDtoMapper = playlistDtoMapper,
-            authManager = authManager
+            authManager = authManager,
+            userManager = userManager
         )
     }
 

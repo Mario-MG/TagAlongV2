@@ -7,6 +7,7 @@ import com.hfad.tagalong.domain.model.User
 import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.login.SaveSessionInfo
 import com.hfad.tagalong.network.util.AuthManager
+import com.hfad.tagalong.network.util.UserManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.withContext
@@ -14,7 +15,7 @@ import java.lang.IllegalStateException
 
 class SessionManager(
     private val saveSessionInfo: SaveSessionInfo
-) : AuthManager {
+) : AuthManager, UserManager {
 
     private val sessionState = MutableLiveData<SessionState>(SessionState.Loading)
 
@@ -68,6 +69,10 @@ class SessionManager(
             throw IllegalAccessException("Token cannot be accessed while unlogged")
         }
         return sessionState.token.accessToken
+    }
+
+    override fun user(): User {
+        return user
     }
 
     fun addLoginObserver(owner: LifecycleOwner, onLogIn: () -> Unit) {
