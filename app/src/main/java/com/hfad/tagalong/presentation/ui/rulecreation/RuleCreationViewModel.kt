@@ -10,7 +10,7 @@ import com.hfad.tagalong.interactors.data.on
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.playlist_domain.Playlist
-import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylist
+import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylists
 import com.hfad.tagalong.playlist_interactors.CreatePlaylist
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.session.SessionManager
@@ -35,7 +35,7 @@ constructor(
     private val createPlaylist: CreatePlaylist,
     private val createRule: CreateRule,
     private val loadTracksForRule: LoadTracksForRule,
-    private val addTracksToPlaylist: AddTracksToPlaylist,
+    private val addTracksToPlaylists: AddTracksToPlaylists,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
@@ -178,10 +178,10 @@ constructor(
     }
 
     private fun addTracksToPlaylist(tracks: List<Track>, playlist: Playlist) {
-        addTracksToPlaylist
+        addTracksToPlaylists
             .execute(
                 tracks = tracks,
-                playlist = playlist
+                playlists = listOf(playlist)
             )
             .on(
                 loading = ::loading::set,

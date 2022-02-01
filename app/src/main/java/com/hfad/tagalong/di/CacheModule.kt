@@ -11,12 +11,14 @@ import com.hfad.tagalong.cache.dao.*
 import com.hfad.tagalong.cache.database.MainDatabase
 import com.hfad.tagalong.cache.model.*
 import com.hfad.tagalong.cache.repositories.PlaylistCacheRepositoryImpl
+import com.hfad.tagalong.cache.repositories.RuleCacheRepositoryImpl
 import com.hfad.tagalong.cache.repositories.TagCacheRepositoryImpl
 import com.hfad.tagalong.cache.repositories.TrackCacheRepositoryImpl
 import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistCacheRepository
 import com.hfad.tagalong.presentation.BaseApplication
+import com.hfad.tagalong.rule_interactors_core.repositories.RuleCacheRepository
 import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
 import com.hfad.tagalong.track_interactors_core.repositories.TrackCacheRepository
 import dagger.Module
@@ -124,6 +126,18 @@ object CacheModule {
         return RuleEntityMapper(
             playlistEntityMapper = playlistEntityMapper,
             tagEntityMapper = tagEntityMapper
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideRuleCacheRepository(
+        ruleDao: RuleDao,
+        ruleEntityMapper: RuleEntityMapper
+    ): RuleCacheRepository {
+        return RuleCacheRepositoryImpl(
+            ruleDao = ruleDao,
+            ruleEntityMapper = ruleEntityMapper
         )
     }
 

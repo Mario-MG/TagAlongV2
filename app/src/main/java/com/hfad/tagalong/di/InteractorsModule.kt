@@ -1,8 +1,7 @@
 package com.hfad.tagalong.di
 
 import android.content.SharedPreferences
-import com.hfad.tagalong.cache.dao.*
-import com.hfad.tagalong.cache.model.PlaylistEntityMapper
+import com.hfad.tagalong.cache.dao.RuleDao
 import com.hfad.tagalong.cache.model.RuleEntityMapper
 import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.interactors.login.GetTokenFromCode
@@ -14,19 +13,18 @@ import com.hfad.tagalong.interactors.rules.LoadAllRules
 import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
 import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
 import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
-import com.hfad.tagalong.interactors.singletrack.ApplyExistingRules
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.network.RetrofitAuthService
-import com.hfad.tagalong.network.RetrofitPlaylistService
 import com.hfad.tagalong.network.RetrofitUserService
-import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.UserDtoMapper
-import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylist
+import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylists
 import com.hfad.tagalong.playlist_interactors.CreatePlaylist
 import com.hfad.tagalong.playlist_interactors.LoadPlaylistsPage
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistCacheRepository
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
+import com.hfad.tagalong.rule_interactors.LoadRulesForTags
+import com.hfad.tagalong.rule_interactors_core.repositories.RuleCacheRepository
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.tag_interactors.LoadTagsForTrack
@@ -131,19 +129,13 @@ object InteractorsModule {
 
     @Provides
     @ViewModelScoped
-    fun provideApplyExistingRules(
-        ruleDao: RuleDao,
-        ruleEntityMapper: RuleEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler,
-        playlistService: RetrofitPlaylistService,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): ApplyExistingRules {
-        return ApplyExistingRules(
-            ruleDao = ruleDao,
-            ruleEntityMapper = ruleEntityMapper,
-            cacheErrorHandler = cacheErrorHandler,
-            playlistService = playlistService,
-            networkErrorHandler = networkErrorHandler
+    fun provideLoadRulesForTags(
+        ruleCacheRepository: RuleCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): LoadRulesForTags {
+        return LoadRulesForTags(
+            ruleCacheRepository = ruleCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
@@ -220,8 +212,8 @@ object InteractorsModule {
     fun provideAddTracksToPlaylist(
         playlistNetworkRepository: PlaylistNetworkRepository,
         @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
-    ): AddTracksToPlaylist {
-        return AddTracksToPlaylist(
+    ): AddTracksToPlaylists {
+        return AddTracksToPlaylists(
             playlistNetworkRepository = playlistNetworkRepository,
             networkErrorMapper = networkErrorMapper
         )
