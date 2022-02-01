@@ -4,15 +4,11 @@ import android.content.SharedPreferences
 import com.hfad.tagalong.cache.dao.*
 import com.hfad.tagalong.cache.model.PlaylistEntityMapper
 import com.hfad.tagalong.cache.model.RuleEntityMapper
-import com.hfad.tagalong.cache.model.TagEntityMapper
-import com.hfad.tagalong.cache.model.TrackEntityMapper
 import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.interactors.login.GetTokenFromCode
 import com.hfad.tagalong.interactors.login.GetTokenFromRefreshToken
 import com.hfad.tagalong.interactors.login.LoadSessionInfo
 import com.hfad.tagalong.interactors.login.LoadUser
-import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
-import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
 import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors.rules.LoadAllRules
@@ -28,6 +24,7 @@ import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.UserDtoMapper
 import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylist
+import com.hfad.tagalong.playlist_interactors.LoadPlaylistsPage
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
@@ -49,29 +46,13 @@ object InteractorsModule {
 
     @Provides
     @ViewModelScoped
-    fun provideLoadFirstPlaylistsPage(
-        playlistService: RetrofitPlaylistService,
-        playlistDtoMapper: PlaylistDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): LoadFirstPlaylistsPage {
-        return LoadFirstPlaylistsPage(
-            playlistService = playlistService,
-            playlistDtoMapper = playlistDtoMapper,
-            networkErrorHandler = networkErrorHandler
-        )
-    }
-
-    @Provides
-    @ViewModelScoped
-    fun provideLoadNextPlaylistsPage(
-        playlistService: RetrofitPlaylistService,
-        playlistDtoMapper: PlaylistDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): LoadNextPlaylistsPage {
-        return LoadNextPlaylistsPage(
-            playlistService = playlistService,
-            playlistDtoMapper = playlistDtoMapper,
-            networkErrorHandler = networkErrorHandler
+    fun provideLoadPlaylistsPage(
+        playlistNetworkRepository: PlaylistNetworkRepository,
+        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
+    ): LoadPlaylistsPage {
+        return LoadPlaylistsPage(
+            playlistNetworkRepository = playlistNetworkRepository,
+            networkErrorMapper = networkErrorMapper
         )
     }
 

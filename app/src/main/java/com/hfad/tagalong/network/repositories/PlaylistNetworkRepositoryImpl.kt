@@ -13,6 +13,16 @@ class PlaylistNetworkRepositoryImpl(
     private val authManager: AuthManager
 ) : PlaylistNetworkRepository {
 
+    override suspend fun getPlaylists(offset: Int, limit: Int): List<Playlist> {
+        return playlistDtoMapper.toDomainList(
+            playlistService.getList(
+                auth = "Bearer ${authManager.accessToken()}",
+                offset = offset,
+                limit = limit
+            ).items
+        )
+    }
+
     override suspend fun addTracksToPlaylist(tracks: List<Track>, playlist: Playlist) {
         playlistService.addTracksToPlaylist(
             auth = "Bearer ${authManager.accessToken()}",
