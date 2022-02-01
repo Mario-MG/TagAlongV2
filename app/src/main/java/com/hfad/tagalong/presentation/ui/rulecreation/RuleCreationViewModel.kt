@@ -7,11 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
 import com.hfad.tagalong.interactors.data.on
-import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.playlist_domain.Playlist
 import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylist
+import com.hfad.tagalong.playlist_interactors.CreatePlaylist
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.presentation.ui.BaseViewModel
@@ -140,8 +140,6 @@ constructor(
     private fun createPlaylistAndRule() {
         createPlaylist
             .execute(
-                auth = sessionManager.getAuthorizationHeader(),
-                userId = sessionManager.user.id,
                 playlistName = playlistName
             )
             .on(

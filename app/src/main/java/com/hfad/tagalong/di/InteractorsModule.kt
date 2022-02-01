@@ -9,7 +9,6 @@ import com.hfad.tagalong.interactors.login.GetTokenFromCode
 import com.hfad.tagalong.interactors.login.GetTokenFromRefreshToken
 import com.hfad.tagalong.interactors.login.LoadSessionInfo
 import com.hfad.tagalong.interactors.login.LoadUser
-import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors.rules.LoadAllRules
 import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
@@ -24,7 +23,9 @@ import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.UserDtoMapper
 import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylist
+import com.hfad.tagalong.playlist_interactors.CreatePlaylist
 import com.hfad.tagalong.playlist_interactors.LoadPlaylistsPage
+import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistCacheRepository
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
@@ -175,20 +176,16 @@ object InteractorsModule {
     @Provides
     @ViewModelScoped
     fun provideCreatePlaylist(
-        playlistService: RetrofitPlaylistService,
-        playlistDtoMapper: PlaylistDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler,
-        playlistDao: PlaylistDao,
-        playlistEntityMapper: PlaylistEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        playlistNetworkRepository: PlaylistNetworkRepository,
+        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper,
+        playlistCacheRepository: PlaylistCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): CreatePlaylist {
         return CreatePlaylist(
-            playlistService = playlistService,
-            playlistDtoMapper = playlistDtoMapper,
-            networkErrorHandler = networkErrorHandler,
-            playlistDao = playlistDao,
-            playlistEntityMapper = playlistEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+            playlistNetworkRepository = playlistNetworkRepository,
+            networkErrorMapper = networkErrorMapper,
+            playlistCacheRepository = playlistCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
