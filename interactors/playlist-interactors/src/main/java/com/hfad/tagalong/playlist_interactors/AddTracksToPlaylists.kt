@@ -9,22 +9,24 @@ import com.hfad.tagalong.track_domain.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class AddTracksToPlaylist(
+class AddTracksToPlaylists(
     private val playlistNetworkRepository: PlaylistNetworkRepository,
     private val networkErrorMapper: ErrorMapper
 ) {
 
     fun execute(
         tracks: List<Track>,
-        playlist: Playlist
+        playlists: List<Playlist>
     ): Flow<DataState<Unit>> = flow {
         try {
             emit(Loading(true))
 
-            playlistNetworkRepository.addTracksToPlaylist(
-                tracks = tracks,
-                playlist = playlist
-            )
+            for (playlist in playlists) {
+                playlistNetworkRepository.addTracksToPlaylist(
+                    tracks = tracks,
+                    playlist = playlist
+                )
+            }
 
             emit(Success(Unit))
         } catch (e: Exception) {
