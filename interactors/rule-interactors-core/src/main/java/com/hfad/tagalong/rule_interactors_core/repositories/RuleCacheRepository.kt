@@ -5,6 +5,8 @@ import com.hfad.tagalong.tag_domain.Tag
 
 interface RuleCacheRepository {
 
+    suspend fun getAll(): List<Rule>
+
     suspend fun getRulesForTags(newTag: Tag, originalTags: List<Tag>): List<Rule>
 
 }

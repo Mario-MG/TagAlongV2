@@ -11,6 +11,10 @@ class RuleCacheRepositoryImpl(
     private val ruleEntityMapper: RuleEntityMapper
 ) : RuleCacheRepository {
 
+    override suspend fun getAll(): List<Rule> {
+        return ruleEntityMapper.toDomainList(ruleDao.getAll())
+    }
+
     override suspend fun getRulesForTags(newTag: Tag, originalTags: List<Tag>): List<Rule> {
         return ruleEntityMapper.toDomainList(
             ruleDao.getRulesFulfilledByTagIds(newTag.id, *originalTags.map(Tag::id).toLongArray())
