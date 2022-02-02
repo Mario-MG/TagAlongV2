@@ -2,7 +2,28 @@ package com.hfad.tagalong.playlist_domain
 
 data class Playlist(
     val id: String,
-    val name: String,
-    val size: Int, // TODO: Should this field be part of the domain?
-    val imageUrl: String? = null
-)
+    private val info: PlaylistInfo
+) {
+    constructor(
+        id: String,
+        name: String,
+        size: Int,
+        imageUrl: String?
+    ) : this(
+        id = id,
+        info = PlaylistInfo(
+            name = name,
+            size = size,
+            imageUrl = imageUrl
+        )
+    )
+
+    val name: String
+        get() = this.info.name
+
+    val size: Int
+        get() = this.info.size
+
+    val imageUrl: String?
+        get() = this.info.imageUrl
+}

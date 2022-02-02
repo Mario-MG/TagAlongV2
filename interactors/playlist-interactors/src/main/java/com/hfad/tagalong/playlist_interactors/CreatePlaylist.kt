@@ -6,6 +6,7 @@ import com.hfad.tagalong.interactors_core.data.DataState.Loading
 import com.hfad.tagalong.interactors_core.data.DataState.Success
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.playlist_domain.Playlist
+import com.hfad.tagalong.playlist_domain.PlaylistInfo
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistCacheRepository
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
 import kotlinx.coroutines.flow.Flow
@@ -18,11 +19,11 @@ class CreatePlaylist(
     private val cacheErrorMapper: ErrorMapper
 ) {
 
-    fun execute(playlistName: String): Flow<DataState<Playlist>> = flow {
+    fun execute(playlistInfo: PlaylistInfo): Flow<DataState<Playlist>> = flow {
         try {
             emit(Loading(true))
 
-            val playlist = playlistNetworkRepository.create(playlistName = playlistName)
+            val playlist = playlistNetworkRepository.create(playlistInfo = playlistInfo)
 
             try {
                 playlistCacheRepository.create(playlist)
