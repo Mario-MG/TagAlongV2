@@ -6,8 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
-import com.hfad.tagalong.interactors.data.on
-import com.hfad.tagalong.interactors.rulecreation.CreateRule
 import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.playlist_domain.Playlist
 import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylists
@@ -18,6 +16,8 @@ import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
 import com.hfad.tagalong.presentation.util.DialogQueue
 import com.hfad.tagalong.rule_domain.Rule
+import com.hfad.tagalong.rule_domain.RuleInfo
+import com.hfad.tagalong.rule_interactors.CreateRule
 import com.hfad.tagalong.tag_domain.Tag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.track_domain.Track
@@ -42,7 +42,9 @@ constructor(
     var loading by mutableStateOf(false)
         private set
 
-    var playlistName by mutableStateOf(BaseApplication.getContext().getString(R.string.new_tagalong_playlist))
+    var playlistName by mutableStateOf(
+        BaseApplication.getContext().getString(R.string.new_tagalong_playlist)
+    )
         private set
 
     val tags = mutableStateListOf<Tag>()
@@ -153,10 +155,12 @@ constructor(
     private fun createRuleForPlaylist(playlist: Playlist) {
         createRule
             .execute(
-                playlist = playlist,
-                optionality = optionality,
-                autoUpdate = autoUpdate,
-                tags = tags
+                RuleInfo(
+                    playlist = playlist,
+                    optionality = optionality,
+                    autoUpdate = autoUpdate,
+                    tags = tags
+                )
             )
             .on(
                 loading = ::loading::set,
@@ -171,7 +175,12 @@ constructor(
             .execute(rule = rule)
             .on(
                 loading = ::loading::set,
-                success = { tracks -> addTracksToPlaylist(tracks = tracks, playlist = rule.playlist) },
+                success = { tracks ->
+                    addTracksToPlaylist(
+                        tracks = tracks,
+                        playlist = rule.playlist
+                    )
+                },
                 error = ::appendGenericErrorToQueue
             )
             .launchIn(viewModelScope)
