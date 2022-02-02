@@ -4,6 +4,7 @@ import com.hfad.tagalong.interactors_core.data.DataState
 import com.hfad.tagalong.interactors_core.data.DataState.*
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.tag_domain.Tag
+import com.hfad.tagalong.tag_domain.TagInfo
 import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -13,14 +14,14 @@ class FindOrCreateTag(
     private val cacheErrorMapper: ErrorMapper
 ) {
 
-    fun execute(tagName: String): Flow<DataState<Tag>> = flow {
+    fun execute(tagInfo: TagInfo): Flow<DataState<Tag>> = flow {
         try {
             emit(Loading(true))
 
-            tagCacheRepository.getTagByName(tagName)?.let { existingTag ->
+            tagCacheRepository.getTagByName(tagInfo.name)?.let { existingTag ->
                 emit(Success(existingTag))
             } ?: run {
-                val newTag = tagCacheRepository.createNewTag(tagName)
+                val newTag = tagCacheRepository.createNewTag(tagInfo)
                 emit(Success(newTag))
             }
         } catch (e: Exception) {

@@ -17,6 +17,7 @@ import com.hfad.tagalong.presentation.util.DialogQueue
 import com.hfad.tagalong.rule_domain.Rule
 import com.hfad.tagalong.rule_interactors.LoadRulesForTags
 import com.hfad.tagalong.tag_domain.Tag
+import com.hfad.tagalong.tag_domain.TagInfo
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.tag_interactors.LoadTagsForTrack
@@ -76,7 +77,12 @@ constructor(
 
     private fun addTagByName(tagName: String) {
         findOrCreateTag
-            .execute(tagName = tagName)
+            .execute(
+                tagInfo = TagInfo(
+                    name = tagName,
+                    size = 0
+                )
+            )
             .on(
                 loading = ::loading::set,
                 success = ::addTagToTrack,
