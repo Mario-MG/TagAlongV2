@@ -9,7 +9,6 @@ import com.hfad.tagalong.interactors.login.GetTokenFromRefreshToken
 import com.hfad.tagalong.interactors.login.LoadSessionInfo
 import com.hfad.tagalong.interactors.login.LoadUser
 import com.hfad.tagalong.interactors.rulecreation.CreateRule
-import com.hfad.tagalong.interactors.rules.LoadAllRules
 import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
 import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
 import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
@@ -23,6 +22,7 @@ import com.hfad.tagalong.playlist_interactors.CreatePlaylist
 import com.hfad.tagalong.playlist_interactors.LoadPlaylistsPage
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistCacheRepository
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
+import com.hfad.tagalong.rule_interactors.LoadAllRules
 import com.hfad.tagalong.rule_interactors.LoadRulesForTags
 import com.hfad.tagalong.rule_interactors_core.repositories.RuleCacheRepository
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
@@ -154,14 +154,12 @@ object InteractorsModule {
     @Provides
     @ViewModelScoped
     fun provideLoadAllRules(
-        ruleDao: RuleDao,
-        ruleEntityMapper: RuleEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        ruleCacheRepository: RuleCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): LoadAllRules {
         return LoadAllRules(
-            ruleDao = ruleDao,
-            ruleEntityMapper = ruleEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+            ruleCacheRepository = ruleCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
