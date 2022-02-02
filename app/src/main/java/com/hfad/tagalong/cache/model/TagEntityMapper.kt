@@ -2,6 +2,7 @@ package com.hfad.tagalong.cache.model
 
 import com.hfad.tagalong.domain.util.DomainMapper
 import com.hfad.tagalong.tag_domain.Tag
+import com.hfad.tagalong.tag_domain.TagInfo
 
 class TagEntityMapper : DomainMapper<TagEntityPoko, Tag> {
 
@@ -20,6 +21,16 @@ class TagEntityMapper : DomainMapper<TagEntityPoko, Tag> {
                 name = domainModel.name
             ),
             size = domainModel.size
+        )
+    }
+
+    fun mapFromDomainModel(domainInfo: TagInfo): TagEntityPoko {
+        return TagEntityPoko(
+            tagEntity = TagEntity(
+                id = 0,
+                name = domainInfo.name
+            ),
+            size = domainInfo.size
         )
     }
 
