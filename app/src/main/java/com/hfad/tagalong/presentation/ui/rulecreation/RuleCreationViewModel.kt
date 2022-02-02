@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
 import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.playlist_domain.Playlist
+import com.hfad.tagalong.playlist_domain.PlaylistInfo
 import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylists
 import com.hfad.tagalong.playlist_interactors.CreatePlaylist
 import com.hfad.tagalong.presentation.BaseApplication
@@ -142,7 +143,10 @@ constructor(
     private fun createPlaylistAndRule() {
         createPlaylist
             .execute(
-                playlistName = playlistName
+                playlistInfo = PlaylistInfo(
+                    name = playlistName,
+                    size = 0
+                )
             )
             .on(
                 loading = ::loading::set,

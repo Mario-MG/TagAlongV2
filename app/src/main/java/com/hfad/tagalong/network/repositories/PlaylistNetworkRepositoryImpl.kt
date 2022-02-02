@@ -6,6 +6,7 @@ import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.util.AuthManager
 import com.hfad.tagalong.network.util.UserManager
 import com.hfad.tagalong.playlist_domain.Playlist
+import com.hfad.tagalong.playlist_domain.PlaylistInfo
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
 import com.hfad.tagalong.track_domain.Track
 
@@ -26,12 +27,12 @@ class PlaylistNetworkRepositoryImpl(
         )
     }
 
-    override suspend fun create(playlistName: String): Playlist {
+    override suspend fun create(playlistInfo: PlaylistInfo): Playlist {
         return playlistDtoMapper.mapToDomainModel(
             playlistService.create(
                 auth = "Bearer ${authManager.accessToken()}",
                 userId = userManager.user().id,
-                body = JsonObject().apply { addProperty("name", playlistName) }
+                body = JsonObject().apply { addProperty("name", playlistInfo.name) }
             )
         )
     }
