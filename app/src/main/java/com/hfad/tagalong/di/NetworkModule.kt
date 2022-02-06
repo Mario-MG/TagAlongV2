@@ -3,12 +3,19 @@ package com.hfad.tagalong.di
 import com.google.gson.GsonBuilder
 import com.hfad.tagalong.BuildConfig
 import com.hfad.tagalong.interactors.data.ErrorHandler
+import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.network.*
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.TrackDtoMapper
 import com.hfad.tagalong.network.model.UserDtoMapper
+import com.hfad.tagalong.network.repositories.PlaylistNetworkRepositoryImpl
+import com.hfad.tagalong.network.repositories.TrackNetworkRepositoryImpl
+import com.hfad.tagalong.network.util.AuthManager
+import com.hfad.tagalong.network.util.UserManager
+import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
+import com.hfad.tagalong.track_interactors_core.repositories.TrackNetworkRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -84,6 +91,22 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideAuthManager(
+        sessionManager: SessionManager
+    ): AuthManager {
+        return sessionManager
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserManager(
+        sessionManager: SessionManager
+    ): UserManager {
+        return sessionManager
+    }
+
+    @Provides
+    @Singleton
     fun providePlaylistService(
         retrofitClient: OkHttpClient
     ): RetrofitPlaylistService {
@@ -103,6 +126,22 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun providePlaylistNetworkRepository(
+        playlistService: RetrofitPlaylistService,
+        playlistDtoMapper: PlaylistDtoMapper,
+        authManager: AuthManager,
+        userManager: UserManager
+    ): PlaylistNetworkRepository {
+        return PlaylistNetworkRepositoryImpl(
+            playlistService = playlistService,
+            playlistDtoMapper = playlistDtoMapper,
+            authManager = authManager,
+            userManager = userManager
+        )
+    }
+
+    @Provides
+    @Singleton
     fun provideTrackService(
         retrofitClient: OkHttpClient
     ): RetrofitTrackService {
@@ -118,6 +157,20 @@ object NetworkModule {
     @Singleton
     fun provideTrackMapper(): TrackDtoMapper {
         return TrackDtoMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrackNetworkRepository(
+        trackService: RetrofitTrackService,
+        trackDtoMapper: TrackDtoMapper,
+        authManager: AuthManager
+    ): TrackNetworkRepository {
+        return TrackNetworkRepositoryImpl(
+            trackService = trackService,
+            trackDtoMapper = trackDtoMapper,
+            authManager = authManager
+        )
     }
 
     @Provides
@@ -148,6 +201,13 @@ object NetworkModule {
     @Named("networkErrorHandler")
     fun provideNetworkErrorHandler(): ErrorHandler {
         return NetworkErrorHandler()
+    }
+
+    @Provides
+    @Singleton
+    @Named("networkErrorMapper")
+    fun provideNetworkErrorMapper(): ErrorMapper {
+        return NetworkErrorMapper()
     }
 
 }

@@ -9,7 +9,8 @@ class PlaylistEntityMapper : DomainMapper<PlaylistEntity, Playlist> {
         return Playlist(
             id = model.id,
             name = model.name,
-            size = 0 // TODO
+            size = 0, // TODO
+            imageUrl = null // TODO
         )
     }
 

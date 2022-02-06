@@ -6,14 +6,21 @@ import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.hfad.tagalong.cache.CacheErrorHandler
+import com.hfad.tagalong.cache.CacheErrorMapper
 import com.hfad.tagalong.cache.dao.*
 import com.hfad.tagalong.cache.database.MainDatabase
-import com.hfad.tagalong.cache.model.PlaylistEntityMapper
-import com.hfad.tagalong.cache.model.RuleEntityMapper
-import com.hfad.tagalong.cache.model.TagEntityMapper
-import com.hfad.tagalong.cache.model.TrackEntityMapper
+import com.hfad.tagalong.cache.model.*
+import com.hfad.tagalong.cache.repositories.PlaylistCacheRepositoryImpl
+import com.hfad.tagalong.cache.repositories.RuleCacheRepositoryImpl
+import com.hfad.tagalong.cache.repositories.TagCacheRepositoryImpl
+import com.hfad.tagalong.cache.repositories.TrackCacheRepositoryImpl
 import com.hfad.tagalong.interactors.data.ErrorHandler
+import com.hfad.tagalong.interactors_core.data.ErrorMapper
+import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistCacheRepository
 import com.hfad.tagalong.presentation.BaseApplication
+import com.hfad.tagalong.rule_interactors_core.repositories.RuleCacheRepository
+import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
+import com.hfad.tagalong.track_interactors_core.repositories.TrackCacheRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,6 +61,18 @@ object CacheModule {
 
     @Provides
     @Singleton
+    fun provideTagCacheRepository(
+        tagDao: TagDao,
+        tagEntityMapper: TagEntityMapper
+    ): TagCacheRepository {
+        return TagCacheRepositoryImpl(
+            tagDao = tagDao,
+            tagEntityMapper = tagEntityMapper
+        )
+    }
+
+    @Provides
+    @Singleton
     fun provideTrackDao(db: MainDatabase): TrackDao {
         return db.trackDao()
     }
@@ -68,6 +87,34 @@ object CacheModule {
     @Singleton
     fun provideTrackTagCrossRefDao(db: MainDatabase): TrackTagCrossRefDao {
         return db.trackTagCrossRefDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrackTagCrossRefMapper(
+        trackEntityMapper: TrackEntityMapper,
+        tagEntityMapper: TagEntityMapper
+    ): TrackTagCrossRefMapper {
+        return TrackTagCrossRefMapper(
+            trackEntityMapper = trackEntityMapper,
+            tagEntityMapper = tagEntityMapper
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrackCacheRepository(
+        trackDao: TrackDao,
+        trackEntityMapper: TrackEntityMapper,
+        trackTagCrossRefDao: TrackTagCrossRefDao,
+        trackTagCrossRefMapper: TrackTagCrossRefMapper
+    ): TrackCacheRepository {
+        return TrackCacheRepositoryImpl(
+            trackDao = trackDao,
+            trackEntityMapper = trackEntityMapper,
+            trackTagCrossRefDao = trackTagCrossRefDao,
+            trackTagCrossRefMapper = trackTagCrossRefMapper
+        )
     }
 
     @Provides
@@ -90,6 +137,18 @@ object CacheModule {
 
     @Provides
     @Singleton
+    fun provideRuleCacheRepository(
+        ruleDao: RuleDao,
+        ruleEntityMapper: RuleEntityMapper
+    ): RuleCacheRepository {
+        return RuleCacheRepositoryImpl(
+            ruleDao = ruleDao,
+            ruleEntityMapper = ruleEntityMapper
+        )
+    }
+
+    @Provides
+    @Singleton
     fun providePlaylistDao(db: MainDatabase): PlaylistDao {
         return db.playlistDao()
     }
@@ -98,6 +157,18 @@ object CacheModule {
     @Singleton
     fun providePlaylistEntityMapper(): PlaylistEntityMapper {
         return PlaylistEntityMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun providePlaylistCacheRepository(
+        playlistDao: PlaylistDao,
+        playlistEntityMapper: PlaylistEntityMapper
+    ): PlaylistCacheRepository {
+        return PlaylistCacheRepositoryImpl(
+            playlistDao = playlistDao,
+            playlistEntityMapper = playlistEntityMapper
+        )
     }
 
     @Provides
@@ -133,6 +204,13 @@ object CacheModule {
     @Named("cacheErrorHandler")
     fun provideCacheErrorHandler(): ErrorHandler {
         return CacheErrorHandler()
+    }
+
+    @Provides
+    @Singleton
+    @Named("cacheErrorMapper")
+    fun provideCacheErrorMapper(): ErrorMapper {
+        return CacheErrorMapper()
     }
 
 }
