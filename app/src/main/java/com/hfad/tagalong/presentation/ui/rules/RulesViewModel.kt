@@ -5,12 +5,12 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import com.hfad.tagalong.interactors.data.on
-import com.hfad.tagalong.interactors.rules.LoadAllRules
+import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.rules.RulesEvent.LoadRulesEvent
 import com.hfad.tagalong.presentation.util.DialogQueue
 import com.hfad.tagalong.rule_domain.Rule
+import com.hfad.tagalong.rule_interactors.LoadAllRules
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch

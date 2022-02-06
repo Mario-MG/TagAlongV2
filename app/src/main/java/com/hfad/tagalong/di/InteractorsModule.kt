@@ -1,38 +1,35 @@
 package com.hfad.tagalong.di
 
 import android.content.SharedPreferences
-import com.hfad.tagalong.cache.dao.*
-import com.hfad.tagalong.cache.model.PlaylistEntityMapper
-import com.hfad.tagalong.cache.model.RuleEntityMapper
-import com.hfad.tagalong.cache.model.TagEntityMapper
-import com.hfad.tagalong.cache.model.TrackEntityMapper
 import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.interactors.login.GetTokenFromCode
 import com.hfad.tagalong.interactors.login.GetTokenFromRefreshToken
 import com.hfad.tagalong.interactors.login.LoadSessionInfo
 import com.hfad.tagalong.interactors.login.LoadUser
-import com.hfad.tagalong.interactors.playlists.LoadFirstPlaylistsPage
-import com.hfad.tagalong.interactors.playlists.LoadNextPlaylistsPage
-import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
-import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
-import com.hfad.tagalong.interactors.rulecreation.ApplyNewRule
-import com.hfad.tagalong.interactors.rulecreation.CreatePlaylist
-import com.hfad.tagalong.interactors.rulecreation.CreateRule
-import com.hfad.tagalong.interactors.rules.LoadAllRules
 import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
 import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
 import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
-import com.hfad.tagalong.interactors.singletrack.*
-import com.hfad.tagalong.interactors.tags.LoadAllTags
-import com.hfad.tagalong.interactors.tagtracks.LoadAllTagTracks
+import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.network.RetrofitAuthService
-import com.hfad.tagalong.network.RetrofitPlaylistService
-import com.hfad.tagalong.network.RetrofitTrackService
 import com.hfad.tagalong.network.RetrofitUserService
-import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
-import com.hfad.tagalong.network.model.TrackDtoMapper
 import com.hfad.tagalong.network.model.UserDtoMapper
+import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylists
+import com.hfad.tagalong.playlist_interactors.CreatePlaylist
+import com.hfad.tagalong.playlist_interactors.LoadPlaylistsPage
+import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistCacheRepository
+import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
+import com.hfad.tagalong.rule_interactors.CreateRule
+import com.hfad.tagalong.rule_interactors.LoadAllRules
+import com.hfad.tagalong.rule_interactors.LoadRulesForTags
+import com.hfad.tagalong.rule_interactors_core.repositories.RuleCacheRepository
+import com.hfad.tagalong.tag_interactors.FindOrCreateTag
+import com.hfad.tagalong.tag_interactors.LoadAllTags
+import com.hfad.tagalong.tag_interactors.LoadTagsForTrack
+import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
+import com.hfad.tagalong.track_interactors.*
+import com.hfad.tagalong.track_interactors_core.repositories.TrackCacheRepository
+import com.hfad.tagalong.track_interactors_core.repositories.TrackNetworkRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,225 +43,173 @@ object InteractorsModule {
 
     @Provides
     @ViewModelScoped
-    fun provideLoadFirstPlaylistsPage(
-        playlistService: RetrofitPlaylistService,
-        playlistDtoMapper: PlaylistDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): LoadFirstPlaylistsPage {
-        return LoadFirstPlaylistsPage(
-            playlistService = playlistService,
-            playlistDtoMapper = playlistDtoMapper,
-            networkErrorHandler = networkErrorHandler
+    fun provideLoadPlaylistsPage(
+        playlistNetworkRepository: PlaylistNetworkRepository,
+        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
+    ): LoadPlaylistsPage {
+        return LoadPlaylistsPage(
+            playlistNetworkRepository = playlistNetworkRepository,
+            networkErrorMapper = networkErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
-    fun provideLoadNextPlaylistsPage(
-        playlistService: RetrofitPlaylistService,
-        playlistDtoMapper: PlaylistDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): LoadNextPlaylistsPage {
-        return LoadNextPlaylistsPage(
-            playlistService = playlistService,
-            playlistDtoMapper = playlistDtoMapper,
-            networkErrorHandler = networkErrorHandler
-        )
-    }
-
-    @Provides
-    @ViewModelScoped
-    fun provideLoadFirstPlaylistTracksPage(
-        trackService: RetrofitTrackService,
-        trackDtoMapper: TrackDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): LoadFirstPlaylistTracksPage {
-        return LoadFirstPlaylistTracksPage(
-            trackService = trackService,
-            trackDtoMapper = trackDtoMapper,
-            networkErrorHandler = networkErrorHandler
-        )
-    }
-
-    @Provides
-    @ViewModelScoped
-    fun provideLoadNextPlaylistTracksPage(
-        trackService: RetrofitTrackService,
-        trackDtoMapper: TrackDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): LoadNextPlaylistTracksPage {
-        return LoadNextPlaylistTracksPage(
-            trackService = trackService,
-            trackDtoMapper = trackDtoMapper,
-            networkErrorHandler = networkErrorHandler
+    fun provideLoadPlaylistTracksPage(
+        trackNetworkRepository: TrackNetworkRepository,
+        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
+    ): LoadPlaylistTracksPage {
+        return LoadPlaylistTracksPage(
+            trackNetworkRepository = trackNetworkRepository,
+            networkErrorMapper = networkErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideLoadAllTags( // TODO: What if an interactor is shared between several viewmodels??
-        tagDao: TagDao,
-        tagEntityMapper: TagEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        tagCacheRepository: TagCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): LoadAllTags {
         return LoadAllTags(
-            tagDao = tagDao,
-            tagEntityMapper = tagEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+            tagCacheRepository = tagCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
-    fun provideLoadAllTagTracks(
-        trackDao: TrackDao,
-        trackEntityMapper: TrackEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
-    ): LoadAllTagTracks {
-        return LoadAllTagTracks(
-            trackDao = trackDao,
-            trackEntityMapper = trackEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+    fun provideLoadAllTracksForTag(
+        trackCacheRepository: TrackCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): LoadAllTracksForTag {
+        return LoadAllTracksForTag(
+            trackCacheRepository = trackCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
-    fun provideLoadTrackTags(
-        tagDao: TagDao,
-        tagEntityMapper: TagEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
-    ): LoadTrackTags {
-        return LoadTrackTags(
-            tagDao = tagDao,
-            tagEntityMapper = tagEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+    fun provideLoadTagsForTrack(
+        tagCacheRepository: TagCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): LoadTagsForTrack {
+        return LoadTagsForTrack(
+            tagCacheRepository = tagCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
-    fun provideCreateTag(
-        tagDao: TagDao,
-        tagEntityMapper: TagEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
-    ): CreateTag {
-        return CreateTag(
-            tagDao = tagDao,
-            tagEntityMapper = tagEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+    fun provideFindOrCreateTag(
+        tagCacheRepository: TagCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): FindOrCreateTag {
+        return FindOrCreateTag(
+            tagCacheRepository = tagCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideAddTagToTrack(
-        trackDao: TrackDao,
-        trackEntityMapper: TrackEntityMapper,
-        trackTagCrossRefDao: TrackTagCrossRefDao,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        trackCacheRepository: TrackCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): AddTagToTrack {
         return AddTagToTrack(
-            trackDao = trackDao,
-            trackEntityMapper = trackEntityMapper,
-            cacheErrorHandler = cacheErrorHandler,
-            trackTagCrossRefDao = trackTagCrossRefDao,
+            trackCacheRepository = trackCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
-    fun provideApplyExistingRules(
-        ruleDao: RuleDao,
-        ruleEntityMapper: RuleEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler,
-        playlistService: RetrofitPlaylistService,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): ApplyExistingRules {
-        return ApplyExistingRules(
-            ruleDao = ruleDao,
-            ruleEntityMapper = ruleEntityMapper,
-            cacheErrorHandler = cacheErrorHandler,
-            playlistService = playlistService,
-            networkErrorHandler = networkErrorHandler
+    fun provideLoadRulesForTags(
+        ruleCacheRepository: RuleCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): LoadRulesForTags {
+        return LoadRulesForTags(
+            ruleCacheRepository = ruleCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideDeleteTagFromTrack(
-        trackTagCrossRefDao: TrackTagCrossRefDao,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        trackCacheRepository: TrackCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): DeleteTagFromTrack {
         return DeleteTagFromTrack(
-            trackTagCrossRefDao = trackTagCrossRefDao,
-            cacheErrorHandler = cacheErrorHandler
+            trackCacheRepository = trackCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideLoadAllRules(
-        ruleDao: RuleDao,
-        ruleEntityMapper: RuleEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        ruleCacheRepository: RuleCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): LoadAllRules {
         return LoadAllRules(
-            ruleDao = ruleDao,
-            ruleEntityMapper = ruleEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+            ruleCacheRepository = ruleCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideCreatePlaylist(
-        playlistService: RetrofitPlaylistService,
-        playlistDtoMapper: PlaylistDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler,
-        playlistDao: PlaylistDao,
-        playlistEntityMapper: PlaylistEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        playlistNetworkRepository: PlaylistNetworkRepository,
+        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper,
+        playlistCacheRepository: PlaylistCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): CreatePlaylist {
         return CreatePlaylist(
-            playlistService = playlistService,
-            playlistDtoMapper = playlistDtoMapper,
-            networkErrorHandler = networkErrorHandler,
-            playlistDao = playlistDao,
-            playlistEntityMapper = playlistEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+            playlistNetworkRepository = playlistNetworkRepository,
+            networkErrorMapper = networkErrorMapper,
+            playlistCacheRepository = playlistCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideCreateRule(
-        ruleDao: RuleDao,
-        ruleEntityMapper: RuleEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        ruleCacheRepository: RuleCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): CreateRule {
         return CreateRule(
-            ruleDao = ruleDao,
-            ruleEntityMapper = ruleEntityMapper,
-            cacheErrorHandler = cacheErrorHandler
+            ruleCacheRepository = ruleCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
-    fun provideApplyNewRule(
-        trackDao: TrackDao,
-        trackEntityMapper: TrackEntityMapper,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler,
-        playlistService: RetrofitPlaylistService,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): ApplyNewRule {
-        return ApplyNewRule(
-            trackDao = trackDao,
-            trackEntityMapper = trackEntityMapper,
-            cacheErrorHandler = cacheErrorHandler,
-            playlistService = playlistService,
-            networkErrorHandler = networkErrorHandler
+    fun provideLoadTracksForRule(
+        trackCacheRepository: TrackCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): LoadTracksForRule {
+        return LoadTracksForRule(
+            trackCacheRepository = trackCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideAddTracksToPlaylist(
+        playlistNetworkRepository: PlaylistNetworkRepository,
+        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
+    ): AddTracksToPlaylists {
+        return AddTracksToPlaylists(
+            playlistNetworkRepository = playlistNetworkRepository,
+            networkErrorMapper = networkErrorMapper
         )
     }
 
