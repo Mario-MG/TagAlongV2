@@ -91,8 +91,14 @@ object CacheModule {
 
     @Provides
     @Singleton
-    fun provideTrackTagCrossRefMapper(): TrackTagCrossRefMapper {
-        return TrackTagCrossRefMapper()
+    fun provideTrackTagCrossRefMapper(
+        trackEntityMapper: TrackEntityMapper,
+        tagEntityMapper: TagEntityMapper
+    ): TrackTagCrossRefMapper {
+        return TrackTagCrossRefMapper(
+            trackEntityMapper = trackEntityMapper,
+            tagEntityMapper = tagEntityMapper
+        )
     }
 
     @Provides
