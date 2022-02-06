@@ -15,7 +15,7 @@ abstract class BaseViewModel : ViewModel() {
 
     abstract val dialogQueue: DialogQueue
 
-    protected fun appendGenericErrorToQueue(error: LegacyErrorType) {
+    protected fun appendGenericErrorToQueue(error: LegacyErrorType) { // TODO: Deprecated - to be removed
         when (error) {
             is LegacyCacheError -> dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.generic_cache_error))
             is LegacyNetworkError -> dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.generic_spotify_error))
