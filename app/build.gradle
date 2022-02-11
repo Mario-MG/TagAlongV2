@@ -4,6 +4,8 @@ plugins {
 
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.5.31"
 }
 
 android {
@@ -67,10 +69,14 @@ dependencies {
     implementation project(':interactors:track-interactors-core')
     implementation project(':interactors:playlist-interactors-core')
     implementation project(':interactors:rule-interactors-core')
+    implementation project(':interactors:auth-interactors-core')
     implementation project(':interactors:tag-interactors')
     implementation project(':interactors:track-interactors')
     implementation project(':interactors:playlist-interactors')
     implementation project(':interactors:rule-interactors')
+    implementation project(':interactors:auth-interactors')
+
+    implementation project(':session')
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.3.1'
@@ -81,6 +87,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'
 
     def retrofit_version = "2.9.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"

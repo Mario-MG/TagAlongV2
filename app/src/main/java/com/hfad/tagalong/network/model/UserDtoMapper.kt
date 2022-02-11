@@ -1,6 +1,6 @@
 package com.hfad.tagalong.network.model
 
-import com.hfad.tagalong.domain.model.User
+import com.hfad.tagalong.network.session.model.User
 import com.hfad.tagalong.domain.util.DomainMapper
 
 class UserDtoMapper : DomainMapper<UserDto, User> {

@@ -9,17 +9,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
-import com.hfad.tagalong.presentation.session.SessionManager
+import com.hfad.tagalong.auth_interactors.LogIn
+import com.hfad.tagalong.auth_interactors.SaveSessionData
 import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.di.APP_REDIRECT_URI
-import com.hfad.tagalong.domain.model.Token
-import com.hfad.tagalong.interactors.data.ErrorType.NetworkError.AccessDeniedError
 import com.hfad.tagalong.interactors.data.on
-import com.hfad.tagalong.interactors.login.GetTokenFromCode
-import com.hfad.tagalong.interactors.login.LoadUser
-import com.hfad.tagalong.interactors.login.SaveSessionInfo
 import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
 import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
+import com.hfad.tagalong.interactors_core.data.ErrorType.NetworkError.AccessDeniedError
+import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.*
@@ -37,12 +35,10 @@ import javax.inject.Named
 class LoginViewModel
 @Inject
 constructor(
-    private val getTokenFromCode: GetTokenFromCode,
-    private val loadUser: LoadUser,
-    private val saveSessionInfo: SaveSessionInfo,
+    private val logIn: LogIn,
+    private val saveSessionData: SaveSessionData,
     private val loadStayLoggedIn: LoadStayLoggedIn,
     private val saveStayLoggedIn: SaveStayLoggedIn,
-    private val sessionManager: SessionManager,
     @Named(APP_CLIENT_ID) private val clientId: String,
     @Named(APP_REDIRECT_URI) private val redirectUri: String
 ) : BaseViewModel() {
@@ -139,21 +135,28 @@ constructor(
     private fun login(uri: Uri) {
         val code = uri.getQueryParameter("code")
         code?.let {
-            getTokenFromCode
+            logIn
                 .execute(
-                    clientId = clientId,
                     code = code,
-                    codeVerifier = codeVerifier,
-                    redirectUri = redirectUri
+                    codeVerifier = codeVerifier
                 )
                 .on(
-                    success = { token ->
-                        loadUser(token = token)
+                    success = {
                         if (stayLoggedIn) {
-                            saveSessionInfo(token)
+                            saveSessionData()
                         }
                     },
-                    error = ::appendGenericErrorToQueue
+                    error = { error ->
+                        when (error) {
+                            is AccessDeniedError -> dialogQueue.appendErrorDialog(
+                                title = BaseApplication.getContext()
+                                    .getString(R.string.access_denied_error_title),
+                                description = BaseApplication.getContext()
+                                    .getString(R.string.access_denied_error_description)
+                            )
+                            else -> appendGenericErrorToQueue(error)
+                        }
+                    }
                 )
                 .launchIn(viewModelScope)
         } ?: run {
@@ -161,32 +164,9 @@ constructor(
         }
     }
 
-    private fun loadUser(token: Token) {
-        loadUser
-            .execute(token = token)
-            .on(
-                success = { user ->
-                    sessionManager.login(
-                        token = token,
-                        user = user
-                    )
-                },
-                error = { error ->
-                    when (error) {
-                        is AccessDeniedError -> dialogQueue.appendErrorDialog(
-                            title = BaseApplication.getContext().getString(R.string.access_denied_error_title),
-                            description = BaseApplication.getContext().getString(R.string.access_denied_error_description)
-                        )
-                        else -> appendGenericErrorToQueue(error)
-                    }
-                }
-            )
-            .launchIn(viewModelScope)
-    }
-
-    private fun saveSessionInfo(token: Token) {
-        saveSessionInfo
-            .execute(token = token)
+    private fun saveSessionData() {
+        saveSessionData
+            .execute()
             .on(
                 error = { dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.session_unsaved_error_description)) }
             )

@@ -1,6 +1,6 @@
 package com.hfad.tagalong.network.model
 
-import com.hfad.tagalong.domain.model.Token
+import com.hfad.tagalong.network.session.model.Token
 import com.hfad.tagalong.domain.util.DomainMapper
 
 class TokenDtoMapper : DomainMapper<TokenDto, Token> {
