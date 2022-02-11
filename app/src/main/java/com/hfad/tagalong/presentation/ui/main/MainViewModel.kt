@@ -4,35 +4,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
-import com.hfad.tagalong.di.APP_CLIENT_ID
-import com.hfad.tagalong.domain.model.Token
-import com.hfad.tagalong.interactors.data.ErrorType.NetworkError.AccessDeniedError
-import com.hfad.tagalong.interactors.data.on
-import com.hfad.tagalong.interactors.login.GetTokenFromRefreshToken
-import com.hfad.tagalong.interactors.login.LoadSessionInfo
-import com.hfad.tagalong.interactors.login.LoadUser
-import com.hfad.tagalong.interactors.login.SaveSessionInfo
+import com.hfad.tagalong.auth_interactors.LoadSessionData
+import com.hfad.tagalong.auth_interactors.LogOut
+import com.hfad.tagalong.auth_interactors.RefreshSession
+import com.hfad.tagalong.auth_interactors.SaveSessionData
+import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.presentation.BaseApplication
-import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.util.DialogQueue
+import com.hfad.tagalong.session.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class MainViewModel
 @Inject
 constructor(
-    private val loadSessionInfo: LoadSessionInfo,
-    private val getTokenFromRefreshToken: GetTokenFromRefreshToken,
-    private val loadUser: LoadUser,
-    private val saveSessionInfo: SaveSessionInfo,
-    private val sessionManager: SessionManager,
-    @Named(APP_CLIENT_ID) private val clientId: String
+    private val loadSessionData: LoadSessionData,
+    private val refreshSession: RefreshSession,
+    private val saveSessionData: SaveSessionData,
+    private val logOut: LogOut,
+    private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
     var isLoggedIn by mutableStateOf(false)
@@ -41,80 +37,46 @@ constructor(
     override val dialogQueue = DialogQueue()
 
     init {
-        sessionManager.addLoginObserver {
+        sessionManager.addLoginObserver(viewModelScope) {
+            if (!isLoggedIn) refreshSession() // TODO: Refine load/refresh/save flow
             isLoggedIn = true
         }
-        sessionManager.addLogoutObserver {
+        sessionManager.addLogoutObserver(viewModelScope) {
             isLoggedIn = false
         }
-        loadSessionInfo()
+        loadSessionData()
     }
 
-    private fun loadSessionInfo() {
-        loadSessionInfo
+    private fun loadSessionData() {
+        loadSessionData
             .execute()
             .on(
-                success = { refreshToken ->
-                    if (refreshToken != null) {
-                        getTokenFromRefreshToken(refreshToken)
-                    } else {
-                        sessionManager.logOut()
-                    }
-                },
                 error = {
-                    sessionManager.logOut()
+                    logOut()
                     dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.load_session_error_description))
                 }
             )
             .launchIn(viewModelScope)
     }
 
-    private fun getTokenFromRefreshToken(refreshToken: String) {
-        getTokenFromRefreshToken
-            .execute(
-                clientId = clientId,
-                refreshToken = refreshToken
-            )
+    private fun refreshSession() {
+        refreshSession
+            .execute()
             .on(
-                success = { token ->
-                    loadUser(token)
-                    saveSessionInfo(token)
+                success = {
+                    saveSessionData()
                 },
                 error = { error ->
-                    sessionManager.logOut()
+                    logOut()
                     appendGenericErrorToQueue(error)
                 }
             )
             .launchIn(viewModelScope)
     }
 
-    private fun loadUser(token: Token) {
-        loadUser
-            .execute(token = token)
-            .on(
-                success = { user ->
-                    sessionManager.login(
-                        token = token,
-                        user = user
-                    )
-                },
-                error  = { error ->
-                    sessionManager.logOut()
-                    when (error) {
-                        is AccessDeniedError -> dialogQueue.appendErrorDialog(
-                            title = BaseApplication.getContext().getString(R.string.access_denied_error_title),
-                            description = BaseApplication.getContext().getString(R.string.access_denied_error_description)
-                        )
-                        else -> appendGenericErrorToQueue(error)
-                    }
-                }
-            )
-            .launchIn(viewModelScope)
-    }
-
-    private fun saveSessionInfo(token: Token) {
-        saveSessionInfo
-            .execute(token = token)
+    private fun saveSessionData() {
+        saveSessionData
+            .execute()
             .on(
                 error = {
                     dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.session_unsaved_error_description))
@@ -123,12 +85,21 @@ constructor(
             .launchIn(viewModelScope)
     }
 
+    private fun logOut() {
+        logOut
+            .execute()
+            .on(
+                error = {} // TODO
+            )
+            .launchIn(viewModelScope)
+    }
+
     fun addLoginSuccessObserver(owner: LifecycleOwner, onLoginSuccess: () -> Unit) {
-        sessionManager.addLoginObserver(owner, onLoginSuccess)
+        sessionManager.addLoginObserver(owner.lifecycleScope, onLoginSuccess)
     }
 
     fun addLogoutObserver(owner: LifecycleOwner, onLogOut: () -> Unit) {
-        sessionManager.addLogoutObserver(owner, onLogOut)
+        sessionManager.addLogoutObserver(owner.lifecycleScope, onLogOut)
     }
 
 }
