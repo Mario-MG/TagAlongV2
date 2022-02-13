@@ -1,16 +1,14 @@
 package com.hfad.tagalong.network.session
 
-import com.hfad.tagalong.network.session.model.Token
+import com.hfad.tagalong.auth_interactors_core.session.SessionData
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager.SessionState.*
 import com.hfad.tagalong.network.session.model.User
 import com.hfad.tagalong.network.util.AuthManager
 import com.hfad.tagalong.network.util.UserManager
-import com.hfad.tagalong.session.SessionData
-import com.hfad.tagalong.session.SessionManager
-import com.hfad.tagalong.session.SessionManager.SessionState.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.lang.IllegalStateException
 
 class SessionManagerImpl : SessionManager(), AuthManager, UserManager {
 
@@ -29,29 +27,19 @@ class SessionManagerImpl : SessionManager(), AuthManager, UserManager {
         sessionState = LoggedInImpl(sessionData)
     }
 
-    fun refreshSession(token: Token) {
-        val sessionState = this.sessionState
+    override fun refresh(sessionData: SessionData) {
+        val sessionState = sessionState
         if (sessionState !is LoggedInImpl) {
-            throw IllegalStateException()
+            throw IllegalAccessException("Session data can only be refreshed if session state is already LoggedIn")
         }
-        this.sessionState = LoggedInImpl(
-            SessionDataImpl(
-                token = token,
-                user = sessionState.sessionData.user
-            )
-        )
+        if (sessionData !is SessionDataImpl) {
+            throw IllegalArgumentException()
+        }
+        sessionState.sessionDataImpl = sessionData
     }
 
     override fun logOut() {
         sessionState = Unlogged
-    }
-
-    fun refreshToken(): String {
-        val sessionState = this.sessionState
-        if (sessionState !is LoggedInImpl) {
-            throw IllegalAccessException("Refresh token cannot be accessed while unlogged")
-        }
-        return sessionState.sessionData.token.refreshToken
     }
 
     override fun accessToken(): String {
@@ -59,7 +47,7 @@ class SessionManagerImpl : SessionManager(), AuthManager, UserManager {
         if (sessionState !is LoggedInImpl) {
             throw IllegalAccessException("Access token cannot be accessed while unlogged")
         }
-        return sessionState.sessionData.token.accessToken
+        return sessionState.sessionDataImpl.token.accessToken
     }
 
     override fun user(): User {
@@ -67,7 +55,7 @@ class SessionManagerImpl : SessionManager(), AuthManager, UserManager {
         if (sessionState !is LoggedInImpl) {
             throw IllegalAccessException("User cannot be accessed while unlogged")
         }
-        return sessionState.sessionData.user
+        return sessionState.sessionDataImpl.user
     }
 
     override fun addLoginObserver(
@@ -96,6 +84,6 @@ class SessionManagerImpl : SessionManager(), AuthManager, UserManager {
         }
     }
 
-    private data class LoggedInImpl(override val sessionData: SessionDataImpl) : LoggedIn(sessionData)
+    private data class LoggedInImpl(var sessionDataImpl: SessionDataImpl) : LoggedIn(sessionDataImpl)
 
 }

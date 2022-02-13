@@ -8,14 +8,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
 import com.hfad.tagalong.auth_interactors.LoadSessionData
-import com.hfad.tagalong.auth_interactors.LogOut
-import com.hfad.tagalong.auth_interactors.RefreshSession
+import com.hfad.tagalong.auth_interactors.RefreshSessionData
 import com.hfad.tagalong.auth_interactors.SaveSessionData
+import com.hfad.tagalong.auth_interactors_core.session.SessionData
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager
 import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.util.DialogQueue
-import com.hfad.tagalong.session.SessionManager
+import com.hfad.tagalong.settings_interactors.LoadStayLoggedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
@@ -25,9 +26,9 @@ class MainViewModel
 @Inject
 constructor(
     private val loadSessionData: LoadSessionData,
-    private val refreshSession: RefreshSession,
+    private val refreshSessionData: RefreshSessionData,
+    private val loadStayLoggedIn: LoadStayLoggedIn,
     private val saveSessionData: SaveSessionData,
-    private val logOut: LogOut,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
@@ -38,8 +39,8 @@ constructor(
 
     init {
         sessionManager.addLoginObserver(viewModelScope) {
-            if (!isLoggedIn) refreshSession() // TODO: Refine load/refresh/save flow
             isLoggedIn = true
+            saveSessionDataIfEnabled(sessionManager.sessionData!!)
         }
         sessionManager.addLogoutObserver(viewModelScope) {
             isLoggedIn = false
@@ -51,45 +52,60 @@ constructor(
         loadSessionData
             .execute()
             .on(
+                success = { sessionData ->
+                    sessionData?.let { loadedSessionData ->
+                        refreshSessionData(loadedSessionData)
+                    } ?: run {
+                        sessionManager.logOut()
+                    }
+                },
                 error = {
-                    logOut()
+                    sessionManager.logOut()
                     dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.load_session_error_description))
                 }
             )
             .launchIn(viewModelScope)
     }
 
-    private fun refreshSession() {
-        refreshSession
-            .execute()
+    private fun refreshSessionData(oldSessionData: SessionData) {
+        refreshSessionData
+            .execute(oldSessionData = oldSessionData)
             .on(
-                success = {
-                    saveSessionData()
-                },
-                error = { error ->
-                    logOut()
-                    appendGenericErrorToQueue(error)
+                success = sessionManager::logIn,
+                error = {
+                    sessionManager.logOut()
+                    dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.load_session_error_description))
                 }
             )
             .launchIn(viewModelScope)
     }
 
-    private fun saveSessionData() {
-        saveSessionData
+    private fun saveSessionDataIfEnabled(sessionData: SessionData) {
+        loadStayLoggedIn
             .execute()
             .on(
+                success = { stayLoggedIn ->
+                    if (stayLoggedIn) {
+                        saveSessionData(sessionData)
+                    } else {
+                        sessionManager.logIn(sessionData)
+                    }
+                },
+                error = {} // TODO
+            )
+            .launchIn(viewModelScope)
+    }
+
+    private fun saveSessionData(sessionData: SessionData) {
+        saveSessionData
+            .execute(sessionData = sessionData)
+            .on(
+                success = {
+                    sessionManager.logIn(sessionData)
+                },
                 error = {
                     dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.session_unsaved_error_description))
                 }
-            )
-            .launchIn(viewModelScope)
-    }
-
-    private fun logOut() {
-        logOut
-            .execute()
-            .on(
-                error = {} // TODO
             )
             .launchIn(viewModelScope)
     }

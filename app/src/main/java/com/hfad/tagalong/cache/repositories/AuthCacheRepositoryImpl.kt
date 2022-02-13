@@ -3,13 +3,12 @@ package com.hfad.tagalong.cache.repositories
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
+import com.hfad.tagalong.auth_interactors_core.session.SessionData
+import com.hfad.tagalong.auth_interactors_core.session.SessionDataSerializer
 import com.hfad.tagalong.presentation.BaseApplication
-import com.hfad.tagalong.session.SessionDataSerializer
-import com.hfad.tagalong.session.SessionManager
 
 class AuthCacheRepositoryImpl(
     application: BaseApplication,
-    private val sessionManager: SessionManager, // TODO: Decouple?
     private val sessionDataSerializer: SessionDataSerializer
 ) : AuthCacheRepository {
 
@@ -23,19 +22,15 @@ class AuthCacheRepositoryImpl(
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
-    override suspend fun saveSessionData() {
-        sessionManager.sessionData?.let { sessionData ->
-            sharedPreferences.edit()
-                .putString(SESSION_DATA, sessionDataSerializer.serializeSessionData(sessionData))
-                .apply()
-        }
+    override suspend fun saveSessionData(sessionData: SessionData) {
+        sharedPreferences.edit()
+            .putString(SESSION_DATA, sessionDataSerializer.serializeSessionData(sessionData))
+            .apply()
     }
 
-    override suspend fun loadSessionData() {
-        sharedPreferences.getString(SESSION_DATA, null)?.let { serializedSessionData ->
-            sessionManager.logIn(sessionDataSerializer.deserializeSessionData(serializedSessionData))
-        } ?: run {
-            sessionManager.logOut() // TODO: Review/improve this
+    override suspend fun loadSessionData(): SessionData? {
+        return sharedPreferences.getString(SESSION_DATA, null)?.let { serializedSessionData ->
+            sessionDataSerializer.deserializeSessionData(serializedSessionData)
         }
     }
 

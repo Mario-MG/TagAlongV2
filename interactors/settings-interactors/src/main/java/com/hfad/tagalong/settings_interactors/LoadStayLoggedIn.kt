@@ -1,25 +1,24 @@
-package com.hfad.tagalong.auth_interactors
+package com.hfad.tagalong.settings_interactors
 
-import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
-import com.hfad.tagalong.auth_interactors_core.session.SessionData
 import com.hfad.tagalong.interactors_core.data.DataState
 import com.hfad.tagalong.interactors_core.data.DataState.*
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
+import com.hfad.tagalong.settings_interactors_core.repositories.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class SaveSessionData(
-    private val authCacheRepository: AuthCacheRepository,
+class LoadStayLoggedIn(
+    private val settingsRepository: SettingsRepository,
     private val cacheErrorMapper: ErrorMapper
 ) {
 
-    fun execute(sessionData: SessionData): Flow<DataState<Unit>> = flow {
+    fun execute(): Flow<DataState<Boolean>> = flow {
         try {
             emit(Loading(true))
 
-            authCacheRepository.saveSessionData(sessionData)
+            val stayLoggedIn = settingsRepository.loadStayLoggedIn()
 
-            emit(Success(Unit))
+            emit(Success(stayLoggedIn))
         } catch (e: Exception) {
             emit(Error(cacheErrorMapper.parseError(e)))
         } finally {

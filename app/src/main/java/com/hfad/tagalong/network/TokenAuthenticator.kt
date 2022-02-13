@@ -2,7 +2,9 @@ package com.hfad.tagalong.network
 
 import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
 import com.hfad.tagalong.auth_interactors_core.repositories.AuthNetworkRepository
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager
 import com.hfad.tagalong.network.util.AuthManager
+import com.hfad.tagalong.settings_interactors_core.repositories.SettingsRepository
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -14,7 +16,9 @@ import java.io.IOException
 class TokenAuthenticator(
     private val authNetworkRepository: AuthNetworkRepository,
     private val authManager: AuthManager,
-    private val authCacheRepository: AuthCacheRepository
+    private val authCacheRepository: AuthCacheRepository,
+    private val settingsRepository: SettingsRepository,
+    private val sessionManager: SessionManager
 ) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request {
@@ -28,10 +32,15 @@ class TokenAuthenticator(
 
     private suspend fun tryToRefresh() {
         try {
-            authNetworkRepository.refresh()
+            val newSessionData = authNetworkRepository.refreshSessionData(sessionManager.sessionData!!)
+            val stayLoggedIn = settingsRepository.loadStayLoggedIn()
+            if (stayLoggedIn) {
+                authCacheRepository.saveSessionData(newSessionData)
+            }
+            sessionManager.refresh(newSessionData)
         } catch (e: Exception) {
             authCacheRepository.deleteSessionData()
-            authNetworkRepository.logOut()
+            sessionManager.logOut()
             throw IOException("Re-authorization unsuccessful") // TODO: Find a more specific child of IOException (it must be an IOException)
         }
     }

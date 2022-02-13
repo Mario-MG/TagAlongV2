@@ -1,6 +1,7 @@
 package com.hfad.tagalong.auth_interactors
 
 import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
+import com.hfad.tagalong.auth_interactors_core.session.SessionData
 import com.hfad.tagalong.interactors_core.data.DataState
 import com.hfad.tagalong.interactors_core.data.DataState.*
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
@@ -12,13 +13,13 @@ class LoadSessionData(
     private val cacheErrorMapper: ErrorMapper
 ) {
 
-    fun execute(): Flow<DataState<Unit>> = flow {
+    fun execute(): Flow<DataState<SessionData?>> = flow {
         try {
             emit(Loading(true))
 
-            authCacheRepository.loadSessionData()
+            val sessionData = authCacheRepository.loadSessionData()
 
-            emit(Success(Unit))
+            emit(Success(sessionData))
         } catch (e: Exception) {
             emit(Error(cacheErrorMapper.parseError(e)))
         } finally {

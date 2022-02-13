@@ -1,12 +1,9 @@
 package com.hfad.tagalong.di
 
-import android.content.SharedPreferences
 import com.hfad.tagalong.auth_interactors.*
 import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
 import com.hfad.tagalong.auth_interactors_core.repositories.AuthNetworkRepository
-import com.hfad.tagalong.interactors.data.ErrorHandler
-import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
-import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylists
 import com.hfad.tagalong.playlist_interactors.CreatePlaylist
@@ -17,6 +14,9 @@ import com.hfad.tagalong.rule_interactors.CreateRule
 import com.hfad.tagalong.rule_interactors.LoadAllRules
 import com.hfad.tagalong.rule_interactors.LoadRulesForTags
 import com.hfad.tagalong.rule_interactors_core.repositories.RuleCacheRepository
+import com.hfad.tagalong.settings_interactors.LoadStayLoggedIn
+import com.hfad.tagalong.settings_interactors.SaveStayLoggedIn
+import com.hfad.tagalong.settings_interactors_core.repositories.SettingsRepository
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.tag_interactors.LoadTagsForTrack
@@ -212,8 +212,8 @@ object InteractorsModule {
     fun provideLogIn(
         authNetworkRepository: AuthNetworkRepository,
         @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
-    ): LogIn {
-        return LogIn(
+    ): GetNewSessionData {
+        return GetNewSessionData(
             authNetworkRepository = authNetworkRepository,
             networkErrorMapper = networkErrorMapper
         )
@@ -222,24 +222,10 @@ object InteractorsModule {
     @Provides
     @ViewModelScoped
     fun provideLogOut(
-        authNetworkRepository: AuthNetworkRepository,
-        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
+        sessionManager: SessionManager
     ): LogOut {
         return LogOut(
-            authNetworkRepository = authNetworkRepository,
-            networkErrorMapper = networkErrorMapper
-        )
-    }
-
-    @Provides
-    @ViewModelScoped
-    fun provideRefreshSession(
-        authNetworkRepository: AuthNetworkRepository,
-        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
-    ): RefreshSession {
-        return RefreshSession(
-            authNetworkRepository = authNetworkRepository,
-            networkErrorMapper = networkErrorMapper
+            sessionManager = sessionManager
         )
     }
 
@@ -281,25 +267,37 @@ object InteractorsModule {
 
     @Provides
     @ViewModelScoped
+    fun provideRefreshSessionData(
+        authNetworkRepository: AuthNetworkRepository,
+        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
+    ): RefreshSessionData {
+        return RefreshSessionData(
+            authNetworkRepository = authNetworkRepository,
+            networkErrorMapper = networkErrorMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
     fun provideLoadStayLoggedIn(
-        @Named("defaultSharedPreferences") sharedPreferences: SharedPreferences,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        settingsRepository: SettingsRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): LoadStayLoggedIn {
         return LoadStayLoggedIn(
-            sharedPreferences = sharedPreferences,
-            cacheErrorHandler = cacheErrorHandler
+            settingsRepository = settingsRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideSaveStayLoggedIn(
-        @Named("defaultSharedPreferences") sharedPreferences: SharedPreferences,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        settingsRepository: SettingsRepository,
+    @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): SaveStayLoggedIn {
         return SaveStayLoggedIn(
-            sharedPreferences = sharedPreferences,
-            cacheErrorHandler = cacheErrorHandler
+            settingsRepository = settingsRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
