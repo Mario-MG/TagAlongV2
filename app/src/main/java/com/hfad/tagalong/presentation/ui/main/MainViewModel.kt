@@ -61,7 +61,7 @@ constructor(
                 },
                 error = {
                     sessionManager.logOut()
-                    dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.load_session_error_description))
+                    dialogQueue.appendErrorDialog(BaseApplication.getString(R.string.load_session_error_description))
                 }
             )
             .launchIn(viewModelScope)
@@ -74,7 +74,7 @@ constructor(
                 success = sessionManager::logIn,
                 error = {
                     sessionManager.logOut()
-                    dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.load_session_error_description))
+                    dialogQueue.appendErrorDialog(BaseApplication.getString(R.string.load_session_error_description))
                 }
             )
             .launchIn(viewModelScope)
@@ -104,7 +104,7 @@ constructor(
                     sessionManager.logIn(sessionData)
                 },
                 error = {
-                    dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.session_unsaved_error_description))
+                    dialogQueue.appendErrorDialog(BaseApplication.getString(R.string.session_unsaved_error_description))
                 }
             )
             .launchIn(viewModelScope)

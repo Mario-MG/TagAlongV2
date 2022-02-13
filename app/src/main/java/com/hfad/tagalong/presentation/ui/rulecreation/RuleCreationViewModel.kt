@@ -42,7 +42,7 @@ constructor(
         private set
 
     var playlistName by mutableStateOf(
-        BaseApplication.getContext().getString(R.string.new_tagalong_playlist)
+        BaseApplication.getString(R.string.new_tagalong_playlist)
     )
         private set
 

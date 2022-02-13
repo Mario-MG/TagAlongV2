@@ -103,7 +103,7 @@ constructor(
                 error = { error ->
                     when (error) {
                         is DuplicateError -> dialogQueue.appendInfoDialog(
-                            BaseApplication.getContext().getString(R.string.duplicate_tag_info)
+                            BaseApplication.getString(R.string.duplicate_tag_info)
                         )
                         else -> appendGenericErrorToQueue(error)
                     }
