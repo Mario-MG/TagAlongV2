@@ -14,8 +14,8 @@ abstract class BaseViewModel : ViewModel() {
 
     protected fun appendGenericErrorToQueue(error: ErrorType) {
         when (error) {
-            is CacheError -> dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.generic_cache_error))
-            is NetworkError -> dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.generic_spotify_error))
+            is CacheError -> dialogQueue.appendErrorDialog(BaseApplication.getString(R.string.generic_cache_error))
+            is NetworkError -> dialogQueue.appendErrorDialog(BaseApplication.getString(R.string.generic_spotify_error))
         }
     }
 

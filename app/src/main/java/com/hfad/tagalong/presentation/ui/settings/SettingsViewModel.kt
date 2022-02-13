@@ -39,7 +39,7 @@ constructor(
             .execute()
             .on(
                 success = { logOut() },
-                error = { dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.logout_error_description)) }
+                error = { dialogQueue.appendErrorDialog(BaseApplication.getString(R.string.logout_error_description)) }
             )
             .launchIn(viewModelScope)
     }

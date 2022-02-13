@@ -120,7 +120,7 @@ constructor(
         return Uri.Builder()
             .scheme("https")
             .authority("accounts.spotify.com")
-            .appendPath(BaseApplication.getContext().getString(R.string.spotify_auth_uri_lang_path))
+            .appendPath(BaseApplication.getString(R.string.spotify_auth_uri_lang_path))
             .appendPath("authorize")
             .appendQueryParameter("client_id", clientId)
             .appendQueryParameter("response_type", "code")
@@ -157,7 +157,7 @@ constructor(
                 )
                 .launchIn(viewModelScope)
         } ?: run {
-            dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.generic_spotify_error))
+            dialogQueue.appendErrorDialog(BaseApplication.getString(R.string.generic_spotify_error))
         }
     }
 
