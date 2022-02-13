@@ -3,22 +3,18 @@ package com.hfad.tagalong.di
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.room.Room
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
 import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
-import com.hfad.tagalong.cache.CacheErrorHandler
+import com.hfad.tagalong.auth_interactors_core.session.SessionDataSerializer
 import com.hfad.tagalong.cache.CacheErrorMapper
 import com.hfad.tagalong.cache.dao.*
 import com.hfad.tagalong.cache.database.MainDatabase
 import com.hfad.tagalong.cache.model.*
 import com.hfad.tagalong.cache.repositories.*
-import com.hfad.tagalong.interactors.data.ErrorHandler
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistCacheRepository
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.rule_interactors_core.repositories.RuleCacheRepository
-import com.hfad.tagalong.session.SessionDataSerializer
-import com.hfad.tagalong.session.SessionManager
+import com.hfad.tagalong.settings_interactors_core.repositories.SettingsRepository
 import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
 import com.hfad.tagalong.track_interactors_core.repositories.TrackCacheRepository
 import dagger.Module
@@ -184,21 +180,22 @@ object CacheModule {
     @Singleton
     fun provideAuthCacheRepository(
         application: BaseApplication,
-        sessionManager: SessionManager,
         sessionDataSerializer: SessionDataSerializer
     ): AuthCacheRepository {
         return AuthCacheRepositoryImpl(
             application = application,
-            sessionManager = sessionManager,
             sessionDataSerializer = sessionDataSerializer
         )
     }
 
     @Provides
     @Singleton
-    @Named("cacheErrorHandler")
-    fun provideCacheErrorHandler(): ErrorHandler {
-        return CacheErrorHandler()
+    fun provideSettingsRepository(
+        application: BaseApplication
+    ): SettingsRepository {
+        return SettingsRepositoryImpl(
+            application = application
+        )
     }
 
     @Provides

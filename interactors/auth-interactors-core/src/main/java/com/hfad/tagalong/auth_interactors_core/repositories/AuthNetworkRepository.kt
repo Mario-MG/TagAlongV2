@@ -1,11 +1,11 @@
 package com.hfad.tagalong.auth_interactors_core.repositories
 
+import com.hfad.tagalong.auth_interactors_core.session.SessionData
+
 interface AuthNetworkRepository {
 
-    suspend fun logIn(codeVerifier: String, code: String)
+    suspend fun getNewSessionData(codeVerifier: String, code: String): SessionData
 
-    suspend fun refresh()
-
-    suspend fun logOut()
+    suspend fun refreshSessionData(oldSessionData: SessionData): SessionData
 
 }

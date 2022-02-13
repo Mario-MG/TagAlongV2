@@ -1,4 +1,4 @@
-package com.hfad.tagalong.session
+package com.hfad.tagalong.auth_interactors_core.session
 
 interface SessionDataSerializer {
 

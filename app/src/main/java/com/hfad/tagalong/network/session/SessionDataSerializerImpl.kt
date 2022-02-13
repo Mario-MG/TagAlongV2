@@ -1,7 +1,7 @@
 package com.hfad.tagalong.network.session
 
-import com.hfad.tagalong.session.SessionData
-import com.hfad.tagalong.session.SessionDataSerializer
+import com.hfad.tagalong.auth_interactors_core.session.SessionData
+import com.hfad.tagalong.auth_interactors_core.session.SessionDataSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

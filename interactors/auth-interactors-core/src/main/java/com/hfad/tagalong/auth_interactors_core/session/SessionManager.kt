@@ -1,6 +1,6 @@
-package com.hfad.tagalong.session
+package com.hfad.tagalong.auth_interactors_core.session
 
-import com.hfad.tagalong.session.SessionManager.SessionState.LoggedIn
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager.SessionState.LoggedIn
 import kotlinx.coroutines.CoroutineScope
 
 abstract class SessionManager {
@@ -14,6 +14,8 @@ abstract class SessionManager {
         }
 
     abstract fun logIn(sessionData: SessionData)
+
+    abstract fun refresh(sessionData: SessionData)
 
     abstract fun logOut()
 
@@ -30,7 +32,7 @@ abstract class SessionManager {
     protected sealed class SessionState {
         object Loading : SessionState()
 
-        abstract class LoggedIn(open val sessionData: SessionData) : SessionState()
+        abstract class LoggedIn(open var sessionData: SessionData) : SessionState()
 
         object Unlogged : SessionState()
     }

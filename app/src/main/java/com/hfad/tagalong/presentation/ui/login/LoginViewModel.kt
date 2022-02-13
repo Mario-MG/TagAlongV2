@@ -9,19 +9,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
-import com.hfad.tagalong.auth_interactors.LogIn
-import com.hfad.tagalong.auth_interactors.SaveSessionData
+import com.hfad.tagalong.auth_interactors.GetNewSessionData
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager
 import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.di.APP_REDIRECT_URI
-import com.hfad.tagalong.interactors.data.on
-import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
-import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
 import com.hfad.tagalong.interactors_core.data.ErrorType.NetworkError.AccessDeniedError
 import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.*
 import com.hfad.tagalong.presentation.util.DialogQueue
+import com.hfad.tagalong.settings_interactors.LoadStayLoggedIn
+import com.hfad.tagalong.settings_interactors.SaveStayLoggedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
@@ -35,8 +34,8 @@ import javax.inject.Named
 class LoginViewModel
 @Inject
 constructor(
-    private val logIn: LogIn,
-    private val saveSessionData: SaveSessionData,
+    private val getNewSessionData: GetNewSessionData,
+    private val sessionManager: SessionManager,
     private val loadStayLoggedIn: LoadStayLoggedIn,
     private val saveStayLoggedIn: SaveStayLoggedIn,
     @Named(APP_CLIENT_ID) private val clientId: String,
@@ -135,16 +134,14 @@ constructor(
     private fun login(uri: Uri) {
         val code = uri.getQueryParameter("code")
         code?.let {
-            logIn
+            getNewSessionData
                 .execute(
                     code = code,
                     codeVerifier = codeVerifier
                 )
                 .on(
-                    success = {
-                        if (stayLoggedIn) {
-                            saveSessionData()
-                        }
+                    success = { sessionData ->
+                        sessionManager.logIn(sessionData)
                     },
                     error = { error ->
                         when (error) {
@@ -162,15 +159,6 @@ constructor(
         } ?: run {
             dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.generic_spotify_error))
         }
-    }
-
-    private fun saveSessionData() {
-        saveSessionData
-            .execute()
-            .on(
-                error = { dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.session_unsaved_error_description)) }
-            )
-            .launchIn(viewModelScope)
     }
 
     companion object {

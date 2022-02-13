@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder
 import com.hfad.tagalong.BuildConfig
 import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
 import com.hfad.tagalong.auth_interactors_core.repositories.AuthNetworkRepository
-import com.hfad.tagalong.interactors.data.ErrorHandler
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.network.*
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
@@ -18,6 +18,7 @@ import com.hfad.tagalong.network.session.SessionManagerImpl
 import com.hfad.tagalong.network.util.AuthManager
 import com.hfad.tagalong.network.util.UserManager
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
+import com.hfad.tagalong.settings_interactors_core.repositories.SettingsRepository
 import com.hfad.tagalong.track_interactors_core.repositories.TrackNetworkRepository
 import dagger.Module
 import dagger.Provides
@@ -65,12 +66,16 @@ object NetworkModule {
     fun provideAuthenticator(
         authNetworkRepository: AuthNetworkRepository,
         authManager: AuthManager,
-        authCacheRepository: AuthCacheRepository
+        authCacheRepository: AuthCacheRepository,
+        settingsRepository: SettingsRepository,
+        sessionManager: SessionManager
     ): Authenticator {
         return TokenAuthenticator(
             authNetworkRepository = authNetworkRepository,
             authManager = authManager,
-            authCacheRepository = authCacheRepository
+            authCacheRepository = authCacheRepository,
+            settingsRepository = settingsRepository,
+            sessionManager = sessionManager
         )
     }
 
@@ -112,15 +117,13 @@ object NetworkModule {
         authService: RetrofitAuthService,
         tokenMapper: TokenDtoMapper,
         userService: RetrofitUserService,
-        userMapper: UserDtoMapper,
-        sessionManager: SessionManagerImpl
+        userMapper: UserDtoMapper
     ): AuthNetworkRepository {
         return AuthNetworkRepositoryImpl(
             authService = authService,
             tokenMapper = tokenMapper,
             userService = userService,
-            userMapper = userMapper,
-            sessionManager = sessionManager
+            userMapper = userMapper
         )
     }
 
@@ -213,13 +216,6 @@ object NetworkModule {
     @Singleton
     fun provideUserMapper(): UserDtoMapper {
         return UserDtoMapper()
-    }
-
-    @Provides
-    @Singleton
-    @Named("networkErrorHandler")
-    fun provideNetworkErrorHandler(): ErrorHandler {
-        return NetworkErrorHandler()
     }
 
     @Provides
