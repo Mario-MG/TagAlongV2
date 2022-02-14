@@ -1,7 +1,5 @@
 package com.hfad.tagalong.di
 
-import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
 import com.hfad.tagalong.auth_interactors_core.session.SessionDataSerializer
@@ -165,15 +163,6 @@ object CacheModule {
             playlistDao = playlistDao,
             playlistEntityMapper = playlistEntityMapper
         )
-    }
-
-    @Provides
-    @Singleton
-    @Named("defaultSharedPreferences")
-    fun provideDefaultSharedPreferences(
-        application: BaseApplication
-    ): SharedPreferences {
-        return PreferenceManager.getDefaultSharedPreferences(application)
     }
 
     @Provides
