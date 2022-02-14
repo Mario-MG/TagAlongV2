@@ -63,6 +63,7 @@ dependencies {
     implementation project(':domain:playlist-domain')
     implementation project(':domain:track-domain')
     implementation project(':domain:rule-domain')
+    implementation project(':domain:domain-common')
 
     implementation project(':interactors:interactors-core')
     implementation project(':interactors:tag-interactors-core')

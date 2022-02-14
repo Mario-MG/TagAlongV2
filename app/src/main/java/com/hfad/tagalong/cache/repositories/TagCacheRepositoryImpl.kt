@@ -13,7 +13,7 @@ class TagCacheRepositoryImpl(
 ) : TagCacheRepository {
 
     override suspend fun getAll(): List<Tag> {
-        return tagEntityMapper.toDomainList(tagDao.getAll())
+        return tagEntityMapper.mapToDomainModelList(tagDao.getAll())
     }
 
     override suspend fun getTagByName(tagName: String): Tag? {
@@ -21,7 +21,7 @@ class TagCacheRepositoryImpl(
     }
 
     override suspend fun getTagsForTrack(track: Track): List<Tag> {
-        return tagEntityMapper.toDomainList(tagDao.getTagsForTrackById(track.uri)) // TODO: Somehow abstract the use of the URI
+        return tagEntityMapper.mapToDomainModelList(tagDao.getTagsForTrackById(track.uri)) // TODO: Somehow abstract the use of the URI
     }
 
     override suspend fun createNewTag(tagInfo: TagInfo): Tag {

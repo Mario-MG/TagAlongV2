@@ -15,7 +15,7 @@ class TrackNetworkRepositoryImpl(
 ) : TrackNetworkRepository {
 
     override suspend fun getTracksInPlaylist(playlist: Playlist, offset: Int, limit: Int): List<Track> {
-        return trackDtoMapper.toDomainList(trackService.getItemsInPlaylist(
+        return trackDtoMapper.mapToDomainModelList(trackService.getItemsInPlaylist(
             auth = "Bearer ${authManager.accessToken()}",
             playlistId = playlist.id,
             offset = offset,
