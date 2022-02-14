@@ -13,11 +13,11 @@ class RuleCacheRepositoryImpl(
 ) : RuleCacheRepository {
 
     override suspend fun getAll(): List<Rule> {
-        return ruleEntityMapper.toDomainList(ruleDao.getAll())
+        return ruleEntityMapper.mapToDomainModelList(ruleDao.getAll())
     }
 
     override suspend fun getRulesForTags(newTag: Tag, originalTags: List<Tag>): List<Rule> {
-        return ruleEntityMapper.toDomainList(
+        return ruleEntityMapper.mapToDomainModelList(
             ruleDao.getRulesFulfilledByTagIds(newTag.id, *originalTags.map(Tag::id).toLongArray())
         )
     }

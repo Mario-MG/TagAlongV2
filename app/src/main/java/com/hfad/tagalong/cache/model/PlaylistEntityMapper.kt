@@ -1,9 +1,9 @@
 package com.hfad.tagalong.cache.model
 
-import com.hfad.tagalong.domain.util.DomainMapper
+import com.hfad.tagalong.domain_common.DomainMapper
 import com.hfad.tagalong.playlist_domain.Playlist
 
-class PlaylistEntityMapper : DomainMapper<PlaylistEntity, Playlist> {
+class PlaylistEntityMapper : DomainMapper<Playlist, PlaylistEntity> {
 
     override fun mapToDomainModel(model: PlaylistEntity): Playlist {
         return Playlist(

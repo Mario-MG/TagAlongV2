@@ -18,7 +18,7 @@ class PlaylistNetworkRepositoryImpl(
 ) : PlaylistNetworkRepository {
 
     override suspend fun getPlaylists(offset: Int, limit: Int): List<Playlist> {
-        return playlistDtoMapper.toDomainList(
+        return playlistDtoMapper.mapToDomainModelList(
             playlistService.getList(
                 auth = "Bearer ${authManager.accessToken()}",
                 offset = offset,
