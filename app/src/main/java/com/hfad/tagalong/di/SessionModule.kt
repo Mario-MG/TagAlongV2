@@ -1,40 +1,35 @@
 package com.hfad.tagalong.di
 
-import android.content.SharedPreferences
-import com.hfad.tagalong.interactors.data.ErrorHandler
-import com.hfad.tagalong.interactors.login.SaveSessionInfo
-import com.hfad.tagalong.presentation.session.SessionManager
+import com.hfad.tagalong.auth_interactors_core.session.SessionDataSerializer
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager
+import com.hfad.tagalong.network.session.SessionDataSerializerImpl
+import com.hfad.tagalong.network.session.SessionManagerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object SessionModule {
 
-    @Provides
     @Singleton
-    fun provideSaveSessionInfo(
-        @Named("authSharedPreferences") sharedPreferences: SharedPreferences,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
-    ): SaveSessionInfo {
-        return SaveSessionInfo(
-            sharedPreferences = sharedPreferences,
-            cacheErrorHandler = cacheErrorHandler
-        )
+    @Provides
+    fun provideSessionManagerImpl(): SessionManagerImpl {
+        return SessionManagerImpl()
     }
 
     @Singleton
     @Provides
-    fun provideSessionManager(
-        saveSessionInfo: SaveSessionInfo
-    ): SessionManager {
-        return SessionManager(
-            saveSessionInfo = saveSessionInfo
-        )
+    fun provideSessionManager(sessionManagerImpl: SessionManagerImpl): SessionManager { // TODO: Improve this
+        return sessionManagerImpl
+    }
+
+    @Singleton
+    @Provides
+    fun provideSessionDataSerializer(): SessionDataSerializer {
+        return SessionDataSerializerImpl()
     }
 
 }

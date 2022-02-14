@@ -2,10 +2,10 @@ package com.hfad.tagalong.presentation.ui.settings
 
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
-import com.hfad.tagalong.interactors.data.on
-import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
+import com.hfad.tagalong.auth_interactors.DeleteSessionData
+import com.hfad.tagalong.auth_interactors.LogOut
+import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.presentation.BaseApplication
-import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.settings.SettingsEvent.LogOutEvent
 import com.hfad.tagalong.presentation.util.DialogQueue
@@ -18,8 +18,8 @@ import javax.inject.Inject
 class SettingsViewModel
 @Inject
 constructor(
-    private val deleteSessionInfo: DeleteSessionInfo,
-    private val sessionManager: SessionManager
+    private val deleteSessionData: DeleteSessionData,
+    private val logOut: LogOut
 ) : BaseViewModel() {
 
     override val dialogQueue = DialogQueue()
@@ -28,21 +28,29 @@ constructor(
         viewModelScope.launch {
             when (event) {
                 is LogOutEvent -> {
-                    logOut()
+                    deleteSessionDataAndLogOut()
                 }
             }
         }
     }
 
-    private fun logOut() {
-        deleteSessionInfo
+    private fun deleteSessionDataAndLogOut() {
+        deleteSessionData
             .execute()
             .on(
-                success = { sessionManager.logOut() },
-                error = { dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.logout_error_description)) }
+                success = { logOut() },
+                error = { dialogQueue.appendErrorDialog(BaseApplication.getString(R.string.logout_error_description)) }
             )
             .launchIn(viewModelScope)
+    }
 
+    private fun logOut() {
+        logOut
+            .execute()
+            .on(
+                error = {} // TODO
+            )
+            .launchIn(viewModelScope)
     }
 
 }

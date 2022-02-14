@@ -2,19 +2,23 @@ package com.hfad.tagalong.di
 
 import com.google.gson.GsonBuilder
 import com.hfad.tagalong.BuildConfig
-import com.hfad.tagalong.interactors.data.ErrorHandler
+import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
+import com.hfad.tagalong.auth_interactors_core.repositories.AuthNetworkRepository
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
-import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.network.*
 import com.hfad.tagalong.network.model.PlaylistDtoMapper
 import com.hfad.tagalong.network.model.TokenDtoMapper
 import com.hfad.tagalong.network.model.TrackDtoMapper
 import com.hfad.tagalong.network.model.UserDtoMapper
+import com.hfad.tagalong.network.repositories.AuthNetworkRepositoryImpl
 import com.hfad.tagalong.network.repositories.PlaylistNetworkRepositoryImpl
 import com.hfad.tagalong.network.repositories.TrackNetworkRepositoryImpl
+import com.hfad.tagalong.network.session.SessionManagerImpl
 import com.hfad.tagalong.network.util.AuthManager
 import com.hfad.tagalong.network.util.UserManager
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
+import com.hfad.tagalong.settings_interactors_core.repositories.SettingsRepository
 import com.hfad.tagalong.track_interactors_core.repositories.TrackNetworkRepository
 import dagger.Module
 import dagger.Provides
@@ -60,16 +64,18 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideAuthenticator(
-        sessionManager: SessionManager,
-        authService: RetrofitAuthService,
-        tokenDtoMapper: TokenDtoMapper,
-        @Named(APP_CLIENT_ID) clientId: String
+        authNetworkRepository: AuthNetworkRepository,
+        authManager: AuthManager,
+        authCacheRepository: AuthCacheRepository,
+        settingsRepository: SettingsRepository,
+        sessionManager: SessionManager
     ): Authenticator {
         return TokenAuthenticator(
-            sessionManager = sessionManager,
-            authService = authService,
-            tokenDtoMapper = tokenDtoMapper,
-            clientId = clientId
+            authNetworkRepository = authNetworkRepository,
+            authManager = authManager,
+            authCacheRepository = authCacheRepository,
+            settingsRepository = settingsRepository,
+            sessionManager = sessionManager
         )
     }
 
@@ -92,7 +98,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideAuthManager(
-        sessionManager: SessionManager
+        sessionManager: SessionManagerImpl
     ): AuthManager {
         return sessionManager
     }
@@ -100,9 +106,25 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideUserManager(
-        sessionManager: SessionManager
+        sessionManager: SessionManagerImpl
     ): UserManager {
         return sessionManager
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthNetworkRepository(
+        authService: RetrofitAuthService,
+        tokenMapper: TokenDtoMapper,
+        userService: RetrofitUserService,
+        userMapper: UserDtoMapper
+    ): AuthNetworkRepository {
+        return AuthNetworkRepositoryImpl(
+            authService = authService,
+            tokenMapper = tokenMapper,
+            userService = userService,
+            userMapper = userMapper
+        )
     }
 
     @Provides
@@ -194,13 +216,6 @@ object NetworkModule {
     @Singleton
     fun provideUserMapper(): UserDtoMapper {
         return UserDtoMapper()
-    }
-
-    @Provides
-    @Singleton
-    @Named("networkErrorHandler")
-    fun provideNetworkErrorHandler(): ErrorHandler {
-        return NetworkErrorHandler()
     }
 
     @Provides

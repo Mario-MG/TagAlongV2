@@ -1,19 +1,10 @@
 package com.hfad.tagalong.di
 
-import android.content.SharedPreferences
-import com.hfad.tagalong.interactors.data.ErrorHandler
-import com.hfad.tagalong.interactors.login.GetTokenFromCode
-import com.hfad.tagalong.interactors.login.GetTokenFromRefreshToken
-import com.hfad.tagalong.interactors.login.LoadSessionInfo
-import com.hfad.tagalong.interactors.login.LoadUser
-import com.hfad.tagalong.interactors.settings.DeleteSessionInfo
-import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
-import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
+import com.hfad.tagalong.auth_interactors.*
+import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
+import com.hfad.tagalong.auth_interactors_core.repositories.AuthNetworkRepository
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
-import com.hfad.tagalong.network.RetrofitAuthService
-import com.hfad.tagalong.network.RetrofitUserService
-import com.hfad.tagalong.network.model.TokenDtoMapper
-import com.hfad.tagalong.network.model.UserDtoMapper
 import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylists
 import com.hfad.tagalong.playlist_interactors.CreatePlaylist
 import com.hfad.tagalong.playlist_interactors.LoadPlaylistsPage
@@ -23,6 +14,9 @@ import com.hfad.tagalong.rule_interactors.CreateRule
 import com.hfad.tagalong.rule_interactors.LoadAllRules
 import com.hfad.tagalong.rule_interactors.LoadRulesForTags
 import com.hfad.tagalong.rule_interactors_core.repositories.RuleCacheRepository
+import com.hfad.tagalong.settings_interactors.LoadStayLoggedIn
+import com.hfad.tagalong.settings_interactors.SaveStayLoggedIn
+import com.hfad.tagalong.settings_interactors_core.repositories.SettingsRepository
 import com.hfad.tagalong.tag_interactors.FindOrCreateTag
 import com.hfad.tagalong.tag_interactors.LoadAllTags
 import com.hfad.tagalong.tag_interactors.LoadTagsForTrack
@@ -215,91 +209,95 @@ object InteractorsModule {
 
     @Provides
     @ViewModelScoped
-    fun provideGetTokenFromCode(
-        authService: RetrofitAuthService,
-        tokenDtoMapper: TokenDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): GetTokenFromCode {
-        return GetTokenFromCode(
-            authService = authService,
-            tokenDtoMapper = tokenDtoMapper,
-            networkErrorHandler = networkErrorHandler
+    fun provideLogIn(
+        authNetworkRepository: AuthNetworkRepository,
+        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
+    ): GetNewSessionData {
+        return GetNewSessionData(
+            authNetworkRepository = authNetworkRepository,
+            networkErrorMapper = networkErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
-    fun provideGetTokenFromRefreshToken(
-        authService: RetrofitAuthService,
-        tokenDtoMapper: TokenDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): GetTokenFromRefreshToken {
-        return GetTokenFromRefreshToken(
-            authService = authService,
-            tokenDtoMapper = tokenDtoMapper,
-            networkErrorHandler = networkErrorHandler
+    fun provideLogOut(
+        sessionManager: SessionManager
+    ): LogOut {
+        return LogOut(
+            sessionManager = sessionManager
         )
     }
 
     @Provides
     @ViewModelScoped
-    fun provideLoadUser(
-        userService: RetrofitUserService,
-        userDtoMapper: UserDtoMapper,
-        @Named("networkErrorHandler") networkErrorHandler: ErrorHandler
-    ): LoadUser {
-        return LoadUser(
-            userService = userService,
-            userDtoMapper = userDtoMapper,
-            networkErrorHandler = networkErrorHandler
+    fun provideLoadSessionData(
+        authCacheRepository: AuthCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): LoadSessionData {
+        return LoadSessionData(
+            authCacheRepository = authCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
-    fun provideLoadSessionInfo(
-        @Named("authSharedPreferences") sharedPreferences: SharedPreferences,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
-    ): LoadSessionInfo {
-        return LoadSessionInfo(
-            sharedPreferences = sharedPreferences,
-            cacheErrorHandler = cacheErrorHandler
+    fun provideSaveSessionData(
+        authCacheRepository: AuthCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): SaveSessionData {
+        return SaveSessionData(
+            authCacheRepository = authCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideDeleteSessionData(
+        authCacheRepository: AuthCacheRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
+    ): DeleteSessionData {
+        return DeleteSessionData(
+            authCacheRepository = authCacheRepository,
+            cacheErrorMapper = cacheErrorMapper
+        )
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideRefreshSessionData(
+        authNetworkRepository: AuthNetworkRepository,
+        @Named("networkErrorMapper") networkErrorMapper: ErrorMapper
+    ): RefreshSessionData {
+        return RefreshSessionData(
+            authNetworkRepository = authNetworkRepository,
+            networkErrorMapper = networkErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideLoadStayLoggedIn(
-        @Named("defaultSharedPreferences") sharedPreferences: SharedPreferences,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        settingsRepository: SettingsRepository,
+        @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): LoadStayLoggedIn {
         return LoadStayLoggedIn(
-            sharedPreferences = sharedPreferences,
-            cacheErrorHandler = cacheErrorHandler
+            settingsRepository = settingsRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 
     @Provides
     @ViewModelScoped
     fun provideSaveStayLoggedIn(
-        @Named("defaultSharedPreferences") sharedPreferences: SharedPreferences,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
+        settingsRepository: SettingsRepository,
+    @Named("cacheErrorMapper") cacheErrorMapper: ErrorMapper
     ): SaveStayLoggedIn {
         return SaveStayLoggedIn(
-            sharedPreferences = sharedPreferences,
-            cacheErrorHandler = cacheErrorHandler
-        )
-    }
-
-    @Provides
-    @ViewModelScoped
-    fun provideDeleteSessionInfo(
-        @Named("authSharedPreferences") sharedPreferences: SharedPreferences,
-        @Named("cacheErrorHandler") cacheErrorHandler: ErrorHandler
-    ): DeleteSessionInfo {
-        return DeleteSessionInfo(
-            sharedPreferences = sharedPreferences,
-            cacheErrorHandler = cacheErrorHandler
+            settingsRepository = settingsRepository,
+            cacheErrorMapper = cacheErrorMapper
         )
     }
 

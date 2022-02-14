@@ -1,9 +1,9 @@
 package com.hfad.tagalong.network.model
 
-import com.hfad.tagalong.domain.model.User
-import com.hfad.tagalong.domain.util.DomainMapper
+import com.hfad.tagalong.network.session.model.User
+import com.hfad.tagalong.domain_common.DomainMapper
 
-class UserDtoMapper : DomainMapper<UserDto, User> {
+class UserDtoMapper : DomainMapper<User, UserDto> {
 
     override fun mapToDomainModel(model: UserDto): User {
         return User(
