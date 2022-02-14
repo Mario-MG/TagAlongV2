@@ -1,9 +1,9 @@
 package com.hfad.tagalong.network.model
 
-import com.hfad.tagalong.domain.util.DomainMapper
+import com.hfad.tagalong.domain_common.DomainMapper
 import com.hfad.tagalong.track_domain.Track
 
-class TrackDtoMapper : DomainMapper<TrackDto, Track> {
+class TrackDtoMapper : DomainMapper<Track, TrackDto> {
 
     override fun mapToDomainModel(model: TrackDto): Track {
         return Track(

@@ -1,9 +1,7 @@
 package com.hfad.tagalong.playlist_interactors
 
 import com.hfad.tagalong.interactors_core.data.DataState
-import com.hfad.tagalong.interactors_core.data.DataState.Error
-import com.hfad.tagalong.interactors_core.data.DataState.Loading
-import com.hfad.tagalong.interactors_core.data.DataState.Success
+import com.hfad.tagalong.interactors_core.data.DataState.*
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
 import com.hfad.tagalong.playlist_domain.Playlist
 import com.hfad.tagalong.playlist_domain.PlaylistInfo

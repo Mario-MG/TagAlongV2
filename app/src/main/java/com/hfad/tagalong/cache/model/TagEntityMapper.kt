@@ -1,10 +1,10 @@
 package com.hfad.tagalong.cache.model
 
-import com.hfad.tagalong.domain.util.DomainMapper
+import com.hfad.tagalong.domain_common.DomainMapper
 import com.hfad.tagalong.tag_domain.Tag
 import com.hfad.tagalong.tag_domain.TagInfo
 
-class TagEntityMapper : DomainMapper<TagEntityPoko, Tag> {
+class TagEntityMapper : DomainMapper<Tag, TagEntityPoko> {
 
     override fun mapToDomainModel(model: TagEntityPoko): Tag {
         return Tag(

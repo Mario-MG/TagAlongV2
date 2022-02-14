@@ -19,29 +19,29 @@ enum class Screen(
 ) {
 
     Playlists(
-        icon = { Icon(Icons.Filled.QueueMusic, contentDescription = BaseApplication.getContext().getString(R.string.playlists_icon_description)) },
+        icon = { Icon(Icons.Filled.QueueMusic, contentDescription = BaseApplication.getString(R.string.playlists_icon_description)) },
         labelRes = R.string.playlists_screen_label,
         destination = R.id.playlistsFragment
     ),
 
     Tags(
-        icon = { Icon(Icons.Filled.Tag, contentDescription = BaseApplication.getContext().getString(R.string.tags_icon_description)) },
+        icon = { Icon(Icons.Filled.Tag, contentDescription = BaseApplication.getString(R.string.tags_icon_description)) },
         labelRes = R.string.tags_screen_label,
         destination = R.id.tagsFragment
     ),
 
     Rules(
-        icon = { Icon(Icons.Filled.PlaylistAdd, contentDescription = BaseApplication.getContext().getString(R.string.rules_icon_description)) },
+        icon = { Icon(Icons.Filled.PlaylistAdd, contentDescription = BaseApplication.getString(R.string.rules_icon_description)) },
         labelRes = R.string.rules_screen_label,
         destination = R.id.rulesFragment
     ),
 
     Settings(
-        icon = { Icon(Icons.Filled.Settings, contentDescription = BaseApplication.getContext().getString(R.string.settings_icon_description)) },
+        icon = { Icon(Icons.Filled.Settings, contentDescription = BaseApplication.getString(R.string.settings_icon_description)) },
         labelRes = R.string.settings_screen_label,
         destination = R.id.settingsFragment
     );
 
-    fun getLabel(): String = BaseApplication.getContext().getString(labelRes)
+    fun getLabel(): String = BaseApplication.getString(labelRes)
 
 }

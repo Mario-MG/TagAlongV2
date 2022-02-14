@@ -12,7 +12,6 @@ import com.hfad.tagalong.playlist_domain.PlaylistInfo
 import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylists
 import com.hfad.tagalong.playlist_interactors.CreatePlaylist
 import com.hfad.tagalong.presentation.BaseApplication
-import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
 import com.hfad.tagalong.presentation.util.DialogQueue
@@ -36,15 +35,14 @@ constructor(
     private val createPlaylist: CreatePlaylist,
     private val createRule: CreateRule,
     private val loadTracksForRule: LoadTracksForRule,
-    private val addTracksToPlaylists: AddTracksToPlaylists,
-    private val sessionManager: SessionManager
+    private val addTracksToPlaylists: AddTracksToPlaylists
 ) : BaseViewModel() {
 
     var loading by mutableStateOf(false)
         private set
 
     var playlistName by mutableStateOf(
-        BaseApplication.getContext().getString(R.string.new_tagalong_playlist)
+        BaseApplication.getString(R.string.new_tagalong_playlist)
     )
         private set
 

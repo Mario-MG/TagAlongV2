@@ -1,9 +1,9 @@
 package com.hfad.tagalong.cache.model
 
-import com.hfad.tagalong.domain.util.DomainMapper
+import com.hfad.tagalong.domain_common.DomainMapper
 import com.hfad.tagalong.track_domain.Track
 
-class TrackEntityMapper : DomainMapper<TrackEntity, Track> {
+class TrackEntityMapper : DomainMapper<Track, TrackEntity> {
 
     override fun mapToDomainModel(model: TrackEntity): Track {
         return Track(

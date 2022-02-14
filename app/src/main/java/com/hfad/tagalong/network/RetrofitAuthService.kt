@@ -10,8 +10,8 @@ interface RetrofitAuthService {
     @FormUrlEncoded
     suspend fun getNewToken(
         @Field("grant_type") grantType: String = "authorization_code",
-        @Field("client_id") clientId: String,
-        @Field("redirect_uri") redirectUri: String,
+        @Field("client_id") clientId: String = BuildConfig.CLIENT_ID, // TODO: Inject?
+        @Field("redirect_uri") redirectUri: String = "appscheme://tagalong-app.com", // TODO: Inject
         @Field("code_verifier") codeVerifier: String,
         @Field("code") code: String
     ): TokenDto
@@ -20,7 +20,7 @@ interface RetrofitAuthService {
     @FormUrlEncoded
     suspend fun refreshToken(
         @Field("grant_type") grantType: String = "refresh_token",
-        @Field("client_id") clientId: String,
+        @Field("client_id") clientId: String = BuildConfig.CLIENT_ID, // TODO: Inject?
         @Field("refresh_token") refreshToken: String
     ): TokenDto
 

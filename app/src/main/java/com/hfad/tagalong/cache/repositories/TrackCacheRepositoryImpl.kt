@@ -17,12 +17,12 @@ class TrackCacheRepositoryImpl(
 ) : TrackCacheRepository {
 
     override suspend fun getAllTracksForTag(tag: Tag): List<Track> {
-        return trackEntityMapper.toDomainList(trackDao.getTracksWithAnyOfTheTagsById(tag.id))
+        return trackEntityMapper.mapToDomainModelList(trackDao.getTracksWithAnyOfTheTagsById(tag.id))
     }
 
     override suspend fun getAllTracksForRule(rule: Rule): List<Track> {
         val tagIds = rule.tags.map(Tag::id).toLongArray()
-        return trackEntityMapper.toDomainList(
+        return trackEntityMapper.mapToDomainModelList(
             if (rule.optionality)
                 trackDao.getTracksWithAnyOfTheTagsById(*tagIds)
             else
