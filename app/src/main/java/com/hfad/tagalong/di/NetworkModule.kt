@@ -6,20 +6,25 @@ import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
 import com.hfad.tagalong.auth_interactors_core.repositories.AuthNetworkRepository
 import com.hfad.tagalong.auth_interactors_core.session.SessionManager
 import com.hfad.tagalong.interactors_core.data.ErrorMapper
-import com.hfad.tagalong.network.*
-import com.hfad.tagalong.network.model.PlaylistDtoMapper
-import com.hfad.tagalong.network.model.TokenDtoMapper
-import com.hfad.tagalong.network.model.TrackDtoMapper
-import com.hfad.tagalong.network.model.UserDtoMapper
-import com.hfad.tagalong.network.repositories.AuthNetworkRepositoryImpl
-import com.hfad.tagalong.network.repositories.PlaylistNetworkRepositoryImpl
-import com.hfad.tagalong.network.repositories.TrackNetworkRepositoryImpl
-import com.hfad.tagalong.network.session.SessionManagerImpl
-import com.hfad.tagalong.network.util.AuthManager
-import com.hfad.tagalong.network.util.UserManager
+import com.hfad.tagalong.playlist_network.model.PlaylistDtoMapper
+import com.hfad.tagalong.auth_network.model.TokenDtoMapper
+import com.hfad.tagalong.track_network.model.TrackDtoMapper
+import com.hfad.tagalong.auth_network.model.UserDtoMapper
+import com.hfad.tagalong.auth_network.services.RetrofitAuthService
+import com.hfad.tagalong.auth_network.services.RetrofitUserService
+import com.hfad.tagalong.network_core.util.NetworkErrorMapper
+import com.hfad.tagalong.auth_network.repositories.AuthNetworkRepositoryImpl
+import com.hfad.tagalong.playlist_network.repositories.PlaylistNetworkRepositoryImpl
+import com.hfad.tagalong.track_network.repositories.TrackNetworkRepositoryImpl
+import com.hfad.tagalong.session.SessionManagerImpl
+import com.hfad.tagalong.network_core.util.AuthManager
+import com.hfad.tagalong.network_core.util.TokenAuthenticator
+import com.hfad.tagalong.network_core.util.UserManager
 import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
+import com.hfad.tagalong.playlist_network.services.RetrofitPlaylistService
 import com.hfad.tagalong.settings_interactors_core.repositories.SettingsRepository
 import com.hfad.tagalong.track_interactors_core.repositories.TrackNetworkRepository
+import com.hfad.tagalong.track_network.services.RetrofitTrackService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -117,13 +122,17 @@ object NetworkModule {
         authService: RetrofitAuthService,
         tokenMapper: TokenDtoMapper,
         userService: RetrofitUserService,
-        userMapper: UserDtoMapper
+        userMapper: UserDtoMapper,
+        @Named(APP_CLIENT_ID) clientId: String,
+        @Named(APP_REDIRECT_URI) redirectUri: String
     ): AuthNetworkRepository {
         return AuthNetworkRepositoryImpl(
             authService = authService,
             tokenMapper = tokenMapper,
             userService = userService,
-            userMapper = userMapper
+            userMapper = userMapper,
+            clientId = clientId,
+            redirectUri = redirectUri
         )
     }
 
