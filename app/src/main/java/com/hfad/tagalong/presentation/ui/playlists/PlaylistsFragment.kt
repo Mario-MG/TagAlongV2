@@ -13,9 +13,10 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
-import com.hfad.tagalong.domain.model.Playlist
+import com.hfad.tagalong.playlist_domain.Playlist
 import com.hfad.tagalong.presentation.BUNDLE_KEY_PLAYLIST
 import com.hfad.tagalong.presentation.LOGIN_SUCCESSFUL
+import com.hfad.tagalong.presentation.adapters.PlaylistParcelable
 import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.PlaylistItemList
 import com.hfad.tagalong.presentation.theme.AppScaffold
@@ -79,7 +80,7 @@ class PlaylistsFragment : BaseLoggedInFragment() {
     }
 
     private fun navigateToTrackList(playlist: Playlist) {
-        val bundle = bundleOf(BUNDLE_KEY_PLAYLIST to playlist)
+        val bundle = bundleOf(BUNDLE_KEY_PLAYLIST to PlaylistParcelable(playlist))
         findNavController().navigate(R.id.viewPlaylistTracks, bundle)
     }
 

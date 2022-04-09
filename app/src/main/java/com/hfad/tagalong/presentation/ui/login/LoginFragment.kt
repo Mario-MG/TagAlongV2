@@ -93,10 +93,10 @@ class LoginFragment : Fragment() {
         val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
             ?: throw IllegalStateException("LoginFragment must not be a start destination")
         savedStateHandle.set(LOGIN_SUCCESSFUL, false)
-        mainViewModel.addLoginSuccessObserver(viewLifecycleOwner, {
+        mainViewModel.addLoginSuccessObserver(viewLifecycleOwner) {
             savedStateHandle.set(LOGIN_SUCCESSFUL, true)
             navController.popBackStack()
-        })
+        }
     }
 
     override fun onResume() {

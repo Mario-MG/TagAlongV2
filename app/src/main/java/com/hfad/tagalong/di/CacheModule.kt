@@ -1,19 +1,20 @@
 package com.hfad.tagalong.di
 
-import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
 import androidx.room.Room
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
-import com.hfad.tagalong.cache.CacheErrorHandler
+import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
+import com.hfad.tagalong.auth_interactors_core.session.SessionDataSerializer
+import com.hfad.tagalong.cache.CacheErrorMapper
 import com.hfad.tagalong.cache.dao.*
 import com.hfad.tagalong.cache.database.MainDatabase
-import com.hfad.tagalong.cache.model.PlaylistEntityMapper
-import com.hfad.tagalong.cache.model.RuleEntityMapper
-import com.hfad.tagalong.cache.model.TagEntityMapper
-import com.hfad.tagalong.cache.model.TrackEntityMapper
-import com.hfad.tagalong.interactors.data.ErrorHandler
+import com.hfad.tagalong.cache.model.*
+import com.hfad.tagalong.cache.repositories.*
+import com.hfad.tagalong.interactors_core.data.ErrorMapper
+import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistCacheRepository
 import com.hfad.tagalong.presentation.BaseApplication
+import com.hfad.tagalong.rule_interactors_core.repositories.RuleCacheRepository
+import com.hfad.tagalong.settings_interactors_core.repositories.SettingsRepository
+import com.hfad.tagalong.tag_interactors_core.repositories.TagCacheRepository
+import com.hfad.tagalong.track_interactors_core.repositories.TrackCacheRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,6 +55,18 @@ object CacheModule {
 
     @Provides
     @Singleton
+    fun provideTagCacheRepository(
+        tagDao: TagDao,
+        tagEntityMapper: TagEntityMapper
+    ): TagCacheRepository {
+        return TagCacheRepositoryImpl(
+            tagDao = tagDao,
+            tagEntityMapper = tagEntityMapper
+        )
+    }
+
+    @Provides
+    @Singleton
     fun provideTrackDao(db: MainDatabase): TrackDao {
         return db.trackDao()
     }
@@ -68,6 +81,34 @@ object CacheModule {
     @Singleton
     fun provideTrackTagCrossRefDao(db: MainDatabase): TrackTagCrossRefDao {
         return db.trackTagCrossRefDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrackTagCrossRefMapper(
+        trackEntityMapper: TrackEntityMapper,
+        tagEntityMapper: TagEntityMapper
+    ): TrackTagCrossRefMapper {
+        return TrackTagCrossRefMapper(
+            trackEntityMapper = trackEntityMapper,
+            tagEntityMapper = tagEntityMapper
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrackCacheRepository(
+        trackDao: TrackDao,
+        trackEntityMapper: TrackEntityMapper,
+        trackTagCrossRefDao: TrackTagCrossRefDao,
+        trackTagCrossRefMapper: TrackTagCrossRefMapper
+    ): TrackCacheRepository {
+        return TrackCacheRepositoryImpl(
+            trackDao = trackDao,
+            trackEntityMapper = trackEntityMapper,
+            trackTagCrossRefDao = trackTagCrossRefDao,
+            trackTagCrossRefMapper = trackTagCrossRefMapper
+        )
     }
 
     @Provides
@@ -90,6 +131,18 @@ object CacheModule {
 
     @Provides
     @Singleton
+    fun provideRuleCacheRepository(
+        ruleDao: RuleDao,
+        ruleEntityMapper: RuleEntityMapper
+    ): RuleCacheRepository {
+        return RuleCacheRepositoryImpl(
+            ruleDao = ruleDao,
+            ruleEntityMapper = ruleEntityMapper
+        )
+    }
+
+    @Provides
+    @Singleton
     fun providePlaylistDao(db: MainDatabase): PlaylistDao {
         return db.playlistDao()
     }
@@ -102,37 +155,43 @@ object CacheModule {
 
     @Provides
     @Singleton
-    @Named("defaultSharedPreferences")
-    fun provideDefaultSharedPreferences(
-        application: BaseApplication
-    ): SharedPreferences {
-        return PreferenceManager.getDefaultSharedPreferences(application)
-    }
-
-    @Provides
-    @Singleton
-    @Named("authSharedPreferences")
-    fun provideAuthSharedPreferences(
-        application: BaseApplication
-    ): SharedPreferences {
-        val masterKey = MasterKey.Builder(application, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-
-        return EncryptedSharedPreferences.create(
-            application,
-            AUTH_SHARED_PREFS,
-            masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    fun providePlaylistCacheRepository(
+        playlistDao: PlaylistDao,
+        playlistEntityMapper: PlaylistEntityMapper
+    ): PlaylistCacheRepository {
+        return PlaylistCacheRepositoryImpl(
+            playlistDao = playlistDao,
+            playlistEntityMapper = playlistEntityMapper
         )
     }
 
     @Provides
     @Singleton
-    @Named("cacheErrorHandler")
-    fun provideCacheErrorHandler(): ErrorHandler {
-        return CacheErrorHandler()
+    fun provideAuthCacheRepository(
+        application: BaseApplication,
+        sessionDataSerializer: SessionDataSerializer
+    ): AuthCacheRepository {
+        return AuthCacheRepositoryImpl(
+            context = application,
+            sessionDataSerializer = sessionDataSerializer
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingsRepository(
+        application: BaseApplication
+    ): SettingsRepository {
+        return SettingsRepositoryImpl(
+            context = application
+        )
+    }
+
+    @Provides
+    @Singleton
+    @Named("cacheErrorMapper")
+    fun provideCacheErrorMapper(): ErrorMapper {
+        return CacheErrorMapper()
     }
 
 }

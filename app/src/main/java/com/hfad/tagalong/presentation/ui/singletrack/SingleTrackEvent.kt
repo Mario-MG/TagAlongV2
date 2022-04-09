@@ -1,7 +1,7 @@
 package com.hfad.tagalong.presentation.ui.singletrack
 
-import com.hfad.tagalong.domain.model.Tag
-import com.hfad.tagalong.domain.model.Track
+import com.hfad.tagalong.tag_domain.Tag
+import com.hfad.tagalong.track_domain.Track
 
 sealed class SingleTrackEvent {
 

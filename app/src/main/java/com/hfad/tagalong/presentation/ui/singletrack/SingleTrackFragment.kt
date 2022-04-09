@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,9 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.hfad.tagalong.R
-import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.presentation.BUNDLE_KEY_TRACK
-import com.hfad.tagalong.presentation.components.FlowKeywordList
+import com.hfad.tagalong.presentation.adapters.TrackParcelable
+import com.hfad.tagalong.presentation.components.FlowTagList
 import com.hfad.tagalong.presentation.theme.AppScaffold
 import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
 import com.hfad.tagalong.presentation.ui.singletrack.SingleTrackEvent.*
@@ -47,8 +50,8 @@ class SingleTrackFragment : BaseLoggedInFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.getParcelable<Track>(BUNDLE_KEY_TRACK)?.let { track ->
-            viewModel.onTriggerEvent(InitTrackEvent(track))
+        arguments?.getParcelable<TrackParcelable>(BUNDLE_KEY_TRACK)?.let { trackParcelable ->
+            viewModel.onTriggerEvent(InitTrackEvent(trackParcelable.track))
         }
     }
 
@@ -113,18 +116,14 @@ class SingleTrackFragment : BaseLoggedInFragment() {
                                     textAlign = TextAlign.Center
                                 )
                                 Spacer(modifier = Modifier.height(24.dp))
-                                FlowKeywordList(
-                                    keywordObjects = tags,
+                                FlowTagList(
+                                    tags = tags,
                                     onAddNewKeyword = { tagName ->
                                         viewModel.onTriggerEvent(AddTagEvent(tagName))
                                     },
                                     onClickDeleteIcon = { tag ->
                                         viewModel.onTriggerEvent(DeleteTagEvent(tag))
                                     },
-                                    textFieldLeadingIcon = {
-                                        Icon(Icons.Filled.Tag, contentDescription = stringResource(R.string.tag_icon_description))
-                                    },
-                                    textFieldLabel = stringResource(R.string.add_tag_here),
                                     predictions = allTags,
                                     predictionFilter = { tag, currentValue ->
                                         !tags.contains(tag) && tag.name.contains(currentValue)

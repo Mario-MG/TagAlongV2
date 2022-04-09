@@ -5,15 +5,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import com.hfad.tagalong.domain.model.Playlist
-import com.hfad.tagalong.domain.model.Track
-import com.hfad.tagalong.interactors.data.on
-import com.hfad.tagalong.interactors.playlisttracks.LoadFirstPlaylistTracksPage
-import com.hfad.tagalong.interactors.playlisttracks.LoadNextPlaylistTracksPage
-import com.hfad.tagalong.presentation.session.SessionManager
-import com.hfad.tagalong.presentation.ui.playlisttracks.PlaylistTracksEvent.*
+import com.hfad.tagalong.interactors_core.util.on
+import com.hfad.tagalong.playlist_domain.Playlist
+import com.hfad.tagalong.presentation.ui.playlisttracks.PlaylistTracksEvent.InitPlaylistTracksEvent
+import com.hfad.tagalong.presentation.ui.playlisttracks.PlaylistTracksEvent.NextPageEvent
 import com.hfad.tagalong.presentation.ui.tracks.TracksViewModel
 import com.hfad.tagalong.presentation.util.DialogQueue
+import com.hfad.tagalong.track_domain.Track
+import com.hfad.tagalong.track_interactors.LoadPlaylistTracksPage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
@@ -23,9 +22,7 @@ import javax.inject.Inject
 class PlaylistTracksViewModel
 @Inject
 constructor(
-    private val loadFirstPlaylistTracksPage: LoadFirstPlaylistTracksPage,
-    private val loadNextPlaylistTracksPage: LoadNextPlaylistTracksPage,
-    private val sessionManager: SessionManager
+    private val loadPlaylistTracksPage: LoadPlaylistTracksPage
 ) : TracksViewModel() {
 
     override var loading by mutableStateOf(false)
@@ -39,7 +36,7 @@ constructor(
 
     override val dialogQueue = DialogQueue()
 
-    private var firstPageLoaded = false // TODO: Find out a way to improve this
+    private var nextPage = 0
 
     private var allTracksLoaded = false // TODO: Find out a way to improve this
 
@@ -48,7 +45,7 @@ constructor(
             when (event) {
                 is InitPlaylistTracksEvent -> {
                     init(event.playlist)
-                    if (!firstPageLoaded) {
+                    if (nextPage == 0) {
                         loadFirstPage()
                     }
                 }
@@ -67,9 +64,8 @@ constructor(
     }
 
     private fun loadFirstPage() {
-        loadFirstPlaylistTracksPage
+        loadPlaylistTracksPage
             .execute(
-                auth = sessionManager.getAuthorizationHeader(),
                 playlist = this.playlist!!
             )
             .on(
@@ -77,7 +73,7 @@ constructor(
                 success = { tracks ->
                     this.tracks.clear()
                     this.tracks.addAll(tracks)
-                    firstPageLoaded = true
+                    nextPage = 1
                 },
                 error = ::appendGenericErrorToQueue
             )
@@ -85,12 +81,10 @@ constructor(
     }
 
     private fun loadNextPage() {
-        val currentListSize = this.tracks.size
-        loadNextPlaylistTracksPage
+        loadPlaylistTracksPage
             .execute(
-                auth = sessionManager.getAuthorizationHeader(),
                 playlist = this.playlist!!,
-                offset = currentListSize
+                page = nextPage
             )
             .on(
                 loading = { loading = it },
@@ -99,6 +93,7 @@ constructor(
                         allTracksLoaded = true
                     } else {
                         this.tracks.addAll(tracks)
+                        nextPage += 1 // TODO: Make sure there are no synchronization issues
                     }
                 },
                 error = { error ->

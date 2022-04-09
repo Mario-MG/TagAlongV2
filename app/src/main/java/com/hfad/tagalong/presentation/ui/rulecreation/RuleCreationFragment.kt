@@ -14,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.QueueMusic
-import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
-import com.hfad.tagalong.presentation.components.FlowKeywordList
+import com.hfad.tagalong.presentation.components.FlowTagList
 import com.hfad.tagalong.presentation.theme.AppScaffold
 import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
 import com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationEvent.*
@@ -106,8 +105,8 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                                     )
                                 )
                                 Spacer(modifier = Modifier.height(24.dp))
-                                FlowKeywordList(
-                                    keywordObjects = tags,
+                                FlowTagList(
+                                    tags = tags,
                                     onAddNewKeyword = { tagName ->
                                         viewModel.onTriggerEvent(AddTagEvent(tagName))
                                     },
@@ -115,10 +114,6 @@ class RuleCreationFragment : BaseLoggedInFragment() {
                                     onClickDeleteIcon = { tag ->
                                         viewModel.onTriggerEvent(DeleteTagEvent(tag))
                                     },
-                                    textFieldLeadingIcon = {
-                                        Icon(Icons.Filled.Tag, contentDescription = stringResource(R.string.tag_icon_description))
-                                    },
-                                    textFieldLabel = stringResource(R.string.add_tag_here),
                                     predictions = allTags,
                                     predictionFilter = { tag, currentValue ->
                                         !tags.contains(tag) && tag.name.contains(currentValue)

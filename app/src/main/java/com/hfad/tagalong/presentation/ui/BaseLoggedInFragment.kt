@@ -15,7 +15,7 @@ abstract class BaseLoggedInFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainViewModel.addLogoutObserver(viewLifecycleOwner, {
+        mainViewModel.addLogoutObserver(viewLifecycleOwner) {
             findNavController().navigate(
                 R.id.loginFragment,
                 null,
@@ -24,7 +24,7 @@ abstract class BaseLoggedInFragment : Fragment() {
                     .setPopExitAnim(R.anim.slide_out_up)
                     .build()
             )
-        })
+        }
     }
 
 }

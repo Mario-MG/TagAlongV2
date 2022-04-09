@@ -1,6 +1,6 @@
 package com.hfad.tagalong.presentation.ui.playlisttracks
 
-import com.hfad.tagalong.domain.model.Playlist
+import com.hfad.tagalong.playlist_domain.Playlist
 
 sealed class PlaylistTracksEvent {
 

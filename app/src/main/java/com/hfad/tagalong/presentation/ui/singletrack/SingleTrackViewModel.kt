@@ -6,17 +6,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
-import com.hfad.tagalong.domain.model.Tag
-import com.hfad.tagalong.domain.model.Track
-import com.hfad.tagalong.interactors.data.ErrorType.CacheError.DuplicateError
-import com.hfad.tagalong.interactors.data.on
-import com.hfad.tagalong.interactors.singletrack.*
-import com.hfad.tagalong.interactors.tags.LoadAllTags
+import com.hfad.tagalong.interactors_core.data.ErrorType.CacheError.DuplicateError
+import com.hfad.tagalong.interactors_core.util.on
+import com.hfad.tagalong.playlist_domain.Playlist
+import com.hfad.tagalong.playlist_interactors.AddTracksToPlaylists
 import com.hfad.tagalong.presentation.BaseApplication
-import com.hfad.tagalong.presentation.session.SessionManager
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.singletrack.SingleTrackEvent.*
 import com.hfad.tagalong.presentation.util.DialogQueue
+import com.hfad.tagalong.rule_domain.Rule
+import com.hfad.tagalong.rule_interactors.LoadRulesForTags
+import com.hfad.tagalong.tag_domain.Tag
+import com.hfad.tagalong.tag_domain.TagInfo
+import com.hfad.tagalong.tag_interactors.FindOrCreateTag
+import com.hfad.tagalong.tag_interactors.LoadAllTags
+import com.hfad.tagalong.tag_interactors.LoadTagsForTrack
+import com.hfad.tagalong.track_domain.Track
+import com.hfad.tagalong.track_interactors.AddTagToTrack
+import com.hfad.tagalong.track_interactors.DeleteTagFromTrack
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
@@ -27,12 +34,12 @@ class SingleTrackViewModel
 @Inject
 constructor(
     private val loadAllTags: LoadAllTags,
-    private val loadTrackTags: LoadTrackTags,
-    private val createTag: CreateTag,
+    private val loadTagsForTrack: LoadTagsForTrack,
+    private val findOrCreateTag: FindOrCreateTag,
     private val addTagToTrack: AddTagToTrack,
-    private val applyExistingRules: ApplyExistingRules,
-    private val deleteTagFromTrack: DeleteTagFromTrack,
-    private val sessionManager: SessionManager
+    private val loadRulesForTags: LoadRulesForTags,
+    private val addTracksToPlaylists: AddTracksToPlaylists,
+    private val deleteTagFromTrack: DeleteTagFromTrack
 ) : BaseViewModel() {
 
     var track by mutableStateOf<Track?>(null)
@@ -69,8 +76,13 @@ constructor(
     }
 
     private fun addTagByName(tagName: String) {
-        createTag
-            .execute(tagName = tagName)
+        findOrCreateTag
+            .execute(
+                tagInfo = TagInfo(
+                    name = tagName,
+                    size = 0
+                )
+            )
             .on(
                 loading = ::loading::set,
                 success = ::addTagToTrack,
@@ -91,7 +103,7 @@ constructor(
                 error = { error ->
                     when (error) {
                         is DuplicateError -> dialogQueue.appendInfoDialog(
-                            BaseApplication.getContext().getString(R.string.duplicate_tag_info)
+                            BaseApplication.getString(R.string.duplicate_tag_info)
                         )
                         else -> appendGenericErrorToQueue(error)
                     }
@@ -101,12 +113,24 @@ constructor(
     }
 
     private fun applyRules(newTag: Tag) {
-        applyExistingRules
+        loadRulesForTags
             .execute(
                 newTag = newTag,
-                originalTags = tagsForTrack,
-                track = track!!,
-                auth = sessionManager.getAuthorizationHeader()
+                originalTags = tagsForTrack
+            )
+            .on(
+                loading = ::loading::set,
+                success = { rules -> addTrackToPlaylists(rules.map(Rule::playlist)) },
+                error = ::appendGenericErrorToQueue // TODO: Undo add tag to track??
+            )
+            .launchIn(viewModelScope)
+    }
+
+    private fun addTrackToPlaylists(playlists: List<Playlist>) {
+        addTracksToPlaylists
+            .execute(
+                tracks = listOf(track!!),
+                playlists = playlists
             )
             .on(
                 loading = ::loading::set,
@@ -135,7 +159,7 @@ constructor(
     }
 
     private fun loadTagsForTrack() {
-        loadTrackTags
+        loadTagsForTrack
             .execute(track = track!!)
             .on(
                 loading = ::loading::set,

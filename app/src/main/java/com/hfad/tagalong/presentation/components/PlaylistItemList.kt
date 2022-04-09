@@ -3,7 +3,7 @@ package com.hfad.tagalong.presentation.components
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
-import com.hfad.tagalong.domain.model.Playlist
+import com.hfad.tagalong.playlist_domain.Playlist
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi

@@ -3,6 +3,7 @@ package com.hfad.tagalong.presentation
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import androidx.annotation.StringRes
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -20,6 +21,8 @@ class BaseApplication : Application() {
 
         // Source: https://stackoverflow.com/a/4410349/6100280
         fun getContext() = mContext
+
+        fun getString(@StringRes stringResId: Int): String = mContext.getString(stringResId)
 
     }
 }

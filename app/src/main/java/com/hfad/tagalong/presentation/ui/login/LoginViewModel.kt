@@ -9,21 +9,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.hfad.tagalong.R
-import com.hfad.tagalong.presentation.session.SessionManager
+import com.hfad.tagalong.auth_interactors.GetNewSessionData
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager
 import com.hfad.tagalong.di.APP_CLIENT_ID
 import com.hfad.tagalong.di.APP_REDIRECT_URI
-import com.hfad.tagalong.domain.model.Token
-import com.hfad.tagalong.interactors.data.ErrorType.NetworkError.AccessDeniedError
-import com.hfad.tagalong.interactors.data.on
-import com.hfad.tagalong.interactors.login.GetTokenFromCode
-import com.hfad.tagalong.interactors.login.LoadUser
-import com.hfad.tagalong.interactors.login.SaveSessionInfo
-import com.hfad.tagalong.interactors.settings.LoadStayLoggedIn
-import com.hfad.tagalong.interactors.settings.SaveStayLoggedIn
+import com.hfad.tagalong.interactors_core.data.ErrorType.NetworkError.AccessDeniedError
+import com.hfad.tagalong.interactors_core.util.on
 import com.hfad.tagalong.presentation.BaseApplication
 import com.hfad.tagalong.presentation.ui.BaseViewModel
 import com.hfad.tagalong.presentation.ui.login.LoginEvent.*
 import com.hfad.tagalong.presentation.util.DialogQueue
+import com.hfad.tagalong.settings_interactors.LoadStayLoggedIn
+import com.hfad.tagalong.settings_interactors.SaveStayLoggedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
@@ -37,12 +34,10 @@ import javax.inject.Named
 class LoginViewModel
 @Inject
 constructor(
-    private val getTokenFromCode: GetTokenFromCode,
-    private val loadUser: LoadUser,
-    private val saveSessionInfo: SaveSessionInfo,
+    private val getNewSessionData: GetNewSessionData,
+    private val sessionManager: SessionManager,
     private val loadStayLoggedIn: LoadStayLoggedIn,
     private val saveStayLoggedIn: SaveStayLoggedIn,
-    private val sessionManager: SessionManager,
     @Named(APP_CLIENT_ID) private val clientId: String,
     @Named(APP_REDIRECT_URI) private val redirectUri: String
 ) : BaseViewModel() {
@@ -125,7 +120,7 @@ constructor(
         return Uri.Builder()
             .scheme("https")
             .authority("accounts.spotify.com")
-            .appendPath(BaseApplication.getContext().getString(R.string.spotify_auth_uri_lang_path))
+            .appendPath(BaseApplication.getString(R.string.spotify_auth_uri_lang_path))
             .appendPath("authorize")
             .appendQueryParameter("client_id", clientId)
             .appendQueryParameter("response_type", "code")
@@ -139,58 +134,31 @@ constructor(
     private fun login(uri: Uri) {
         val code = uri.getQueryParameter("code")
         code?.let {
-            getTokenFromCode
+            getNewSessionData
                 .execute(
-                    clientId = clientId,
                     code = code,
-                    codeVerifier = codeVerifier,
-                    redirectUri = redirectUri
+                    codeVerifier = codeVerifier
                 )
                 .on(
-                    success = { token ->
-                        loadUser(token = token)
-                        if (stayLoggedIn) {
-                            saveSessionInfo(token)
-                        }
+                    success = { sessionData ->
+                        sessionManager.logIn(sessionData)
                     },
-                    error = ::appendGenericErrorToQueue
+                    error = { error ->
+                        when (error) {
+                            is AccessDeniedError -> dialogQueue.appendErrorDialog(
+                                title = BaseApplication.getContext()
+                                    .getString(R.string.access_denied_error_title),
+                                description = BaseApplication.getContext()
+                                    .getString(R.string.access_denied_error_description)
+                            )
+                            else -> appendGenericErrorToQueue(error)
+                        }
+                    }
                 )
                 .launchIn(viewModelScope)
         } ?: run {
-            dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.generic_spotify_error))
+            dialogQueue.appendErrorDialog(BaseApplication.getString(R.string.generic_spotify_error))
         }
-    }
-
-    private fun loadUser(token: Token) {
-        loadUser
-            .execute(token = token)
-            .on(
-                success = { user ->
-                    sessionManager.login(
-                        token = token,
-                        user = user
-                    )
-                },
-                error = { error ->
-                    when (error) {
-                        is AccessDeniedError -> dialogQueue.appendErrorDialog(
-                            title = BaseApplication.getContext().getString(R.string.access_denied_error_title),
-                            description = BaseApplication.getContext().getString(R.string.access_denied_error_description)
-                        )
-                        else -> appendGenericErrorToQueue(error)
-                    }
-                }
-            )
-            .launchIn(viewModelScope)
-    }
-
-    private fun saveSessionInfo(token: Token) {
-        saveSessionInfo
-            .execute(token = token)
-            .on(
-                error = { dialogQueue.appendErrorDialog(BaseApplication.getContext().getString(R.string.session_unsaved_error_description)) }
-            )
-            .launchIn(viewModelScope)
     }
 
     companion object {

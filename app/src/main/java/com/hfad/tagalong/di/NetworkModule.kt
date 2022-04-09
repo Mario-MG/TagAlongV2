@@ -2,13 +2,29 @@ package com.hfad.tagalong.di
 
 import com.google.gson.GsonBuilder
 import com.hfad.tagalong.BuildConfig
-import com.hfad.tagalong.interactors.data.ErrorHandler
-import com.hfad.tagalong.presentation.session.SessionManager
-import com.hfad.tagalong.network.*
-import com.hfad.tagalong.network.model.PlaylistDtoMapper
-import com.hfad.tagalong.network.model.TokenDtoMapper
-import com.hfad.tagalong.network.model.TrackDtoMapper
-import com.hfad.tagalong.network.model.UserDtoMapper
+import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
+import com.hfad.tagalong.auth_interactors_core.repositories.AuthNetworkRepository
+import com.hfad.tagalong.auth_interactors_core.session.SessionManager
+import com.hfad.tagalong.interactors_core.data.ErrorMapper
+import com.hfad.tagalong.playlist_network.model.PlaylistDtoMapper
+import com.hfad.tagalong.auth_network.model.TokenDtoMapper
+import com.hfad.tagalong.track_network.model.TrackDtoMapper
+import com.hfad.tagalong.auth_network.model.UserDtoMapper
+import com.hfad.tagalong.auth_network.services.RetrofitAuthService
+import com.hfad.tagalong.auth_network.services.RetrofitUserService
+import com.hfad.tagalong.network_core.util.NetworkErrorMapper
+import com.hfad.tagalong.auth_network.repositories.AuthNetworkRepositoryImpl
+import com.hfad.tagalong.playlist_network.repositories.PlaylistNetworkRepositoryImpl
+import com.hfad.tagalong.track_network.repositories.TrackNetworkRepositoryImpl
+import com.hfad.tagalong.session.SessionManagerImpl
+import com.hfad.tagalong.network_core.util.AuthManager
+import com.hfad.tagalong.network_core.util.TokenAuthenticator
+import com.hfad.tagalong.network_core.util.UserManager
+import com.hfad.tagalong.playlist_interactors_core.repositories.PlaylistNetworkRepository
+import com.hfad.tagalong.playlist_network.services.RetrofitPlaylistService
+import com.hfad.tagalong.settings_interactors_core.repositories.SettingsRepository
+import com.hfad.tagalong.track_interactors_core.repositories.TrackNetworkRepository
+import com.hfad.tagalong.track_network.services.RetrofitTrackService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,16 +69,18 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideAuthenticator(
-        sessionManager: SessionManager,
-        authService: RetrofitAuthService,
-        tokenDtoMapper: TokenDtoMapper,
-        @Named(APP_CLIENT_ID) clientId: String
+        authNetworkRepository: AuthNetworkRepository,
+        authManager: AuthManager,
+        authCacheRepository: AuthCacheRepository,
+        settingsRepository: SettingsRepository,
+        sessionManager: SessionManager
     ): Authenticator {
         return TokenAuthenticator(
-            sessionManager = sessionManager,
-            authService = authService,
-            tokenDtoMapper = tokenDtoMapper,
-            clientId = clientId
+            authNetworkRepository = authNetworkRepository,
+            authManager = authManager,
+            authCacheRepository = authCacheRepository,
+            settingsRepository = settingsRepository,
+            sessionManager = sessionManager
         )
     }
 
@@ -80,6 +98,42 @@ object NetworkModule {
                     client.addInterceptor(logging)
                 }
             }.build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthManager(
+        sessionManager: SessionManagerImpl
+    ): AuthManager {
+        return sessionManager
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserManager(
+        sessionManager: SessionManagerImpl
+    ): UserManager {
+        return sessionManager
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthNetworkRepository(
+        authService: RetrofitAuthService,
+        tokenMapper: TokenDtoMapper,
+        userService: RetrofitUserService,
+        userMapper: UserDtoMapper,
+        @Named(APP_CLIENT_ID) clientId: String,
+        @Named(APP_REDIRECT_URI) redirectUri: String
+    ): AuthNetworkRepository {
+        return AuthNetworkRepositoryImpl(
+            authService = authService,
+            tokenMapper = tokenMapper,
+            userService = userService,
+            userMapper = userMapper,
+            clientId = clientId,
+            redirectUri = redirectUri
+        )
     }
 
     @Provides
@@ -103,6 +157,22 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun providePlaylistNetworkRepository(
+        playlistService: RetrofitPlaylistService,
+        playlistDtoMapper: PlaylistDtoMapper,
+        authManager: AuthManager,
+        userManager: UserManager
+    ): PlaylistNetworkRepository {
+        return PlaylistNetworkRepositoryImpl(
+            playlistService = playlistService,
+            playlistDtoMapper = playlistDtoMapper,
+            authManager = authManager,
+            userManager = userManager
+        )
+    }
+
+    @Provides
+    @Singleton
     fun provideTrackService(
         retrofitClient: OkHttpClient
     ): RetrofitTrackService {
@@ -118,6 +188,20 @@ object NetworkModule {
     @Singleton
     fun provideTrackMapper(): TrackDtoMapper {
         return TrackDtoMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrackNetworkRepository(
+        trackService: RetrofitTrackService,
+        trackDtoMapper: TrackDtoMapper,
+        authManager: AuthManager
+    ): TrackNetworkRepository {
+        return TrackNetworkRepositoryImpl(
+            trackService = trackService,
+            trackDtoMapper = trackDtoMapper,
+            authManager = authManager
+        )
     }
 
     @Provides
@@ -145,9 +229,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @Named("networkErrorHandler")
-    fun provideNetworkErrorHandler(): ErrorHandler {
-        return NetworkErrorHandler()
+    @Named("networkErrorMapper")
+    fun provideNetworkErrorMapper(): ErrorMapper {
+        return NetworkErrorMapper()
     }
 
 }

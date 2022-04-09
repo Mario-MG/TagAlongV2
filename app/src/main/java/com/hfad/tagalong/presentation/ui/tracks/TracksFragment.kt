@@ -13,12 +13,13 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.hfad.tagalong.R
-import com.hfad.tagalong.domain.model.Track
 import com.hfad.tagalong.presentation.BUNDLE_KEY_TRACK
+import com.hfad.tagalong.presentation.adapters.TrackParcelable
 import com.hfad.tagalong.presentation.components.EmptyListPlaceholderText
 import com.hfad.tagalong.presentation.components.TrackItemList
 import com.hfad.tagalong.presentation.theme.AppScaffold
 import com.hfad.tagalong.presentation.ui.BaseLoggedInFragment
+import com.hfad.tagalong.track_domain.Track
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalMaterial3Api
@@ -74,7 +75,7 @@ abstract class TracksFragment : BaseLoggedInFragment() {
     protected open fun onTriggerNextPage() {}
 
     private fun navigateToTrackDetail(track: Track) {
-        val bundle = bundleOf(BUNDLE_KEY_TRACK to track)
+        val bundle = bundleOf(BUNDLE_KEY_TRACK to TrackParcelable(track))
         findNavController().navigate(
             R.id.singleTrackFragment,
             bundle,

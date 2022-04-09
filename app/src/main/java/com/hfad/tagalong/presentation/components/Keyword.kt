@@ -27,7 +27,7 @@ fun <T : Keyword> Keyword(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = keywordObject.value(),
+                text = keywordObject.keyword(),
                 modifier = Modifier
                     .padding(
                         vertical = 2.dp,
@@ -55,5 +55,5 @@ fun <T : Keyword> Keyword(
 }
 
 interface Keyword {
-    fun value(): String
+    fun keyword(): String
 }
