@@ -1,21 +1,21 @@
 package com.hfad.tagalong.cache.repositories
 
+import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.hfad.tagalong.auth_interactors_core.repositories.AuthCacheRepository
 import com.hfad.tagalong.auth_interactors_core.session.SessionData
 import com.hfad.tagalong.auth_interactors_core.session.SessionDataSerializer
-import com.hfad.tagalong.presentation.BaseApplication
 
 class AuthCacheRepositoryImpl(
-    application: BaseApplication,
+    context: Context,
     private val sessionDataSerializer: SessionDataSerializer
 ) : AuthCacheRepository {
 
     private val sharedPreferences = EncryptedSharedPreferences.create(
-        application,
+        context,
         "auth-shared-prefs",
-        MasterKey.Builder(application, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+        MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build(),
         EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,

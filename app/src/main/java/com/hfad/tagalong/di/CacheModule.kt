@@ -172,7 +172,7 @@ object CacheModule {
         sessionDataSerializer: SessionDataSerializer
     ): AuthCacheRepository {
         return AuthCacheRepositoryImpl(
-            application = application,
+            context = application,
             sessionDataSerializer = sessionDataSerializer
         )
     }
@@ -183,7 +183,7 @@ object CacheModule {
         application: BaseApplication
     ): SettingsRepository {
         return SettingsRepositoryImpl(
-            application = application
+            context = application
         )
     }
 

@@ -1,7 +1,8 @@
 package com.hfad.tagalong.cache.dao
 
 import androidx.room.*
-import com.hfad.tagalong.cache.model.*
+import com.hfad.tagalong.cache.*
+import com.hfad.tagalong.cache.model.TrackEntity
 
 @Dao
 interface TrackDao {
