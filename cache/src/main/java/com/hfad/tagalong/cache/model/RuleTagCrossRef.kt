@@ -4,15 +4,16 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import com.hfad.tagalong.cache.*
 
 @Entity(
-    tableName = TRACK_TAG_CROSS_REF_TABLE,
-    primaryKeys = [TRACK_ID, TAG_ID],
+    tableName = RULE_TAG_CROSS_REF_TABLE,
+    primaryKeys = [RULE_ID, TAG_ID],
     foreignKeys = [
         ForeignKey(
-            entity = TrackEntity::class,
-            parentColumns = [TRACK_ID],
-            childColumns = [TRACK_ID],
+            entity = RuleEntity::class,
+            parentColumns = [RULE_ID],
+            childColumns = [RULE_ID],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
@@ -24,17 +25,17 @@ import androidx.room.Index
     ],
     indices = [
         Index(
-            value = [TRACK_ID]
+            value = [RULE_ID]
         ),
         Index(
             value = [TAG_ID]
         )
     ]
 )
-data class TrackTagCrossRef(
+data class RuleTagCrossRef(
 
-    @ColumnInfo(name = TRACK_ID)
-    val trackId: String,
+    @ColumnInfo(name = RULE_ID)
+    val ruleId: Long,
 
     @ColumnInfo(name = TAG_ID)
     val tagId: Long

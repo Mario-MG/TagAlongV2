@@ -4,10 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import com.hfad.tagalong.cache.*
 
 @Entity(
-    tableName = RULE_TAG_CROSS_REF_TABLE,
-    primaryKeys = [RULE_ID, TAG_ID],
+    tableName = RULE_PLAYLIST_CROSS_REF_TABLE,
+    primaryKeys = [RULE_ID, PLAYLIST_ID],
     foreignKeys = [
         ForeignKey(
             entity = RuleEntity::class,
@@ -16,9 +17,9 @@ import androidx.room.Index
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = TagEntity::class,
-            parentColumns = [TAG_ID],
-            childColumns = [TAG_ID],
+            entity = PlaylistEntity::class,
+            parentColumns = [PLAYLIST_ID],
+            childColumns = [PLAYLIST_ID],
             onDelete = ForeignKey.CASCADE
         )
     ],
@@ -27,16 +28,16 @@ import androidx.room.Index
             value = [RULE_ID]
         ),
         Index(
-            value = [TAG_ID]
+            value = [PLAYLIST_ID]
         )
     ]
 )
-data class RuleTagCrossRef(
+data class RulePlaylistCrossRef(
 
     @ColumnInfo(name = RULE_ID)
     val ruleId: Long,
 
-    @ColumnInfo(name = TAG_ID)
-    val tagId: Long
+    @ColumnInfo(name = PLAYLIST_ID)
+    val playlistId: String
 
 )

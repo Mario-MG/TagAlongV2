@@ -3,6 +3,7 @@ package com.hfad.tagalong.cache.model
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
+import com.hfad.tagalong.cache.*
 
 data class RuleEntityPoko(
 

@@ -1,4 +1,4 @@
-package com.hfad.tagalong.cache.model
+package com.hfad.tagalong.cache
 
 const val TAG_TABLE = "Tag"
 const val TAG_ID = "tag_id"

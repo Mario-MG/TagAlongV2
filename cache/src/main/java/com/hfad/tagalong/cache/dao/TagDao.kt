@@ -1,7 +1,9 @@
 package com.hfad.tagalong.cache.dao
 
 import androidx.room.*
-import com.hfad.tagalong.cache.model.*
+import com.hfad.tagalong.cache.*
+import com.hfad.tagalong.cache.model.TagEntity
+import com.hfad.tagalong.cache.model.TagEntityPoko
 
 @Dao
 abstract class TagDao {
