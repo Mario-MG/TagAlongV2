@@ -5,7 +5,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import com.hfad.tagalong.domain.model.Rule
+import com.hfad.tagalong.rule_domain.Rule
 
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
