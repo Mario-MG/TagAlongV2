@@ -3,6 +3,7 @@ package com.hfad.tagalong.cache.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.hfad.tagalong.cache.*
 
 @Entity(tableName = RULE_TABLE)
 data class RuleEntity(

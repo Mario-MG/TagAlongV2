@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.hfad.tagalong.cache.*
 
 @Entity(
     tableName = TAG_TABLE,
