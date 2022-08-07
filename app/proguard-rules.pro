@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.mariomg.tagalong.auth_network.model.** { *; }
+-keep class com.mariomg.tagalong.network_core.model.** { *; }
+-keep class com.mariomg.tagalong.playlist_network.model.** { *; }
+-keep class com.mariomg.tagalong.session.model.** { *; }
+-keep class com.mariomg.tagalong.track_network.model.** { *; }
+
+-keep class com.mariomg.tagalong.presentation.ui.Screen { *; }

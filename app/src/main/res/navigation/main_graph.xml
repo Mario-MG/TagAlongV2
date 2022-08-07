@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/playlistsFragment"
-        android:name="com.hfad.tagalong.presentation.ui.playlists.PlaylistsFragment"
+        android:name="com.mariomg.tagalong.presentation.ui.playlists.PlaylistsFragment"
         android:label="PlaylistsFragment" >
 
         <action
@@ -37,7 +37,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.hfad.tagalong.presentation.ui.login.LoginFragment"
+        android:name="com.mariomg.tagalong.presentation.ui.login.LoginFragment"
         android:label="LoginFragment" >
 
         <action
@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/playlistTracksFragment"
-        android:name="com.hfad.tagalong.presentation.ui.playlisttracks.PlaylistTracksFragment"
+        android:name="com.mariomg.tagalong.presentation.ui.playlisttracks.PlaylistTracksFragment"
         android:label="PlaylistTracksFragment">
 
         <action
@@ -61,12 +61,12 @@
 
     <fragment
         android:id="@+id/singleTrackFragment"
-        android:name="com.hfad.tagalong.presentation.ui.singletrack.SingleTrackFragment"
+        android:name="com.mariomg.tagalong.presentation.ui.singletrack.SingleTrackFragment"
         android:label="SingleTrackFragment" />
 
     <fragment
         android:id="@+id/tagsFragment"
-        android:name="com.hfad.tagalong.presentation.ui.tags.TagsFragment"
+        android:name="com.mariomg.tagalong.presentation.ui.tags.TagsFragment"
         android:label="TagsFragment" >
 
         <action
@@ -92,7 +92,7 @@
 
     <fragment
         android:id="@+id/tagTracksFragment"
-        android:name="com.hfad.tagalong.presentation.ui.tagtracks.TagTracksFragment"
+        android:name="com.mariomg.tagalong.presentation.ui.tagtracks.TagTracksFragment"
         android:label="TagTracksFragment" >
 
         <action
@@ -106,7 +106,7 @@
 
     <fragment
         android:id="@+id/rulesFragment"
-        android:name="com.hfad.tagalong.presentation.ui.rules.RulesFragment"
+        android:name="com.mariomg.tagalong.presentation.ui.rules.RulesFragment"
         android:label="RulesFragment" >
 
         <action
@@ -132,12 +132,12 @@
 
     <fragment
         android:id="@+id/ruleCreationFragment"
-        android:name="com.hfad.tagalong.presentation.ui.rulecreation.RuleCreationFragment"
+        android:name="com.mariomg.tagalong.presentation.ui.rulecreation.RuleCreationFragment"
         android:label="RuleCreationFragment" />
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.hfad.tagalong.presentation.ui.settings.SettingsFragment"
+        android:name="com.mariomg.tagalong.presentation.ui.settings.SettingsFragment"
         android:label="SettingsFragment" >
 
         <action
